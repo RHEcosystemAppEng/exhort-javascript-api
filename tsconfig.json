@@ -1,0 +1,22 @@
+{
+	"include": ["src/**/*", "generated/backend/**/*"],
+	"exclude": ["node_modules", "dist"],
+	"compilerOptions": {
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": "src",
+		"declaration": true,
+		"esModuleInterop": true,
+		"lib": ["esnext"],
+		"moduleResolution": "Node",
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"rootDir": ".",
+		"rootDirs": ["src", "generated"],
+		"skipLibCheck": true,
+		"types": ["node"],
+		"module": "esnext",
+		"outDir": "dist",
+		"target": "esnext"
+	}
+}

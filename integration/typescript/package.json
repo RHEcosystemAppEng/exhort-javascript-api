@@ -1,0 +1,18 @@
+{
+	"name": "ts-it",
+	"version": "0.0.1",
+	"description": "crda-javascript-api typescript integration tests",
+	"private": true,
+	"type": "module",
+	"license": "Apache-2.0",
+	"scripts": {
+		"precompile": "rm -rf ./dist",
+		"compile": "tsc -p ./tsconfig.json"
+	},
+	"dependencies": {
+		"@RHEcosystemAppEng/crda-javascript-api": "file:../../"
+	},
+	"devDependencies": {
+		"typescript": "^5.1.3"
+	}
+}

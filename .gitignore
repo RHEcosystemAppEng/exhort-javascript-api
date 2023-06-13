@@ -1,0 +1,6 @@
+.nyc_output
+coverage
+node_modules
+dist
+integration/**/package-lock.json
+unit-tests-result.json

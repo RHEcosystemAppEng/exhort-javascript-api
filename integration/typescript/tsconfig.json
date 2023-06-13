@@ -1,0 +1,15 @@
+{
+	"include": ["index.ts"],
+	"exclude": ["node_modules", "dist"],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"esModuleInterop": true,
+		"lib": ["esnext"],
+		"moduleResolution": "Node",
+		"rootDir": ".",
+		"types": ["node"],
+		"module": "esnext",
+		"outDir": "dist",
+		"target": "esnext"
+	}
+}
