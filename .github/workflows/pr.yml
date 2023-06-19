@@ -1,0 +1,46 @@
+---
+name: Pull request build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Lint and test project
+    permissions:
+      checks: write
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: npm
+
+      - name: Install project modules
+        run: npm ci
+
+      - name: Lint source files
+        run: npm run lint
+
+      - name: Run unit tests and create coverage report
+        run: npm run tests:rep
+
+      - name: Run integration tests
+        working-directory: integration
+        run: bash ./run_it.sh
+
+      - name: Report test results
+        if: always()
+        uses: dorny/test-reporter@v1.6.0
+        with:
+          name: Unit Tests Run
+          path: unit-tests-result.json
+          reporter: mocha-json
