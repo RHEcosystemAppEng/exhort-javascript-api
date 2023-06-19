@@ -32,6 +32,7 @@ suite('testing the java-maven data provider', () => {
 				contentType: 'text/vnd.graphviz',
 				content: expectedGraph
 			})
-		}).timeout(5000) // these test cases takes ~2500-2700 ms each
+		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
+		}).timeout(process.env.GITHUB_ACTIONS ? 20000 : 5000)
 	})
 })

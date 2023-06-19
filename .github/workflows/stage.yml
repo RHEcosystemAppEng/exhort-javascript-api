@@ -25,6 +25,12 @@ jobs:
           node-version: '18'
           cache: npm
 
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
       - name: Install project modules
         run: npm ci
 
