@@ -1,0 +1,35 @@
+---
+name: Stage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".github/**"
+      - "**.md"
+
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    environment: staging
+    name: Stage the project
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Install node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: npm
+
+      - name: Install project modules
+        run: npm ci
+
+      - name: Lint source files
+        run: npm run lint
+
+      - name: Run unit tests and verify code coverage
+        run: npm test
