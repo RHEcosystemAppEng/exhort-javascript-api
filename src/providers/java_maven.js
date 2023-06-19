@@ -42,7 +42,7 @@ function provideStack(manifest) {
  * @param {string} data - content of pom.xml for component report
  * @returns {Provided}
  */
-function provideComponent(data) { // WIP
+function provideComponent(data) { // eslint-disable-line
 	return {
 		ecosystem,
 		content: 'WIP',
