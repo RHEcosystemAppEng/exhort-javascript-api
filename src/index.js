@@ -1,8 +1,7 @@
-import {AnalysisReport} from "../generated/backend/AnalysisReport.js";
+import { availableProviders, match } from './provider.js'
+import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
-import fs from "node:fs";
-import javaMvnProvider from './providers/java_maven.js'
-import { match } from './provider.js'
+import fs from 'node:fs'
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis }
 
@@ -11,13 +10,6 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  * @private
  */
 const url = 'http://crda-backend-crda.apps.sssc-cl01.appeng.rhecoeng.com/api/v3'
-
-/**
- * MUST include all providers here.
- * @private
- * @type {[import('./provider').Provider]}
- */
-const providers = [javaMvnProvider]
 
 /**
  * Get stack analysis report for a manifest file.
@@ -29,7 +21,7 @@ const providers = [javaMvnProvider]
  */
 async function stackAnalysis(manifest, html = false) {
 	fs.accessSync(manifest, fs.constants.R_OK) // throws error if file unreadable
-	let provider = match(manifest, providers) // throws error if no matching provider
+	let provider = match(manifest, availableProviders) // throws error if no matching provider
 	return await analysis.requestStack(provider, manifest, url, html) // throws error request sending failed
 }
 
@@ -41,6 +33,6 @@ async function stackAnalysis(manifest, html = false) {
  * @throws {Error} if o matching provider, failed to get create content, or backend request failed
  */
 async function componentAnalysis(manifestType, data) {
-	let provider = match(manifestType, providers) // throws error if no matching provider
+	let provider = match(manifestType, availableProviders) // throws error if no matching provider
 	return await analysis.requestComponent(provider, data, url) // throws error request sending failed
 }

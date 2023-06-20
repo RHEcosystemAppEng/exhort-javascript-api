@@ -1,7 +1,14 @@
+import javaMvnProvider from './providers/java_maven.js'
 import path from 'node:path'
 
 /** @typedef {{ecosystem: string, contentType: string, content: string}} Provided */
 /** @typedef {{isSupported: function(string): boolean, provideComponent: function(string): Provided, provideStack: function(string): Provided}} Provider */
+
+/**
+ * MUST include all providers here.
+ * @type {[Provider]}
+ */
+export const availableProviders = [javaMvnProvider]
 
 /**
  * Match a provider from a list or providers based on file type.
