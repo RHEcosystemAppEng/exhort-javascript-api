@@ -22,7 +22,7 @@
 		"npm": ">= 9.0.0"
 	},
 	"type": "module",
-	"bin": "dist/src/cmd.js",
+	"bin": "dist/src/cli.js",
 	"main": "dist/src/index.js",
 	"module": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
@@ -74,7 +74,7 @@
 			"src/**"
 		],
 		"exclude": [
-			"src/cmd.js",
+			"src/cli.js",
 			"src/index.js"
 		],
 		"lines": 85,
