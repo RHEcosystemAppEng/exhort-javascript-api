@@ -33,6 +33,6 @@ suite('testing the java-maven data provider', () => {
 				content: expectedGraph
 			})
 		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-		}).timeout(process.env.GITHUB_ACTIONS ? 20000 : 5000)
+		}).timeout(process.env.GITHUB_ACTIONS ? 25000 : 5000)
 	})
 })
