@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "scanned": 1,
+    "transitive": 0
+  },
+  "vulnerabilities": {
+    "total": 7,
+    "direct": 1,
+    "critical": 1,
+    "high": 3,
+    "medium": 2,
+    "low": 1
+  }
+}

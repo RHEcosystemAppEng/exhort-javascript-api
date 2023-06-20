@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# utility function takes file name and a command
+# used for matching the file content and the command output
+match() {
+	if [[ $(< "$1") != "$(eval "$2")" ]]; then
+        echo "- FAILED"
+        exit 1
+    fi
+    echo "- PASSED"
+}
+
 ##########################################
 ###### Verify Required Tools Exists ######
 ##########################################
@@ -29,20 +39,10 @@ fi
 echo "- SUCCESSFUL"
 
 echo "RUNNING JavaScript integration test for Stack Analysis report in Html"
-htmlStackRep=$(node javascript/index.js stack pom.xml true)
-if [[ $(< expected_stack_html) != "$htmlStackRep" ]]; then
-    echo "- FAILED"
-    exit 1
-fi
-echo "- PASSED"
+match "expected_stack_html" "node javascript/index.js stack pom.xml true"
 
 echo "RUNNING JavaScript integration test for Stack Analysis report in Json"
-jsonStackRep=$(node javascript/index.js stack pom.xml false)
-if [[ $(< expected_stack_json) != "$jsonStackRep" ]]; then
-    echo "- FAILED"
-    exit 1
-fi
-echo "- PASSED"
+match "expected_stack_json" "node javascript/index.js stack pom.xml false"
 
 ##########################################
 ###### TypeScript Integration Tests ######
@@ -62,17 +62,27 @@ then
 fi
 
 echo "RUNNING TypeScript integration test for Stack Analysis report in Html"
-htmlStackRep=$(node typescript/dist/index.js stack pom.xml true)
-if [[ $(< expected_stack_html) != "$htmlStackRep" ]]; then
-    echo "- FAILED"
-    exit 1
-fi
-echo "- PASSED"
+match "expected_stack_html" "node typescript/dist/index.js stack pom.xml true"
 
 echo "RUNNING TypeScript integration test for Stack Analysis report in Json"
-jsonStackRep=$(node typescript/dist/index.js stack pom.xml false)
-if [[ $(< expected_stack_json) != "$jsonStackRep" ]]; then
-    echo "- FAILED"
-    exit 1
+match "expected_stack_json" "node typescript/dist/index.js stack pom.xml false"
+
+##########################################
+###### CMD Script Integration Tests ######
+##########################################
+echo "PREPARING CLI Script integration tests environment"
+if ! npm --prefix cli install --force --silent
+then
+	echo "- FAILED Installing modules for JS environment"
+	exit $?
 fi
-echo "- PASSED"
+echo "- SUCCESSFUL"
+
+echo "RUNNING CLI Script integration test for Stack Analysis report in Html"
+match "expected_stack_html" "node cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack pom.xml --html"
+
+echo "RUNNING CLI Script integration test for Stack Analysis report in full Json"
+match "expected_stack_json" "node cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack pom.xml"
+
+echo "RUNNING CLI Script integration test for Stack Analysis report in full Json"
+match "expected_stack_json_summary" "node cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack pom.xml --summary"
