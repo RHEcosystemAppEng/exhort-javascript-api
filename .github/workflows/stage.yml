@@ -42,6 +42,8 @@ jobs:
         run: npm ci --production
 
       - name: Publish package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm publish
 
       - name: Commit and push package modifications
