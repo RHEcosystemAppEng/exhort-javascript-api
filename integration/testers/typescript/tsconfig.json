@@ -1,8 +1,10 @@
 {
-	"include": ["index.ts"],
+	"include": [
+      "index.ts"
+    ],
 	"exclude": ["node_modules", "dist"],
 	"compilerOptions": {
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"esModuleInterop": true,
 		"lib": ["esnext"],
 		"moduleResolution": "Node",
