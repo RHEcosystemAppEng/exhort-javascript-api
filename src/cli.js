@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import crda from './index.js'
 import { hideBin } from 'yargs/helpers'
 import yargs from 'yargs'
