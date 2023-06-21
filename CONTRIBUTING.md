@@ -1,1 +1,79 @@
-# WIP
+# Contributing to *crda-javascript-api*<br/>![nodejs-version][10]
+
+* Fork the repository
+* Create a new branch
+* Commit your changes
+* Commits <strong>must</strong> be signed-off (see [Certificate of Origin](#certificate-of-origin))
+* Create a pull request against the main branch
+* Pull request titles <strong>must</strong> adhere the [Conventional Commits specification][0]
+
+## Development
+
+### NPM Scripts
+
+* `npm run compile` compile all _TS_ and _JS_ code into the _dist_ folder
+* `npm run lint` run eslint on _JS_ source code
+* `npm run lint:fix` fix eslint issues found in _JS_ source code
+* `npm run test` run unit tests,verify coverage, and print coverage info
+* `npm run tests` run unit tests (no coverage)
+* `npm run tests:rep` run unit tests and save the test results as _unit-tests-result.json_ (for ci)
+* `npm run gen:backend` generate the _Backend_ types from its _OpenAPI_ as _TS_ spec in the _generated/backend_ folder
+
+### OpenAPI Specifications
+
+We use our [Backend's OpenAPI spec file][1] for generating types used for deserialization of the Backend's
+API responses.<br/>
+The generated classes files are _TypeScript_ files generated in the [generated/backend](generated/backend).
+Which is skipped when calculating coverage thresholds. **Avoid writing code in this folder.**<br/>
+When the [Backend's spec file][1] is modified, we need to **manually** run the `npm run gen:backend` script.
+We only generate types.
+
+### Code Walkthrough
+
+* [index.js](src/index.js) is the _ESM Module_ starting point. It exports 2 functions: _componentAnalysis_ and _stackAnalysis_.
+  As well as the _AnalysisReport_ type imported from the _Backend_'s generated classes.
+* [cli.js](src/cli.js) is the starting point of the _CLI Script_, also used when installed as a _Global Package_.
+  It describes two commands: _component_ and _stack_. Use the _help_ command to get more info.
+* [analysis.js](src/analysis.js) exports two functions for communicating to the _Backend_.
+  The _requestComponent_ and _requestStack_ functions.
+* [provider.js](src/provider.js) hosts the utility function for matching _Providers_ based on the manifest type.
+  New providers needs to be listed here.
+* [providers](src/providers) folder is where we place _Providers_. A _Provider_ is basically 3 functions per supported ecosystem.
+  The _isSupported_, _provideComponent_, and _provideStack_ functions help determine the appropriate provider,
+  which will provide data that we can send to the _Backend_ using _analysis.js_. See the [Adding a Provider](#adding-a-provider) section.
+  * [java_maven.js](src/providers/java_maven.js) is the provider for the _Java_ _Maven_ ecosystem.
+
+#### Types
+
+This code is meant to be used as an _ESM_ module for both _JavaScript_ and _TypeScript_. So make sure you add type declarations if needed.<br/>
+Note the [sources](src) are in _JavaScript_, and the [generated](generated/backend) _Backend_ types are in _TypeScript_.
+Both will be compiled as an _ESM Module_ including declarations (_x.d.ts_) in the ignored _dist_ using the `npm run compile` script
+and the [tsconfig.json](tsconfig.json) configuration file. Also note the _TypeScript_ files are excluded from both linting and coverage.
+
+#### Adding a Provider
+
+* Add the new provider code in a designated file in the [providers'](src/providers) folder.
+  A _Provider_ exports 3 functions:
+  *  _isSupported_ takes a manifest name as a string, i.e. _pom.xml_ and returns _true_ if it's supported by this provider.
+  * _provideComponent_ takes the **manifest's content** as a string and returns the ecosystem name, the content for the request body, and the content's type.
+  * _provideStack_ takes the **manifest's path** as a string and the ecosystem name, the content for the request body, and the content's type.
+
+  The data returning from the _provideX_ functions, will be passed on to the [analysis.js](src/analysis.js) for sending to the _Backend_.
+  Use [java_maven.js](src/providers/java_maven.js) as an example to get you started.
+* Import the new _Provider_ and list in the in _availableProviders_ array in [provider.js](src/provider.js).
+* Update the _choices_ configuration for the _manifest-name_ positional argument in  [cli.js](src/cli.js).
+* Update the documentation. This document and [README.md](README.md).
+
+## Certificate of Origin
+
+By contributing to this project you agree to the Developer Certificate of
+Origin (DCO). This document was created by the Linux Kernel community and is a
+simple statement that you, as a contributor, have the legal right to make the
+contribution. See the [DCO](DCO) file for details.
+
+<!-- Real links -->
+[0]: https://www.conventionalcommits.org/en/v1.0.0/
+[1]: https://github.com/RHEcosystemAppEng/crda-backend/blob/main/src/main/resources/META-INF/openapi.yaml
+
+<!-- Badge links -->
+[10]: https://badgen.net/badge/NodeJS%20Version/18/68a063
