@@ -10,6 +10,10 @@ export default { isSupported, provideComponent, provideStack }
 
 /** @typedef {import('../provider').Provided} Provided */
 
+/** @typedef {{name: string, version: string}} Package */
+
+/** @typedef {{groupId: string, artifactId: string, version: string, scope: string, ignore: boolean}} Dependency */
+
 /**
  * @type {string} ecosystem for java-maven is 'maven'
  * @private
@@ -42,16 +46,16 @@ function provideStack(manifest) {
  * @param {string} data - content of pom.xml for component report
  * @returns {Provided}
  */
-function provideComponent(data) { // eslint-disable-line
+function provideComponent(data) {
 	return {
 		ecosystem,
-		content: 'WIP',
-		contentType: 'WIP'
+		content: JSON.stringify(getList(data)),
+		contentType: 'application/json'
 	}
 }
 
 /**
- * Create a Dot Graph dependency tree for maven.
+ * Create a Dot Graph dependency tree for a manifest path.
  * @param {string} manifest - path for pom.xml
  * @returns {string} the Dot Graph content
  * @private
@@ -74,8 +78,13 @@ function getGraph(manifest) {
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command
 	let depTreeCmd = `mvn -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
-	// exclude ignored dependencies
-	getIgnored(manifest).forEach(ignoredDep => depTreeCmd += ` -Dexcludes=${ignoredDep}`)
+	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
+	// version and scope are marked as '*' if not specified (we do not use scope yet)
+	getDependencies(manifest).forEach(dep => {
+		if (dep.ignore) {
+			depTreeCmd += ` -Dexcludes=${dep['groupId']}:${dep['artifactId']}:${dep['scope']}:${dep['version']}`
+		}
+	})
 	// execute dependency tree command
 	execSync(depTreeCmd, err => {
 		if (err) {
@@ -91,13 +100,49 @@ function getGraph(manifest) {
 }
 
 /**
- * Get a list of dependencies marked with <!--crdaignore-->.
- * @param {string} manifest - path for pom.xml
- * @returns {string[]} an array of dependencies to be ignored, group-id:artifact-id:*:version
- * 		(the * marks any type, if no version specified, * will be used)
+ * Create a dependency list for a manifest content.
+ * @param {string} data - content of pom.xml
+ * @returns {[Package]} the Dot Graph content
  * @private
  */
-function getIgnored(manifest) {
+function getList(data) {
+	// verify maven is accessible
+	execSync('mvn --version', err => {
+		if (err) {
+			throw new Error('mvn is not accessible')
+		}
+	})
+	// create temp files for pom and effective pom
+	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'crda_'))
+	let tmpEffectivePom = path.join(tmpDir, 'effective-pom.xml')
+	let tmpTargetPom = path.join(tmpDir, 'target-pom.xml')
+	// write target pom content to temp file
+	fs.writeFileSync(tmpTargetPom, data)
+	// create effective pom and save to temp file
+	execSync(`mvn -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${tmpTargetPom}`, err => {
+		if (err) {
+			throw new Error('failed creating maven effective pom')
+		}
+	})
+	// iterate over all dependencies and create a package for every non-ignored one
+	/** @type [Package] */
+	let packages = getDependencies(tmpEffectivePom)
+		.filter(dep => !dep.ignore)
+		.map(dep => { return {name: `${dep.groupId}:${dep.artifactId}`, version: dep.version} })
+	// delete temp files and directory
+	fs.rmSync(tmpDir, {recursive: true, force: true})
+	// return packages list
+	return packages
+}
+
+/**
+ * Get a list of dependencies with marking of dependencies commented with <!--crdaignore-->.
+ * @param {string} manifest - path for pom.xml
+ * @returns {[Dependency]} an array of dependencies
+ * @private
+ */
+function getDependencies(manifest) {
+	/** @type [Dependency] */
 	let ignored = []
 	// build xml parser with options
 	let parser = new XMLParser({
@@ -110,10 +155,18 @@ function getIgnored(manifest) {
 	let pomJson = parser.parse(buf.toString())
 	// iterate over all dependencies and chery pick dependencies with a crdaignore comment
 	pomJson['project']['dependencies']['dependency'].forEach(dep => {
+		let ignore = false
 		if (dep['#comment'] && dep['#comment'].includes('crdaignore')) { // #comment is an array or a string
-			ignored.push(`${dep['groupId']}:${dep['artifactId']}:*:${dep['version'] ? dep['version'] : '*'}`)
+			ignore = true
 		}
+		ignored.push({
+			groupId: dep['groupId'],
+			artifactId: dep['artifactId'],
+			version: dep['version'] ? dep['version'] : '*',
+			scope: '*',
+			ignore: ignore
+		})
 	})
-	// return list of dependencies to ignore
+	// return list of dependencies
 	return ignored
 }

@@ -2,5 +2,7 @@
 coverage
 node_modules
 dist
+http_requests
+json_responses
 integration/**/package-lock.json
 unit-tests-result.json
