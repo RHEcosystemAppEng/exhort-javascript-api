@@ -24,7 +24,7 @@ suite('testing the java-maven data provider', () => {
 
 		test(`verify maven data provided for stack analysis with scenario ${scenario}`, async () => {
 			// load the expected graph for the scenario
-			let expectedGraph = fs.readFileSync(`test/providers/tst_manifests/${testCase}/expected_dot_graph`,).toString()
+			let expectedGraph = fs.readFileSync(`test/providers/tst_manifests/${testCase}/stack_expected_dot_graph`,).toString()
 			// invoke sut stack analysis for scenario manifest
 			let providedDataForStack = await javaMvnProvider.provideStack(`test/providers/tst_manifests/${testCase}/pom.xml`)
 			// verify returned data matches expectation
