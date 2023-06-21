@@ -50,7 +50,7 @@ jobs:
 
       - name: Run integration tests
         working-directory: integration
-        run: bash ./run_it.sh
+        run: bash ./run_its.sh
 
       - name: Upload coverage reports
         if: ${{ matrix.node == env.MAIN_NODE_VER }}
