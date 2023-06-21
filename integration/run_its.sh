@@ -29,6 +29,20 @@ then
 fi
 echo "- SUCCESSFUL"
 
+echo "VERIFYING Java and Maven availability"
+if ! java --version > /dev/null 2>&1
+then
+	echo "- FAILED Java not found"
+	exit $?
+fi
+
+if ! mvn --version > /dev/null 2>&1
+then
+	echo "- FAILED Maven not found"
+	exit $?
+fi
+echo "- SUCCESSFUL"
+
 ##########################################
 ###### JavaScript Integration Tests ######
 ##########################################
