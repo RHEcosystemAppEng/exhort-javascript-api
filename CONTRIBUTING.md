@@ -62,13 +62,35 @@ and the [tsconfig.json](tsconfig.json) configuration file. Also note the _TypeSc
   Use [java_maven.js](src/providers/java_maven.js) as an example to get you started.
 * Import the new _Provider_ and list in the in _availableProviders_ array in [provider.js](src/provider.js).
 * Update the _choices_ configuration for the _manifest-name_ positional argument in  [cli.js](src/cli.js).
-* Add Integration Test scenarios for the added provider in [integration/langs](integration/langs).
-  Use the [java scenarios](integration/langs/java) as an example.
+* Add Integration Test scenarios for the added provider in [integration/scenarios](integration/scenarios).
+  Use the [java scenarios](integration/scenarios/java) as an example.
 * Update the documentation. This document and [README.md](README.md).
 
 ### Integration Tests
 
-WIP
+Integration tests are performed with a _bash_ script executing _node_ scripts.<br/>
+In [integration/run_its.sh](integration/run_its.sh) we start with a function called _match_ taking 2 arguments:
+* `$1` is a file name for the holding the expected result (scenarios)
+* `$2` is a command execution for evaluation (testers)
+
+The _match_ function will match the content of the file to the output of the command.
+Typically, test cases in [integration/run_its.sh](integration/run_its.sh) will invoke the _match_ function with
+a scenario from the [integration/scenarios](integration/scenarios) and a _node_ command invoking one of the _node_
+scripts in [integration/testers](integration/testers).<br/>
+
+We have 3 _testers_:
+* [integration/testers/cli](integration/testers/cli) is a _package.json_ used for installing the _ESM module_.
+  Invoking the CLI Script is done against the _@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js_ in the tester's _node_modules_.
+* [integration/testers/javascript](integration/testers/javascript) is a _javascript_ script invoking the _ESM module_.
+* [integration/testers/typescript](integration/testers/typescript) is a _typescript_ script invoking the _ESM module_.
+
+Run integration tests from the project's root:
+
+> Don't forget to run `npm run compile` before running the integration tests.
+
+```shell
+(cd integration/ && bash ./run_its.sh)
+```
 
 > We currently run integration tests against the actual production _Backend_, this will be replaced by opting for a _Mock Server_.
 

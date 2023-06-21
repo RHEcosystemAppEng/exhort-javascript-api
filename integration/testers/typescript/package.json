@@ -7,10 +7,10 @@
 	"license": "Apache-2.0",
 	"scripts": {
 		"precompile": "rm -rf ./dist",
-		"compile": "tsc -p ./tsconfig.json"
+		"compile": "tsc -p tsconfig.json"
 	},
 	"dependencies": {
-		"@RHEcosystemAppEng/crda-javascript-api": "file:../../"
+		"@RHEcosystemAppEng/crda-javascript-api": "file:../../../"
 	},
 	"devDependencies": {
 		"typescript": "^5.1.3"
