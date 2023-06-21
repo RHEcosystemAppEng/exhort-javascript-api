@@ -1,0 +1,195 @@
+[
+  {
+    "ref": {
+      "name": "log4j:log4j",
+      "version": "1.2.17"
+    },
+    "issues": [
+      {
+        "id": "SNYK-JAVA-LOG4J-572732",
+        "source": "snyk",
+        "cves": [
+          "CVE-2019-17571"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-572732",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P",
+          "cvssScore": 9.8
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-572732",
+        "source": "snyk",
+        "cves": [
+          "CVE-2019-17571"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-572732",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P",
+          "cvssScore": 9.8
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342645",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23305"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342645",
+          "title": "SQL Injection",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342646",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23307"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342646",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342647",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23302"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342647",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342645",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23305"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342645",
+          "title": "SQL Injection",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342646",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23307"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342646",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2342647",
+        "source": "snyk",
+        "cves": [
+          "CVE-2022-23302"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2342647",
+          "title": "Deserialization of Untrusted Data",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "cvssScore": 8.1
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2316893",
+        "source": "snyk",
+        "cves": [
+          "CVE-2021-4104"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2316893",
+          "title": "Arbitrary Code Execution",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H/E:P",
+          "cvssScore": 6.6
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-2316893",
+        "source": "snyk",
+        "cves": [
+          "CVE-2021-4104"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-2316893",
+          "title": "Arbitrary Code Execution",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H/E:P",
+          "cvssScore": 6.6
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-3358774",
+        "source": "snyk",
+        "cves": [
+          "CVE-2023-26464"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-3358774",
+          "title": "Denial of Service (DoS)",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+          "cvssScore": 5.9
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-3358774",
+        "source": "snyk",
+        "cves": [
+          "CVE-2023-26464"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-3358774",
+          "title": "Denial of Service (DoS)",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H",
+          "cvssScore": 5.9
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-1300176",
+        "source": "snyk",
+        "cves": [
+          "CVE-2020-9488"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-1300176",
+          "title": "Man-in-the-Middle (MitM)",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N",
+          "cvssScore": 3.7
+        }
+      },
+      {
+        "id": "SNYK-JAVA-LOG4J-1300176",
+        "source": "snyk",
+        "cves": [
+          "CVE-2020-9488"
+        ],
+        "rawData": {
+          "id": "SNYK-JAVA-LOG4J-1300176",
+          "title": "Man-in-the-Middle (MitM)",
+          "CVSSv3": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N",
+          "cvssScore": 3.7
+        }
+      }
+    ],
+    "transitive": [],
+    "securityRecommendations": {},
+    "recommendation": null
+  }
+]

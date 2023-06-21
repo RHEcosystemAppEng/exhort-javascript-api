@@ -19,22 +19,12 @@ const component = {
 			desc: 'content of the manifest',
 			type: 'string',
 		}
-	).options({
-		summary: {
-			alias: 's',
-			desc: 'For JSON report, get only the \'summary\'',
-			type: 'boolean',
-		}
-	}),
+	),
 	handler: async args => {
 		let manifestName = args['manifest-name']
 		let manifestContent = args['manifest-content']
-		let summary = args['summary']
 		let res = await crda.componentAnalysis(manifestName, manifestContent)
-		console.log(JSON.stringify(
-			summary ? res['summary'] : res,
-			null,
-			2))
+		console.log(JSON.stringify(res, null, 2))
 	}
 }
 
