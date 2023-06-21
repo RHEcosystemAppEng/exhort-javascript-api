@@ -62,7 +62,15 @@ and the [tsconfig.json](tsconfig.json) configuration file. Also note the _TypeSc
   Use [java_maven.js](src/providers/java_maven.js) as an example to get you started.
 * Import the new _Provider_ and list in the in _availableProviders_ array in [provider.js](src/provider.js).
 * Update the _choices_ configuration for the _manifest-name_ positional argument in  [cli.js](src/cli.js).
+* Add Integration Test scenarios for the added provider in [integration/langs](integration/langs).
+  Use the [java scenarios](integration/langs/java) as an example.
 * Update the documentation. This document and [README.md](README.md).
+
+### Integration Tests
+
+WIP
+
+> We currently run integration tests against the actual production _Backend_, this will be replaced by opting for a _Mock Server_.
 
 ## Certificate of Origin
 

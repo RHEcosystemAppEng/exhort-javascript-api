@@ -25,8 +25,8 @@ with the <strong>read:packages</strong> scope<br/>
 
 <p>
 
-Add the following line to the <em>.npmrc</em> file in your user home:<br/>
-See [GH Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token)
+Add the following line to the <em>.npmrc</em> file in your user home (
+See [GH Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-with-a-personal-access-token)):
 
 ```text
 //npm.pkg.github.com/:_authToken=<your-ghp-token-goes-here>
@@ -39,7 +39,7 @@ See [GH Docs](https://docs.github.com/en/packages/working-with-a-github-packages
 <h3>Usage</h3>
 <p>
 Instruct <em>NPM</em> to look in <em>GHPR</em> for the <em>RHEcosystemAppEng</em> namespace.<br/>
-Add <code>@RHEcosystemAppEng:registry=https://npm.pkg.github.com</code> to <em>.npmrc</em> in either the project root or user home:
+Add <code>@RHEcosystemAppEng:registry=https://npm.pkg.github.com</code> to <em>.npmrc</em> in the project root or user home:
 
 ```shell
 echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" >> .npmrc
@@ -49,7 +49,7 @@ echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" >> .npmrc
 
 <ul>
 
-<li>Use as ECM Module</li>
+<li>Use as ESM Module</li>
 <p>
 
 ```shell
