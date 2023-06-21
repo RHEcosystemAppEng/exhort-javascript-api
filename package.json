@@ -48,6 +48,7 @@
 	},
 	"devDependencies": {
 		"@openapitools/openapi-generator-cli": "^2.6.0",
+		"@types/node": "^20.3.1",
 		"c8": "^8.0.0",
 		"chai": "^4.3.7",
 		"eslint": "^8.42.0",
