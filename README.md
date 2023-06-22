@@ -152,9 +152,9 @@ Excluding a package from any analysis can be achieved by marking the package for
 <h3>Tokens</h3>
 <p>
 If you wish the report to include other vulnerabilities data and resolutions which is only available to registered users.
-You can include the various vulnerability vendor data token as environment variables. Currently, only _Snyk_ is supported.
+You can include the various vulnerability vendor data token as environment variables.
 
-Available environment variables:
+Available token environment variables:
 </p>
 
 <ul>
