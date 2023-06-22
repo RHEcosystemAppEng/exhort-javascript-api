@@ -9,7 +9,9 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  * @type {string} backend url to send requests to
  * @private
  */
-const url = 'http://crda-backend-crda.apps.sssc-cl01.appeng.rhecoeng.com/api/v3'
+const url = process.env.CRDA_BACKEND_URL ?
+	process.env.CRDA_BACKEND_URL :
+	'http://crda-backend-crda.apps.sssc-cl01.appeng.rhecoeng.com/api/v3'
 
 /**
  * Get stack analysis report for a manifest file.
