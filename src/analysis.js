@@ -14,7 +14,8 @@ async function requestStack(provider, manifest, url, html = false) {
 		method: 'POST',
 		headers: {
 			'Accept': html ? 'text/html' : 'application/json',
-			'Content-Type': provided.contentType
+			'Content-Type': provided.contentType,
+			...getTokenHeaders()
 		},
 		body: provided.content
 	})
@@ -34,9 +35,22 @@ async function requestComponent(provider, data, url) {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
-			'Content-Type': provided.contentType
+			'Content-Type': provided.contentType,
+			...getTokenHeaders(),
 		},
 		body: provided.content
 	})
 	return resp.json()
+}
+
+function getTokenHeaders() {
+	let supportedTokens = ['snyk']
+	let headers = {}
+	supportedTokens.forEach(vendor => {
+		let token = process.env[`CRDA_${vendor.toUpperCase()}_TOKEN`]
+		if (token) {
+			headers[`crda-${vendor}-token`] = token
+		}
+	})
+	return headers
 }

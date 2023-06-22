@@ -149,6 +149,18 @@ Excluding a package from any analysis can be achieved by marking the package for
 
 </ul>
 
+<h3>Tokens</h3>
+<p>
+If you wish the report to include other vulnerabilities data and resolutions which is only available to registered users.
+You can include the various vulnerability vendor data token as environment variables. Currently, only _Snyk_ is supported.
+
+Available environment variables:
+</p>
+
+<ul>
+<li><em>CRDA_SNYK_TOKEN</em></li>
+</ul>
+
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=green&label=latest
 [1]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=yellow&include_prereleases&label=early-access

@@ -19,6 +19,10 @@
 * `npm run tests:rep` run unit tests and save the test results as _unit-tests-result.json_ (for ci)
 * `npm run gen:backend` generate the _Backend_ types from its _OpenAPI_ as _TS_ spec in the _generated/backend_ folder
 
+### Good to know
+
+* You can override the default backend url by setting another one in the _CRDA_BACKEND_URL_ environment variable.
+
 ### OpenAPI Specifications
 
 We use our [Backend's OpenAPI spec file][1] for generating types used for deserialization of the Backend's

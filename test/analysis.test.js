@@ -1,8 +1,9 @@
+import {afterEach} from 'mocha'
 import analysis from '../src/analysis.js'
-import { expect} from 'chai'
+import { expect } from 'chai'
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
-import sinon from "sinon";
+import sinon from 'sinon'
 
 // utility function creating a dummy server, intercepting a handler,
 // running a test, and shutting the server down
@@ -93,6 +94,50 @@ suite('testing the analysis module for sending api requests', () => {
 				// verify response as expected
 				let res = await analysis.requestStack(fakeProvider, fakeManifest, backendUrl)
 				expect(res).to.deep.equal({dummy: 'response'})
+			}
+		))
+	})
+
+	suite('verify environment variables to token headers mechanism', () => {
+		let fakeManifest = 'fake-file.typ'
+		// stub the provideStack function to return the fake provided data for our fake manifest
+		let stackProviderStub = sinon.stub()
+		stackProviderStub.withArgs(fakeManifest).returns(fakeProvided)
+		// fake providers hosts our stubbed provideStack function
+		let fakeProvider = {
+			provideComponent: () => {}, // not required for this test
+			provideStack: stackProviderStub,
+			isSupported: () => {} // not required for this test
+		};
+
+		afterEach(() => delete process.env['CRDA_SNYK_TOKEN'])
+
+		test('when the relevant token environment variables are set, verify corresponding headers are included', interceptAndRun(
+			// interception route, will return ok response if found the expected token
+			rest.post(`${backendUrl}/dependency-analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+				if ('dummy-snyk-token' === req.headers.get('crda-snyk-token')) {
+					return res(ctx.json({ok: 'ok'}))
+				}
+				return res(ctx.status(400))
+			}),
+			async () => {
+				process.env['CRDA_SNYK_TOKEN'] = 'dummy-snyk-token'
+				let res = await analysis.requestStack(fakeProvider, fakeManifest, backendUrl)
+				expect(res).to.deep.equal({ok: 'ok'})
+			}
+		))
+
+		test('when the relevant token environment variables are not set, verify no corresponding headers are included', interceptAndRun(
+			// interception route, will return ok response if found the expected token
+			rest.post(`${backendUrl}/dependency-analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+				if (!req.headers.get('crda-snyk-token')) {
+					return res(ctx.json({ok: 'ok'}))
+				}
+				return res(ctx.status(400))
+			}),
+			async () => {
+				let res = await analysis.requestStack(fakeProvider, fakeManifest, backendUrl)
+				expect(res).to.deep.equal({ok: 'ok'})
 			}
 		))
 	})
