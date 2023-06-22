@@ -4,7 +4,8 @@
 
 The _Crda JavaScript API_ module is deployed to _GitHub Package Registry_.
 
-Looking for our Java API? Try [Crda Java API](https://github.com/RHEcosystemAppEng/crda-java-api).
+* Looking for our Java API? Try [Crda Java API](https://github.com/RHEcosystemAppEng/crda-java-api).
+* Looking for our Backend implementation? Try [Crda Backend](https://github.com/RHEcosystemAppEng/crda-backend).
 
 <details>
 <summary>Click here for configuring <em>GHPR</em> and gaining access to the <em>crda-javascript-api</em> module.</summary>
