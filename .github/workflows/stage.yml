@@ -6,9 +6,12 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - ".github/**"
-      - "**.md"
+    paths:
+      - "generated/**"
+      - "src/**"
+      - "package-lock.json"
+      - "package.json"
+      - "tsconfig.json"
 
 jobs:
   stage:
