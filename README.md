@@ -131,6 +131,25 @@ $ crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
 
 </ul>
 
+<h3>Excluding Packages</h3>
+<p>
+Excluding a package from any analysis can be achieved by marking the package for exclusion.
+
+<ul>
+<li>Java Maven (pom.xml)</li>
+
+```xml
+<dependency> <!--crdaignore-->
+  <groupId>...</groupId>
+  <artifactId>...</artifactId>
+  <version>...</version>
+</dependency>
+```
+
+</ul>
+
+</p>
+
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=green&label=latest
 [1]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=yellow&include_prereleases&label=early-access
