@@ -134,6 +134,7 @@ $ crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
 <h3>Excluding Packages</h3>
 <p>
 Excluding a package from any analysis can be achieved by marking the package for exclusion.
+</p>
 
 <ul>
 <li>Java Maven (pom.xml)</li>
@@ -147,8 +148,6 @@ Excluding a package from any analysis can be achieved by marking the package for
 ```
 
 </ul>
-
-</p>
 
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=green&label=latest
