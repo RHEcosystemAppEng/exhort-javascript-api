@@ -16,6 +16,7 @@ on:
 jobs:
   stage:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'RHEcosystemAppEng'
     environment: staging
     name: Stage the project
     steps:
