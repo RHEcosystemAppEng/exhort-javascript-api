@@ -20,6 +20,8 @@ export default { isSupported, provideComponent, provideStack }
  */
 const ecosystem = 'maven'
 
+const mvn = process.env.CRDA_MVN_PATH ? process.env.CRDA_MVN_PATH : 'mvn'
+
 /**
  * @param {string} manifestName - the subject manifest name-type
  * @returns {boolean} - return true if `pom.xml` is the manifest name-type
@@ -62,13 +64,13 @@ function provideComponent(data) {
  */
 function getGraph(manifest) {
 	// verify maven is accessible
-	execSync('mvn --version', err => {
+	execSync(`${mvn} --version`, err => {
 		if (err) {
 			throw new Error('mvn is not accessible')
 		}
 	})
 	// clean maven target
-	execSync(`mvn -q clean -f ${manifest}`, err => {
+	execSync(`${mvn} -q clean -f ${manifest}`, err => {
 		if (err) {
 			throw new Error('failed cleaning maven target')
 		}
@@ -77,7 +79,7 @@ function getGraph(manifest) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'crda_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command
-	let depTreeCmd = `mvn -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
+	let depTreeCmd = `${mvn} -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	getDependencies(manifest).forEach(dep => {
@@ -107,7 +109,7 @@ function getGraph(manifest) {
  */
 function getList(data) {
 	// verify maven is accessible
-	execSync('mvn --version', err => {
+	execSync(`${mvn} --version`, err => {
 		if (err) {
 			throw new Error('mvn is not accessible')
 		}
@@ -119,7 +121,7 @@ function getList(data) {
 	// write target pom content to temp file
 	fs.writeFileSync(tmpTargetPom, data)
 	// create effective pom and save to temp file
-	execSync(`mvn -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${tmpTargetPom}`, err => {
+	execSync(`${mvn} -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${tmpTargetPom}`, err => {
 		if (err) {
 			throw new Error('failed creating maven effective pom')
 		}

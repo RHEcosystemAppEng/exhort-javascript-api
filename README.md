@@ -152,15 +152,42 @@ Excluding a package from any analysis can be achieved by marking the package for
 
 <h3>Tokens</h3>
 <p>
-If you wish the report to include other vulnerabilities data and resolutions which is only available to registered users.
-You can include the various vulnerability vendor data token as environment variables.
+For including extra vulnerability data and resolutions, otherwise only available to vendor registered users. You can
+set the various vendor tokens as environment variables.
 
 Available token environment variables:
 </p>
 
-<ul>
-<li><em>CRDA_SNYK_TOKEN</em></li>
-</ul>
+<table>
+<tr>
+<th>Vendor</th>
+<th>Token Environment Variable</th>
+</tr>
+<tr>
+<td><a href="https://app.snyk.io/redhat/snyk-token">Snyk</a></td>
+<td>CRDA_SNYK_TOKEN</td>
+</tr>
+</table>
+
+<h3>Custom Executables</h3>
+<p>
+This project uses each ecosystem's executable for creating dependency trees. These executables are expected to be
+present on the system PATH. If they are not, or perhaps you want to use custom ones. Use can use the following
+environment variables for setting custom paths for the said executables.
+</p>
+
+<table>
+<tr>
+<th>Ecosystem</th>
+<th>Default</th>
+<th>Environment Variable</th>
+</tr>
+<tr>
+<td><a href="https://maven.apache.org/">Maven</a></td>
+<td><em>mvn</em></td>
+<td>CRDA_MVN_PATH</td>
+</tr>
+</table>
 
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=green&label=latest
