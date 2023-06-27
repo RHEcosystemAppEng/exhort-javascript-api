@@ -1,0 +1,30 @@
+{
+	"host": "localhost",
+	"port": 9432,
+	"up_for": 300,
+	"endpoints": {
+		"component": "/api/v3/component-analysis",
+		"stack": "/api/v3/dependency-analysis"
+	},
+	"ecosystems": {
+		"maven": {
+			"component": {
+				"request": {
+					"body": "component_request_json"
+				},
+				"response": {
+					"json": "expected_component"
+				}
+			},
+			"stack": {
+				"request": {
+					"body": "stack_request_dot_graph"
+				},
+				"response": {
+					"html": "expected_stack_html",
+					"json": "expected_stack_json"
+				}
+			}
+		}
+	}
+}

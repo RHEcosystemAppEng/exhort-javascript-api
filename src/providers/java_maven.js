@@ -15,7 +15,7 @@ export default { isSupported, provideComponent, provideStack }
 /** @typedef {{groupId: string, artifactId: string, version: string, scope: string, ignore: boolean}} Dependency */
 
 /**
- * @type {string} ecosystem for java-maven is 'maven'
+ * @type {string} ecosystem for maven-maven is 'maven'
  * @private
  */
 const ecosystem = 'maven'
@@ -31,7 +31,7 @@ function isSupported(manifestName) {
 }
 
 /**
- * Provide content and content type for java-maven stack analysis.
+ * Provide content and content type for maven-maven stack analysis.
  * @param {string} manifest - the manifest path or name
  * @returns {Provided}
  */
@@ -44,7 +44,7 @@ function provideStack(manifest) {
 }
 
 /**
- * Provide content and content type for java-maven component analysis.
+ * Provide content and content type for maven-maven component analysis.
  * @param {string} data - content of pom.xml for component report
  * @returns {Provided}
  */

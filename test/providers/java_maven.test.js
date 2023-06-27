@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import fs from 'fs'
 import javaMvnProvider from '../../src/providers/java_maven.js'
 
-suite('testing the java-maven data provider', () => {
+suite('testing the maven-maven data provider', () => {
 	[
 		{name: 'pom.xml', expected: true},
 		{name: 'some_other.file', expected: false}
