@@ -11,7 +11,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  */
 const url = process.env.CRDA_BACKEND_URL ?
 	process.env.CRDA_BACKEND_URL :
-	'http://crda-backend-crda.apps.sssc-cl01.appeng.rhecoeng.com/api/v3'
+	'http://crda-backend-dev-crda.apps.sssc-cl01.appeng.rhecoeng.com'
 
 /**
  * Get stack analysis report for a manifest file.
