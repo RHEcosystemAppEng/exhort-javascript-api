@@ -162,8 +162,8 @@ import crda from '@RHEcosystemAppEng/crda-javascript-api'
 import fs from 'node:fs'
 
 let options = {
-    "CRDA_SNYK_TOKEN": "my-secret-snyk-token",
-    "CRDA_MVN_PATH": "/path/to/my/mvn"
+  'CRDA_SNYK_TOKEN': 'my-secret-snyk-token',
+  'CRDA_MVN_PATH': '/path/to/my/mvn'
 }
 
 // Get stack analysis in JSON format
@@ -183,10 +183,8 @@ let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(
 
 <h4>Customizing Tokens</h4>
 <p>
-For including extra vulnerability data and resolutions, otherwise only available to vendor registered users. You can
-set the various vendor tokens.
-
-Available token environment variables:
+For including extra vulnerability data and resolutions, otherwise only available only to vendor registered users. You
+can use the following keys for setting various vendor tokens.
 </p>
 
 <table>
