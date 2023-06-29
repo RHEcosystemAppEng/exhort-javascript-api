@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser'
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
+import { getCustomPath } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 
@@ -20,8 +21,6 @@ export default { isSupported, provideComponent, provideStack }
  */
 const ecosystem = 'maven'
 
-const mvn = process.env.CRDA_MVN_PATH ? process.env.CRDA_MVN_PATH : 'mvn'
-
 /**
  * @param {string} manifestName - the subject manifest name-type
  * @returns {boolean} - return true if `pom.xml` is the manifest name-type
@@ -33,12 +32,13 @@ function isSupported(manifestName) {
 /**
  * Provide content and content type for maven-maven stack analysis.
  * @param {string} manifest - the manifest path or name
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Provided}
  */
-function provideStack(manifest) {
+function provideStack(manifest, opts = {}) {
 	return {
 		ecosystem,
-		content: getGraph(manifest),
+		content: getGraph(manifest, opts),
 		contentType: 'text/vnd.graphviz'
 	}
 }
@@ -46,12 +46,13 @@ function provideStack(manifest) {
 /**
  * Provide content and content type for maven-maven component analysis.
  * @param {string} data - content of pom.xml for component report
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Provided}
  */
-function provideComponent(data) {
+function provideComponent(data, opts = {}) {
 	return {
 		ecosystem,
-		content: JSON.stringify(getList(data)),
+		content: JSON.stringify(getList(data, opts)),
 		contentType: 'application/json'
 	}
 }
@@ -59,10 +60,13 @@ function provideComponent(data) {
 /**
  * Create a Dot Graph dependency tree for a manifest path.
  * @param {string} manifest - path for pom.xml
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {string} the Dot Graph content
  * @private
  */
-function getGraph(manifest) {
+function getGraph(manifest, opts = {}) {
+	// get custom maven path
+	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
 	execSync(`${mvn} --version`, err => {
 		if (err) {
@@ -104,10 +108,13 @@ function getGraph(manifest) {
 /**
  * Create a dependency list for a manifest content.
  * @param {string} data - content of pom.xml
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {[Package]} the Dot Graph content
  * @private
  */
-function getList(data) {
+function getList(data, opts = {}) {
+	// get custom maven path
+	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
 	execSync(`${mvn} --version`, err => {
 		if (err) {

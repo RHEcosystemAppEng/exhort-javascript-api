@@ -1,3 +1,5 @@
+import {getCustom} from "./tools.js";
+
 export default { requestComponent, requestStack }
 
 /**
@@ -6,16 +8,17 @@ export default { requestComponent, requestStack }
  * @param {string} manifest - path for the manifest
  * @param {string} url - the backend url to send the request to
  * @param {boolean} [html=false] - true will return 'text/html', false will return 'application/json'
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Promise<string|import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
-async function requestStack(provider, manifest, url, html = false) {
-	let provided = provider.provideStack(manifest) // throws error if content providing failed
+async function requestStack(provider, manifest, url, html = false, opts = {}) {
+	let provided = provider.provideStack(manifest, opts) // throws error if content providing failed
 	let resp = await fetch(`${url}/api/v3/dependency-analysis/${provided.ecosystem}`, {
 		method: 'POST',
 		headers: {
 			'Accept': html ? 'text/html' : 'application/json',
 			'Content-Type': provided.contentType,
-			...getTokenHeaders()
+			...getTokenHeaders(opts)
 		},
 		body: provided.content
 	})
@@ -27,27 +30,33 @@ async function requestStack(provider, manifest, url, html = false) {
  * @param {import('./provider').Provider} provider - the provided data for constructing the request
  * @param {string} data - the content of the manifest
  * @param {string} url - the backend url to send the request to
+ * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Promise<import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
-async function requestComponent(provider, data, url) {
-	let provided = provider.provideComponent(data) // throws error if content providing failed
+async function requestComponent(provider, data, url, opts = {}) {
+	let provided = provider.provideComponent(data, opts) // throws error if content providing failed
 	let resp = await fetch(`${url}/api/v3/component-analysis/${provided.ecosystem}`, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': provided.contentType,
-			...getTokenHeaders(),
+			...getTokenHeaders(opts),
 		},
 		body: provided.content
 	})
 	return resp.json()
 }
 
-function getTokenHeaders() {
+/**
+ * Utility function for fetching vendor tokens
+ * @param {{}} [opts={}] - optional various options to pass along the application
+ * @returns {{}}
+ */
+function getTokenHeaders(opts = {}) {
 	let supportedTokens = ['snyk']
 	let headers = {}
 	supportedTokens.forEach(vendor => {
-		let token = process.env[`CRDA_${vendor.toUpperCase()}_TOKEN`]
+		let token = getCustom(`CRDA_${vendor.toUpperCase()}_TOKEN`, null, opts);
 		if (token) {
 			headers[`crda-${vendor}-token`] = token
 		}

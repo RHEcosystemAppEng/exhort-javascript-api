@@ -2,7 +2,7 @@ import javaMvnProvider from './providers/java_maven.js'
 import path from 'node:path'
 
 /** @typedef {{ecosystem: string, contentType: string, content: string}} Provided */
-/** @typedef {{isSupported: function(string): boolean, provideComponent: function(string): Provided, provideStack: function(string): Provided}} Provider */
+/** @typedef {{isSupported: function(string): boolean, provideComponent: function(string, {}): Provided, provideStack: function(string, {}): Provided}} Provider */
 
 /**
  * MUST include all providers here.
