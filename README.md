@@ -62,14 +62,13 @@ import crda from '@RHEcosystemAppEng/crda-javascript-api'
 import fs from 'node:fs'
 
 // Get stack analysis in JSON format
-let jsonStackAnalysis = await crda.stackAnalysis('/path/to/pom.xml')
+let stackAnalysis = await crda.stackAnalysis('/path/to/pom.xml')
 // Get stack analysis in HTML format (string)
-let htmlStackAnalysis = await crda.stackAnalysis('/path/to/pom.xml', true)
+let stackAnalysisHtml = await crda.stackAnalysis('/path/to/pom.xml', true)
 
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
-let jsonComponentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString())
-
+let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString())
 ```
 
 </p>
@@ -150,7 +149,41 @@ Excluding a package from any analysis can be achieved by marking the package for
 
 </ul>
 
-<h3>Tokens</h3>
+<h3>Customizing</h3>
+<p>
+There are 2 approaches for customizing <em>Crda JavaScript API</em>. Whether you're using this API as a
+<em>Global Module</em>, a <em>Remote Script</em>, or an <em>ESM Module</em>, you can use <em>Environment Variables</em>
+for various customization.
+
+However, <em>ESM Module</em> users, can opt for customizing programmatically:
+
+```javascript
+import crda from '@RHEcosystemAppEng/crda-javascript-api'
+import fs from 'node:fs'
+
+let options = {
+    "CRDA_SNYK_TOKEN": "my-secret-snyk-token",
+    "CRDA_MVN_PATH": "/path/to/my/mvn"
+}
+
+// Get stack analysis in JSON format
+let stackAnalysis = await crda.stackAnalysis('/path/to/pom.xml', false, options)
+// Get stack analysis in HTML format (string)
+let stackAnalysisHtml = await crda.stackAnalysis('/path/to/pom.xml', true, options)
+
+// Get component analysis in JSON format
+let buffer = fs.readFileSync('/path/to/pom.xml')
+let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(), options)
+```
+
+> NOTE: If setting the same key in both environment variables and options, the environment variable will take
+> precedence.
+
+Keep scrolling down for the available customizable keys.
+
+</p>
+
+<h4>Customizing Tokens</h4>
 <p>
 For including extra vulnerability data and resolutions, otherwise only available to vendor registered users. You can
 set the various vendor tokens as environment variables.
@@ -161,7 +194,7 @@ Available token environment variables:
 <table>
 <tr>
 <th>Vendor</th>
-<th>Token Environment Variable</th>
+<th>Token Key</th>
 </tr>
 <tr>
 <td><a href="https://app.snyk.io/redhat/snyk-token">Snyk</a></td>
@@ -169,7 +202,7 @@ Available token environment variables:
 </tr>
 </table>
 
-<h3>Custom Executables</h3>
+<h4>Customizing Executables</h4>
 <p>
 This project uses each ecosystem's executable for creating dependency trees. These executables are expected to be
 present on the system PATH. If they are not, or perhaps you want to use custom ones. Use can use the following
@@ -180,7 +213,7 @@ environment variables for setting custom paths for the said executables.
 <tr>
 <th>Ecosystem</th>
 <th>Default</th>
-<th>Environment Variable</th>
+<th>Executable Key</th>
 </tr>
 <tr>
 <td><a href="https://maven.apache.org/">Maven</a></td>
