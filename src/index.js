@@ -2,6 +2,7 @@ import { availableProviders, match } from './provider.js'
 import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
+import {getCustom} from "./tools.js";
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis }
 
@@ -9,9 +10,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  * @type {string} backend url to send requests to
  * @private
  */
-const url = process.env.CRDA_BACKEND_URL ?
-	process.env.CRDA_BACKEND_URL :
-	'http://crda-backend-dev-crda.apps.sssc-cl01.appeng.rhecoeng.com'
+const url = getCustom('CRDA_BACKEND_URL', 'http://crda-backend-dev-crda.apps.sssc-cl01.appeng.rhecoeng.com')
 
 /**
  * Get stack analysis report for a manifest file.

@@ -1,3 +1,5 @@
+import {getCustom} from "./tools.js";
+
 export default { requestComponent, requestStack }
 
 /**
@@ -47,7 +49,7 @@ function getTokenHeaders() {
 	let supportedTokens = ['snyk']
 	let headers = {}
 	supportedTokens.forEach(vendor => {
-		let token = process.env[`CRDA_${vendor.toUpperCase()}_TOKEN`]
+		let token = getCustom(`CRDA_${vendor.toUpperCase()}_TOKEN`);
 		if (token) {
 			headers[`crda-${vendor}-token`] = token
 		}

@@ -1,4 +1,4 @@
-import {afterEach} from 'mocha'
+import { afterEach } from 'mocha'
 import analysis from '../src/analysis.js'
 import { expect } from 'chai'
 import { rest } from 'msw'

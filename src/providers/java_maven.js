@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser'
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
+import { getCustom } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 
@@ -20,7 +21,7 @@ export default { isSupported, provideComponent, provideStack }
  */
 const ecosystem = 'maven'
 
-const mvn = process.env.CRDA_MVN_PATH ? process.env.CRDA_MVN_PATH : 'mvn'
+const mvn = getCustom('CRDA_MVN_PATH', 'mvn')
 
 /**
  * @param {string} manifestName - the subject manifest name-type
