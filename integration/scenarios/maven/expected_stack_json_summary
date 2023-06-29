@@ -10,5 +10,13 @@
     "high": 3,
     "medium": 2,
     "low": 1
-  }
+  },
+  "providerStatuses": [
+    {
+      "ok": true,
+      "provider": "snyk",
+      "status": 200,
+      "message": "OK"
+    }
+  ]
 }
