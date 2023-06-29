@@ -179,14 +179,12 @@ let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(
 > NOTE: If setting the same key in both environment variables and options, the environment variable will take
 > precedence.
 
-Keep scrolling down for the available customizable keys.
-
 </p>
 
 <h4>Customizing Tokens</h4>
 <p>
 For including extra vulnerability data and resolutions, otherwise only available to vendor registered users. You can
-set the various vendor tokens as environment variables.
+set the various vendor tokens.
 
 Available token environment variables:
 </p>
@@ -205,8 +203,8 @@ Available token environment variables:
 <h4>Customizing Executables</h4>
 <p>
 This project uses each ecosystem's executable for creating dependency trees. These executables are expected to be
-present on the system PATH. If they are not, or perhaps you want to use custom ones. Use can use the following
-environment variables for setting custom paths for the said executables.
+present on the system's PATH environment. If they are not, or perhaps you want to use custom ones. Use can use the
+following keys for setting custom paths for the said executables.
 </p>
 
 <table>
