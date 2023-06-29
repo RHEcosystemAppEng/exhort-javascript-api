@@ -149,7 +149,7 @@ Excluding a package from any analysis can be achieved by marking the package for
 
 </ul>
 
-<h3>Customizing</h3>
+<h3>Customization</h3>
 <p>
 There are 2 approaches for customizing <em>Crda JavaScript API</em>. Whether you're using this API as a
 <em>Global Module</em>, a <em>Remote Script</em>, or an <em>ESM Module</em>, you can use <em>Environment Variables</em>
@@ -176,8 +176,7 @@ let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(), options)
 ```
 
-> NOTE: If setting the same key in both environment variables and options, the environment variable will take
-> precedence.
+> NOTE: If the same key is used in both environment variables and properties, the environment variable takes precedence.
 
 </p>
 
