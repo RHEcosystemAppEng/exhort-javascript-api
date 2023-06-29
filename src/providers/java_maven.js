@@ -1,7 +1,7 @@
 import { XMLParser } from 'fast-xml-parser'
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
-import { getCustom } from "../tools.js";
+import { getCustomPath } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 
@@ -66,7 +66,7 @@ function provideComponent(data, opts = {}) {
  */
 function getGraph(manifest, opts = {}) {
 	// get custom maven path
-	let mvn = getCustom('CRDA_MVN_PATH', 'mvn', opts)
+	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
 	execSync(`${mvn} --version`, err => {
 		if (err) {
@@ -114,7 +114,7 @@ function getGraph(manifest, opts = {}) {
  */
 function getList(data, opts = {}) {
 	// get custom maven path
-	let mvn = getCustom('CRDA_MVN_PATH', 'mvn', opts)
+	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
 	execSync(`${mvn} --version`, err => {
 		if (err) {
