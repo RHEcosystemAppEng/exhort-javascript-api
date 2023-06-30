@@ -1,16 +1,13 @@
 # CodeReady Dependency Analytics JavaScript API<br/>![latest-no-snapshot][0] ![latest-snapshot][1]
 
-> This project is still a WIP. Currently, only Java's Maven ecosystem is implemented.
-
-The _Crda JavaScript API_ module is deployed to _GitHub Package Registry_.
-
 * Looking for our Java API? Try [Crda Java API](https://github.com/RHEcosystemAppEng/crda-java-api).
 * Looking for our Backend implementation? Try [Crda Backend](https://github.com/RHEcosystemAppEng/crda-backend).
 
-<details>
-<summary>Click here for configuring <em>GHPR</em> and gaining access to the <em>crda-javascript-api</em> module.</summary>
+The _Crda JavaScript API_ module is deployed to _GitHub Package Registry_.
 
-<h3>Create your token</h3>
+<details>
+<summary>Click here for configuring <em>GHPR</em> registry access.</summary>
+<h3>Configure Registry Access</h3>
 <p>
 Create a
 <a href="https://docs.github.com/en/packages/learn-github-packages/introduction-to-github-packages#authenticating-to-github-packages">token</a>
@@ -19,11 +16,7 @@ with the <strong>read:packages</strong> scope<br/>
 > Based on
 > <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages">GitHub documentation</a>,
 > In <em>Actions</em> you can use <em>GITHUB_TOKEN</em>
-
 </p>
-
-<h3>Configure <em>GHPR</em> access for <em>NPM</em></h3>
-
 <p>
 
 Add the following line to the <em>.npmrc</em> file in your user home (
@@ -32,26 +25,22 @@ See [GH Docs](https://docs.github.com/en/packages/working-with-a-github-packages
 ```text
 //npm.pkg.github.com/:_authToken=<your-ghp-token-goes-here>
 ```
-
 </p>
-
 </details>
 
 <h3>Usage</h3>
 <p>
-Instruct <em>NPM</em> to look in <em>GHPR</em> for the <em>RHEcosystemAppEng</em> namespace.<br/>
-Add <code>@RHEcosystemAppEng:registry=https://npm.pkg.github.com</code> to <em>.npmrc</em> in the project root or user home:
+Configuring <em>NPM</em> to look in <em>GHPR</em> for the <em>RHEcosystemAppEng</em> namespace is done by adding
+<code>@RHEcosystemAppEng:registry=https://npm.pkg.github.com</code> to <em>.npmrc</em> in the project root or user home.
 
 ```shell
 echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" >> .npmrc
 ```
-
 </p>
 
 <ul>
-
-<li>Use as ESM Module</li>
-<p>
+<li>
+Use as ESM Module
 
 ```shell
 npm install @RHEcosystemAppEng/crda-javascript-api
@@ -70,11 +59,12 @@ let stackAnalysisHtml = await crda.stackAnalysis('/path/to/pom.xml', true)
 let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString())
 ```
+</li>
 
-</p>
-
-<li>Use as CLI Script</li>
-<p>
+<li>
+Use as CLI Script
+<details>
+<summary>Click for help menu</summary>
 
 ```shell
 $ npx @RHEcosystemAppEng/crda-javascript-api help
@@ -88,6 +78,7 @@ Commands:
 Options:
   --help  Show help                                                    [boolean]
 ```
+</details>
 
 ```shell
 # get stack analysis in json format
@@ -102,12 +93,10 @@ $ npx @RHEcosystemAppEng/crda-javascript-api stack /path/to/pom.xml --html
 # get component analysis
 $ npx @RHEcosystemAppEng/crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
 ```
+</li>
 
-</p>
-
-<li>Use as Global Binary</li>
-
-<p>
+<li>
+Use as Global Binary
 
 ```shell
 npm install --global @RHEcosystemAppEng/crda-javascript-api
@@ -126,9 +115,12 @@ $ crda-javascript-api stack /path/to/pom.xml --html
 # get component analysis
 $ crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
 ```
+</li>
+</ul>
 
-</p>
-
+<h3>Supported Ecosystems</h3>
+<ul>
+<li><a href="https://www.java.com/">Java</a> - <a href="https://maven.apache.org/">Maven</a></li>
 </ul>
 
 <h3>Excluding Packages</h3>
@@ -137,7 +129,8 @@ Excluding a package from any analysis can be achieved by marking the package for
 </p>
 
 <ul>
-<li>Java Maven (pom.xml)</li>
+<li>
+<em>Java Maven</em> users can add a comment in <em>pom.xml</em>
 
 ```xml
 <dependency> <!--crdaignore-->
@@ -146,6 +139,7 @@ Excluding a package from any analysis can be achieved by marking the package for
   <version>...</version>
 </dependency>
 ```
+</li>
 
 </ul>
 
@@ -176,8 +170,7 @@ let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(), options)
 ```
 
-> NOTE: If the same key is used in both environment variables and properties, the environment variable takes precedence.
-
+> Environment variables takes precedence.
 </p>
 
 <h4>Customizing Tokens</h4>
