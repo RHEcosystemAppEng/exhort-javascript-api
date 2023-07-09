@@ -133,11 +133,14 @@ function getList(data, opts = {}) {
 			throw new Error('failed creating maven effective pom')
 		}
 	})
+	// iterate over all dependencies in original pom and collect all ignored ones
+	let ignored = getDependencies(tmpTargetPom).filter(d => d.ignore)
 	// iterate over all dependencies and create a package for every non-ignored one
 	/** @type [Package] */
 	let packages = getDependencies(tmpEffectivePom)
-		.filter(dep => !dep.ignore)
+		.filter(d => !(dependencyIn(d, ignored)))
 		.map(dep => { return {name: `${dep.groupId}:${dep.artifactId}`, version: dep.version} })
+
 	// delete temp files and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return packages list
@@ -178,4 +181,19 @@ function getDependencies(manifest) {
 	})
 	// return list of dependencies
 	return ignored
+}
+
+/**
+ * Utility function for looking up a dependency in a list of dependencies ignoring the "ignored"
+ * field
+ * @param dep {Dependency} dependency to look for
+ * @param deps {[Dependency]} list of dependencies to look in
+ * @returns boolean true if found dep in deps
+ * @private
+ */
+function dependencyIn(dep, deps) {
+	return deps.filter(d => dep.artifactId === d.artifactId &&
+		dep.groupId === d.groupId &&
+		dep.version === d.version &&
+		dep.scope === d.scope) .length > 0
 }

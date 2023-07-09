@@ -38,7 +38,7 @@ suite('testing the maven-maven data provider', () => {
 
 		test(`verify maven data provided for component analysis with scenario ${scenario}`, async () => {
 			// load the expected list for the scenario
-			let expectedList = fs.readFileSync(`test/providers/tst_manifests/${testCase}/component_expected_list`,).toString()
+			let expectedList = fs.readFileSync(`test/providers/tst_manifests/${testCase}/component_expected_list`,).toString().trim()
 			// read target manifest file
 			let manifestContent = fs.readFileSync(`test/providers/tst_manifests/${testCase}/pom.xml`).toString()
 			// invoke sut stack analysis for scenario manifest
