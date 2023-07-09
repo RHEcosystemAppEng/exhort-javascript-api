@@ -6,7 +6,7 @@ import yargs from 'yargs'
 
 // command for component analysis take manifest type and content
 const component = {
-	command: 'component <manifest-name> <manifest-content> [--summary]',
+	command: 'component <manifest-name> <manifest-content>',
 	desc: 'produce component report for a manifest type and content',
 	builder: yargs => yargs.positional(
 		'manifest-name',

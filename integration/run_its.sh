@@ -114,6 +114,7 @@ if ! npm --prefix ./testers/typescript run compile > /dev/null 2>&1; then
 	echo "- FAILED Compiling TS module"
 	cleanup $?
 fi
+echo "- SUCCESSFUL"
 
 #### JAVA MAVEN
 echo "RUNNING TypeScript integration test for Stack Analysis report in Html for Java Maven"
