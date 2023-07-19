@@ -110,18 +110,18 @@ suite('testing the analysis module for sending api requests', () => {
 			isSupported: () => {} // not required for this test
 		};
 
-		afterEach(() => delete process.env['CRDA_SNYK_TOKEN'])
+		afterEach(() => delete process.env['EXHORT_SNYK_TOKEN'])
 
 		test('when the relevant token environment variables are set, verify corresponding headers are included', interceptAndRun(
 			// interception route, will return ok response if found the expected token
 			rest.post(`${backendUrl}/api/v3/dependency-analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
-				if ('dummy-snyk-token' === req.headers.get('crda-snyk-token')) {
+				if ('dummy-snyk-token' === req.headers.get('ex-snyk-token')) {
 					return res(ctx.json({ok: 'ok'}))
 				}
 				return res(ctx.status(400))
 			}),
 			async () => {
-				process.env['CRDA_SNYK_TOKEN'] = 'dummy-snyk-token'
+				process.env['EXHORT_SNYK_TOKEN'] = 'dummy-snyk-token'
 				let res = await analysis.requestStack(fakeProvider, fakeManifest, backendUrl)
 				expect(res).to.deep.equal({ok: 'ok'})
 			}
@@ -130,7 +130,7 @@ suite('testing the analysis module for sending api requests', () => {
 		test('when the relevant token environment variables are not set, verify no corresponding headers are included', interceptAndRun(
 			// interception route, will return ok response if found the expected token
 			rest.post(`${backendUrl}/api/v3/dependency-analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
-				if (!req.headers.get('crda-snyk-token')) {
+				if (!req.headers.get('ex-snyk-token')) {
 					return res(ctx.json({ok: 'ok'}))
 				}
 				return res(ctx.status(400))

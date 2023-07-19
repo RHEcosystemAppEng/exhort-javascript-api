@@ -1,18 +1,18 @@
 {
-	"name": "@RHEcosystemAppEng/crda-javascript-api",
+	"name": "@RHEcosystemAppEng/exhort-javascript-api",
 	"version": "0.0.2-ea.8",
 	"description": "Code-Ready Dependency Analytics JavaScript API.",
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/RHEcosystemAppEng/crda-javascript-api#README.md",
-	"bugs": "https://github.com/RHEcosystemAppEng/crda-javascript-api/issues",
-	"repository": "github:RHEcosystemAppEng/crda-javascript-api",
+	"homepage": "https://github.com/RHEcosystemAppEng/exhort-javascript-api#README.md",
+	"bugs": "https://github.com/RHEcosystemAppEng/exhort-javascript-api/issues",
+	"repository": "github:RHEcosystemAppEng/exhort-javascript-api",
 	"publishConfig": {
 		"registry": "https://npm.pkg.github.com"
 	},
 	"keywords": [
 		"analysis",
 		"codeready",
-		"crda",
+		"exhort",
 		"secure",
 		"supply-chain",
 		"vulnerability"
@@ -39,7 +39,7 @@
 		"precompile": "rm -rf dist",
 		"compile": "tsc -p tsconfig.json",
 		"pregen:backend": "rm -rf generated",
-		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/crda-backend/main/src/main/resources/META-INF/openapi.yaml -g typescript --global-property models --model-package backend -o generated",
+		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/exhort/0.1.x/src/main/resources/META-INF/openapi.yaml -g typescript --global-property models --model-package backend -o generated",
 		"postgen:backend": "find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} +"
 	},
 	"dependencies": {

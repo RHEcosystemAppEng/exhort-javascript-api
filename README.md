@@ -1,9 +1,9 @@
-# CodeReady Dependency Analytics JavaScript API<br/>![latest-no-snapshot][0] ![latest-snapshot][1]
+# Exhort JavaScript API<br/>![latest-no-snapshot][0] ![latest-snapshot][1]
 
-* Looking for our Java API? Try [Crda Java API](https://github.com/RHEcosystemAppEng/crda-java-api).
-* Looking for our Backend implementation? Try [Crda Backend](https://github.com/RHEcosystemAppEng/crda-backend).
+* Looking for our Java API? Try [Exhort Java API](https://github.com/RHEcosystemAppEng/exhort-java-api).
+* Looking for our Backend implementation? Try [Exhort](https://github.com/RHEcosystemAppEng/exhort).
 
-The _Crda JavaScript API_ module is deployed to _GitHub Package Registry_.
+The _Exhort JavaScript API_ module is deployed to _GitHub Package Registry_.
 
 <details>
 <summary>Click here for configuring <em>GHPR</em> registry access.</summary>
@@ -43,21 +43,21 @@ echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" >> .npmrc
 Use as ESM Module
 
 ```shell
-npm install @RHEcosystemAppEng/crda-javascript-api
+npm install @RHEcosystemAppEng/exhort-javascript-api
 ```
 
 ```javascript
-import crda from '@RHEcosystemAppEng/crda-javascript-api'
+import exhort from '@RHEcosystemAppEng/exhort-javascript-api'
 import fs from 'node:fs'
 
 // Get stack analysis in JSON format
-let stackAnalysis = await crda.stackAnalysis('/path/to/pom.xml')
+let stackAnalysis = await exhort.stackAnalysis('/path/to/pom.xml')
 // Get stack analysis in HTML format (string)
-let stackAnalysisHtml = await crda.stackAnalysis('/path/to/pom.xml', true)
+let stackAnalysisHtml = await exhort.stackAnalysis('/path/to/pom.xml', true)
 
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
-let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString())
+let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString())
 ```
 </li>
 
@@ -67,13 +67,13 @@ Use as CLI Script
 <summary>Click for help menu</summary>
 
 ```shell
-$ npx @RHEcosystemAppEng/crda-javascript-api help
+$ npx @RHEcosystemAppEng/exhort-javascript-api help
 
-Usage: crda-javascript-api {component|stack}
+Usage: exhort-javascript-api {component|stack}
 
 Commands:
-  crda-javascript-api stack </path/to/manifest> [--html|--summary]               produce stack report for manifest path
-  crda-javascript-api component <manifest-name> <manifest-content> [--summary]   produce component report for a manifest type and content
+  exhort-javascript-api stack </path/to/manifest> [--html|--summary]               produce stack report for manifest path
+  exhort-javascript-api component <manifest-name> <manifest-content> [--summary]   produce component report for a manifest type and content
 
 Options:
   --help  Show help                                                    [boolean]
@@ -82,16 +82,16 @@ Options:
 
 ```shell
 # get stack analysis in json format
-$ npx @RHEcosystemAppEng/crda-javascript-api stack /path/to/pom.xml
+$ npx @RHEcosystemAppEng/exhort-javascript-api stack /path/to/pom.xml
 
 # get stack analysis in json format (summary only)
-$ npx @RHEcosystemAppEng/crda-javascript-api stack /path/to/pom.xml --summary
+$ npx @RHEcosystemAppEng/exhort-javascript-api stack /path/to/pom.xml --summary
 
 # get stack analysis in html format format
-$ npx @RHEcosystemAppEng/crda-javascript-api stack /path/to/pom.xml --html
+$ npx @RHEcosystemAppEng/exhort-javascript-api stack /path/to/pom.xml --html
 
 # get component analysis
-$ npx @RHEcosystemAppEng/crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
+$ npx @RHEcosystemAppEng/exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 ```
 </li>
 
@@ -99,21 +99,21 @@ $ npx @RHEcosystemAppEng/crda-javascript-api component pom.xml "$(</path/to/pom.
 Use as Global Binary
 
 ```shell
-npm install --global @RHEcosystemAppEng/crda-javascript-api
+npm install --global @RHEcosystemAppEng/exhort-javascript-api
 ```
 
 ```shell
 # get stack analysis in json format
-$ crda-javascript-api stack /path/to/pom.xml
+$ exhort-javascript-api stack /path/to/pom.xml
 
 # get stack analysis in json format (summary only)
-$ crda-javascript-api stack /path/to/pom.xml --summary
+$ exhort-javascript-api stack /path/to/pom.xml --summary
 
 # get stack analysis in html format format
-$ crda-javascript-api stack /path/to/pom.xml --html
+$ exhort-javascript-api stack /path/to/pom.xml --html
 
 # get component analysis
-$ crda-javascript-api component pom.xml "$(</path/to/pom.xml)"
+$ exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 ```
 </li>
 </ul>
@@ -133,7 +133,7 @@ Excluding a package from any analysis can be achieved by marking the package for
 <em>Java Maven</em> users can add a comment in <em>pom.xml</em>
 
 ```xml
-<dependency> <!--crdaignore-->
+<dependency> <!--exhortignore-->
   <groupId>...</groupId>
   <artifactId>...</artifactId>
   <version>...</version>
@@ -145,29 +145,29 @@ Excluding a package from any analysis can be achieved by marking the package for
 
 <h3>Customization</h3>
 <p>
-There are 2 approaches for customizing <em>Crda JavaScript API</em>. Whether you're using this API as a
+There are 2 approaches for customizing <em>Exhort JavaScript API</em>. Whether you're using this API as a
 <em>Global Module</em>, a <em>Remote Script</em>, or an <em>ESM Module</em>, you can use <em>Environment Variables</em>
 for various customization.
 
 However, <em>ESM Module</em> users, can opt for customizing programmatically:
 
 ```javascript
-import crda from '@RHEcosystemAppEng/crda-javascript-api'
+import exhort from '@RHEcosystemAppEng/exhort-javascript-api'
 import fs from 'node:fs'
 
 let options = {
-  'CRDA_SNYK_TOKEN': 'my-secret-snyk-token',
-  'CRDA_MVN_PATH': '/path/to/my/mvn'
+  'EXHORT_SNYK_TOKEN': 'my-secret-snyk-token',
+  'EXHORT_MVN_PATH': '/path/to/my/mvn'
 }
 
 // Get stack analysis in JSON format
-let stackAnalysis = await crda.stackAnalysis('/path/to/pom.xml', false, options)
+let stackAnalysis = await exhort.stackAnalysis('/path/to/pom.xml', false, options)
 // Get stack analysis in HTML format (string)
-let stackAnalysisHtml = await crda.stackAnalysis('/path/to/pom.xml', true, options)
+let stackAnalysisHtml = await exhort.stackAnalysis('/path/to/pom.xml', true, options)
 
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
-let componentAnalysis = await crda.componentAnalysis('pom.xml', buffer.toString(), options)
+let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString(), options)
 ```
 
 > Environment variables takes precedence.
@@ -186,7 +186,7 @@ can use the following keys for setting various vendor tokens.
 </tr>
 <tr>
 <td><a href="https://app.snyk.io/redhat/snyk-token">Snyk</a></td>
-<td>CRDA_SNYK_TOKEN</td>
+<td>EXHORT_SNYK_TOKEN</td>
 </tr>
 </table>
 
@@ -206,10 +206,10 @@ following keys for setting custom paths for the said executables.
 <tr>
 <td><a href="https://maven.apache.org/">Maven</a></td>
 <td><em>mvn</em></td>
-<td>CRDA_MVN_PATH</td>
+<td>EXHORT_MVN_PATH</td>
 </tr>
 </table>
 
 <!-- Badge links -->
-[0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=green&label=latest
-[1]: https://img.shields.io/github/v/release/RHEcosystemAppEng/crda-javascript-api?color=yellow&include_prereleases&label=early-access
+[0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/exhort-javascript-api?color=green&label=latest
+[1]: https://img.shields.io/github/v/release/RHEcosystemAppEng/exhort-javascript-api?color=yellow&include_prereleases&label=early-access

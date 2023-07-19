@@ -11,8 +11,8 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  * @private
  */
 const url = getCustom(
-	'CRDA_BACKEND_URL',
-	'http://crda-backend-dev-crda.apps.sssc-cl01.appeng.rhecoeng.com'
+	'EXHORT_BACKEND_URL',
+	'http://pre-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
 )
 
 /**
