@@ -80,7 +80,7 @@ function getGraph(manifest, opts = {}) {
 		}
 	})
 	// create dependency graph in a temp file
-	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'crda_'))
+	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command
 	let depTreeCmd = `${mvn} -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
@@ -122,7 +122,7 @@ function getList(data, opts = {}) {
 		}
 	})
 	// create temp files for pom and effective pom
-	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'crda_'))
+	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpEffectivePom = path.join(tmpDir, 'effective-pom.xml')
 	let tmpTargetPom = path.join(tmpDir, 'target-pom.xml')
 	// write target pom content to temp file
@@ -148,7 +148,7 @@ function getList(data, opts = {}) {
 }
 
 /**
- * Get a list of dependencies with marking of dependencies commented with <!--crdaignore-->.
+ * Get a list of dependencies with marking of dependencies commented with <!--exhortignore-->.
  * @param {string} manifest - path for pom.xml
  * @returns {[Dependency]} an array of dependencies
  * @private
@@ -165,10 +165,10 @@ function getDependencies(manifest) {
 	let buf = fs.readFileSync(manifest)
 	// parse manifest pom.xml to json
 	let pomJson = parser.parse(buf.toString())
-	// iterate over all dependencies and chery pick dependencies with a crdaignore comment
+	// iterate over all dependencies and chery pick dependencies with a exhortignore comment
 	pomJson['project']['dependencies']['dependency'].forEach(dep => {
 		let ignore = false
-		if (dep['#comment'] && dep['#comment'].includes('crdaignore')) { // #comment is an array or a string
+		if (dep['#comment'] && dep['#comment'].includes('exhortignore')) { // #comment is an array or a string
 			ignore = true
 		}
 		ignored.push({

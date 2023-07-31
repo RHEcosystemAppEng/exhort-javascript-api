@@ -14,7 +14,7 @@ export function getCustom(key, def = null, opts = {}) {
 
 /**
  * Utility function for looking up custom variable for a binary path.
- * Will look in the environment variables (1) or in opts (2) for a key with CRDA_x_PATH, x is an
+ * Will look in the environment variables (1) or in opts (2) for a key with EXHORT_x_PATH, x is an
  * uppercase version of passed name to look for. The name will also be returned if nothing else was
  * found.
  * @param name the binary name to look for, will be returned as value in nothing else found
@@ -23,5 +23,5 @@ export function getCustom(key, def = null, opts = {}) {
  * 		original name supplied
  */
 export function getCustomPath(name, opts = {}) {
-	return getCustom(`CRDA_${name.toUpperCase()}_PATH`, name, opts)
+	return getCustom(`EXHORT_${name.toUpperCase()}_PATH`, name, opts)
 }

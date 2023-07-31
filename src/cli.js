@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import crda from './index.js'
+import exhort from './index.js'
 import { hideBin } from 'yargs/helpers'
 import yargs from 'yargs'
 
@@ -25,7 +25,7 @@ const component = {
 	handler: async args => {
 		let manifestName = args['manifest-name']
 		let manifestContent = args['manifest-content']
-		let res = await crda.componentAnalysis(manifestName, manifestContent)
+		let res = await exhort.componentAnalysis(manifestName, manifestContent)
 		console.log(JSON.stringify(res, null, 2))
 	}
 }
@@ -59,7 +59,7 @@ const stack = {
 		let manifest = args['/path/to/manifest']
 		let html = args['html']
 		let summary = args['summary']
-		let res = await crda.stackAnalysis(manifest, html)
+		let res = await exhort.stackAnalysis(manifest, html)
 		console.log(html ? res : JSON.stringify(
 			!html && summary ? res['summary'] : res,
 			null,

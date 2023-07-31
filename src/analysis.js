@@ -56,9 +56,9 @@ function getTokenHeaders(opts = {}) {
 	let supportedTokens = ['snyk']
 	let headers = {}
 	supportedTokens.forEach(vendor => {
-		let token = getCustom(`CRDA_${vendor.toUpperCase()}_TOKEN`, null, opts);
+		let token = getCustom(`EXHORT_${vendor.toUpperCase()}_TOKEN`, null, opts);
 		if (token) {
-			headers[`crda-${vendor}-token`] = token
+			headers[`ex-${vendor}-token`] = token
 		}
 	})
 	return headers

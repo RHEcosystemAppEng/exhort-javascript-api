@@ -2,8 +2,8 @@
 
 #!!!!! DO NOT FORGET 'npm run compile' on root prior to running this script !!!!#
 
-# set CRDA_ITS_USE_REAL_API=true to use the real backend
-CRDA_ITS_USE_REAL_API="${CRDA_ITS_USE_REAL_API:=false}"
+# set EXHORT_ITS_USE_REAL_API=true to use the real backend
+EXHORT_ITS_USE_REAL_API="${EXHORT_ITS_USE_REAL_API:=false}"
 
 # utility function for wrapping up and exiting
 # takes an exit code
@@ -62,9 +62,9 @@ echo "- SUCCESSFUL"
 ##########################################
 # unless required to use real backend, set custom url (from config) and start mock server
 # note that based on the config file, the server will be automatically stopped after 5 minutes
-if [ "$CRDA_ITS_USE_REAL_API" != "true" ]; then
+if [ "$EXHORT_ITS_USE_REAL_API" != "true" ]; then
 	echo "STARTING Mock HTTP Server"
-	export CRDA_BACKEND_URL=http://localhost:9432
+	export EXHORT_BACKEND_URL=http://localhost:9432
 	eval "node server/mock_server.js server/mock_server_config.json &"
 	PID="$!"
 	# shellcheck disable=SC2181
@@ -140,15 +140,15 @@ echo "- SUCCESSFUL"
 
 #### JAVA MAVEN
 echo "RUNNING CLI Script integration test for Stack Analysis report in Html for Java Maven"
-match "scenarios/maven/expected_stack_html" "node testers/cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --html"
+match "scenarios/maven/expected_stack_html" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --html"
 
 echo "RUNNING CLI Script integration test for Stack Analysis full report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json" "node testers/cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml"
+match "scenarios/maven/expected_stack_json" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml"
 
 echo "RUNNING CLI Script integration test for Stack Analysis summary only report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json_summary" "node testers/cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --summary"
+match "scenarios/maven/expected_stack_json_summary" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --summary"
 
 echo "RUNNING CLI Script integration test for Component Analysis report for Java Maven"
-match "scenarios/maven/expected_component" "node testers/cli/node_modules/@RHEcosystemAppEng/crda-javascript-api/dist/src/cli.js component pom.xml '$(<scenarios/maven/pom.xml)'"
+match "scenarios/maven/expected_component" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js component pom.xml '$(<scenarios/maven/pom.xml)'"
 
 cleanup 0
