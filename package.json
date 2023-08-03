@@ -43,7 +43,9 @@
 		"postgen:backend": "find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} +"
 	},
 	"dependencies": {
+		"@cyclonedx/cyclonedx-library": "^4.0.0",
 		"fast-xml-parser": "^4.2.4",
+		"packageurl-js": "^1.0.2",
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {

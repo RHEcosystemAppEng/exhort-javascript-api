@@ -39,7 +39,7 @@ function provideStack(manifest, opts = {}) {
 	return {
 		ecosystem,
 		content: getGraph(manifest, opts),
-		contentType: 'text/vnd.graphviz'
+		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
 
@@ -53,7 +53,7 @@ function provideComponent(data, opts = {}) {
 	return {
 		ecosystem,
 		content: JSON.stringify(getList(data, opts)),
-		contentType: 'application/json'
+		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
 

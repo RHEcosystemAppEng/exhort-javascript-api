@@ -1,10 +1,10 @@
 import { availableProviders, match } from './provider.js'
-import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
+// import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
 
-export default { AnalysisReport, componentAnalysis, stackAnalysis }
+export default { componentAnalysis, stackAnalysis }
 
 /**
  * @type {string} backend url to send requests to
@@ -12,7 +12,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  */
 const url = getCustom(
 	'EXHORT_BACKEND_URL',
-	'http://pre-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
+	'http://dev-exhort.apps.cn-lab2-eu.lue0.p1.openshiftapps.com'
 )
 
 /**
