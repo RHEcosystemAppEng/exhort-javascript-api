@@ -121,6 +121,7 @@ $ exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 <h3>Supported Ecosystems</h3>
 <ul>
 <li><a href="https://www.java.com/">Java</a> - <a href="https://maven.apache.org/">Maven</a></li>
+<li><a href="https://www.javascript.com//">JavaScript</a> - <a href="https://www.npmjs.com//">Npm</a></li>
 </ul>
 
 <h3>Excluding Packages</h3>
