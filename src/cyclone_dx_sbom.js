@@ -1,42 +1,74 @@
-import {Enums} from "@cyclonedx/cyclonedx-library";
-
 import Sbom from './sbom.js'
-import CDX from '@cyclonedx/cyclonedx-library'
+
+
+/**
+ *
+ * @param component {PackageURL}
+ * @param type type of package - application or library
+ * @return {{"bom-ref": string, name, purl: string, type, version}}
+ */
+function getComponent(component,type) {
+	let componentObject;
+	if(component.namespace) {
+		componentObject = {
+			"group": component.namespace,
+			"name": component.name,
+			"version": component.version,
+			"purl": component.toString(),
+			"type": type,
+			"bom-ref": component.toString()
+		}
+	}
+	else
+	{
+		componentObject = {
+			"name": component.name,
+			"version": component.version,
+			"purl": component.toString(),
+			"type": type,
+			"bom-ref": component.toString()
+		}
+	}
+	return componentObject
+}
+
+
+function createDependency(dependency)
+{
+	return {
+		"ref" : dependency,
+		"dependsOn" : new Array()
+	}
+
+}
 
 
 
 export default class CycloneDxSbom extends Sbom{
 
-	sbomModel
+	sbomObject
 	rootComponent
+	components
+	dependencies
 	constructor() {
 		super();
-		this.sbomModel = new CDX.Models.Bom()
-		this.sbomModel.version=1
-		this.sbomModel.bomFormat="CycloneDX"
-		this.sbomModel.specVersion="1.4"
-		let metadata = new CDX.Models.Metadata()
-		this.sbomModel.dependencies =  new CDX.Models.BomRefRepository()
-		this.sbomModel.components = new CDX.Models.ComponentRepository()
-		metadata.timestamp = new Date()
-		this.sbomModel.metadata = metadata
+		this.dependencies = new Array()
+		this.components = new Array()
+
+
 	}
 	/**
 	 * @inheritDoc
 	 */
 	addRoot (root) {
-		this.rootComponent = root
-		let component = new CDX.Models.Component(Enums.ComponentType.Library, this.rootComponent.name,{
-			bomRef: this.rootComponent.toString(),
-			version: this.rootComponent.version,
-			group: this.rootComponent.namespace,
-			purl: this.rootComponent
-		})
-		this.sbomModel.metadata.component = component
-		this.sbomModel.components.add(component)
-		this.sbomModel.dependencies.add(component.bomRef)
+
+		this.rootComponent =
+			getComponent(root,"application")
+		this.components.push(this.rootComponent)
 		return this
 	}
+
+
 
 	/**
 	 * @inheritDoc
@@ -48,45 +80,29 @@ export default class CycloneDxSbom extends Sbom{
 	 * @inheritDoc
 	 */
 	addDependency(sourceRef, targetRef){
-
-
-		let sourceComp
-		let sourceComponent = new CDX.Models.Component(Enums.ComponentType.Library, sourceRef.name,{
-			bomRef: sourceRef.toString(),
-			version: sourceRef.version,
-			group: sourceRef.namespace,
-			purl: sourceRef
-		})
-		let targetComponent = new CDX.Models.Component(Enums.ComponentType.Library, targetRef.name,{
-			bomRef: targetRef.toString(),
-			version: targetRef.version,
-			group: targetRef.namespace,
-			purl: targetRef
-		})
-
-
-		// this.sbomModel.components.forEach(comp => {comp.bomRef === sourceComponent.bomRef)
-		if(!DependencyIsInComponents(this.sbomModel.components,sourceComponent))
+		let componentIndex = this.getComponentIndex(sourceRef);
+		if(componentIndex < 0)
 		{
-			this.sbomModel.components.add(sourceComponent)
-			this.sbomModel.dependencies.add(sourceComponent.bomRef)
-			sourceComp = sourceComponent
+			this.components.push(getComponent(sourceRef,"library"))
 		}
-		else
+		let dependencyIndex = this.getDependencyIndex(sourceRef.purl)
+		if(dependencyIndex < 0)
 		{
-			// sourceComp = this.sbomModel.components.streams.find(comp => comp.bomRef === sourceComponent.bomRef);
-			sourceComp = findComponent(this.sbomModel.components,sourceComponent)
+			this.dependencies.push(createDependency(sourceRef.purl))
+			dependencyIndex = this.getDependencyIndex(sourceRef.purl)
 		}
+		this.dependencies[dependencyIndex].dependsOn.push(targetRef.toString())
 		//TODO check validation if exists.
-		sourceComp.dependencies.add(targetComponent.bomRef)
+		// sourceComp.dependencies.add(targetComponent.bomRef)
 		// if(this.sbomModel.dependencies.streams.find(dep => dep.ref === targetRef.ref) === undefined)
-		if(!bomRefIsInDependencies(this.sbomModel.dependencies,targetComponent))
+		if(this.getDependencyIndex(targetRef.toString()) < 0)
 		{
-			this.sbomModel.dependencies.add(targetComponent.bomRef)
+			this.dependencies.push(createDependency(targetRef.toString()))
 		}
-		if(!DependencyIsInComponents(this.sbomModel.components,targetComponent))
+		let newComponent = getComponent(targetRef,"library");
+		if(this.getComponentIndex(targetRef) < 0)
 		{
-			this.sbomModel.components.add(targetComponent)
+			this.components.push(newComponent)
 		}
 		return this
 	}
@@ -94,46 +110,33 @@ export default class CycloneDxSbom extends Sbom{
 	 * @inheritDoc
 	 */
 	getAsJsonString(){
-		return JSON.stringify(this.sbomModel)
+		this.sbomObject = {
+			"bomFormat" : "CycloneDX",
+			"specVersion" : "1.4",
+			"version" : 1,
+			"metadata" : {
+				"timestamp" : new Date(),
+				"component" : this.rootComponent
+			},
+			"components" : this.components,
+			"dependencies" : this.dependencies
+		}
+		return JSON.stringify(this.sbomObject)
+	}
+	getDependencyIndex(dependency){
+		return this.dependencies.findIndex(dep => dep.ref === dependency)
+	}
+	getComponentIndex(theComponent){
+
+		return this.components.findIndex(component => component.purl === theComponent.purl)
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	purlToComponent(purl)
+	{
+		return getComponent(purl,"library")
+	}
 
-}
-
-function DependencyIsInComponents(collection, dependency) {
-	let result = false
-	collection.forEach(component=> {
-		if(dependency.bomRef.compare(component.bomRef) === 0)
-		{
-			result =true
-			return
-		}
-	})
-	return result
-}
-
-function bomRefIsInDependencies(collection, dependency) {
-	let result = false
-	collection.forEach(bomRef=> {
-		if(dependency.bomRef.compare(bomRef) === 0)
-		{
-			result =true
-			return
-		}
-	})
-	return result
-}
-
-
-
-function findComponent(components, sourceComponent) {
-	let result = undefined
-	components.forEach(component => {
-		if(component.bomRef.compare(sourceComponent.bomRef) == 0)
-		{
-			result=component
-			return
-		}
-	})
-	return result
 }

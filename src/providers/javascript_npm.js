@@ -146,7 +146,7 @@ function addAllDependencies(sbom, from, dependencies) {
 		let transitiveDeps = artifact.dependencies
 		if(transitiveDeps !== undefined)
 		{
-			addAllDependencies(sbom,purl,transitiveDeps)
+			addAllDependencies(sbom,sbom.purlToComponent(purl),transitiveDeps)
 		}
 	});
 

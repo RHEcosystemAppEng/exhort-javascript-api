@@ -32,6 +32,13 @@ export default class Sbom {
 	 * @return String sbom json in a string format
 	 */
 	getAsJsonString(){}
+
+	/**
+	 *
+	 * @param purl {PackageURL}
+	 * @return component
+	 */
+	purlToComponent(purl){}
 }
 
 
