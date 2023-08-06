@@ -5,25 +5,25 @@ export default class Sbom {
 	}
 
 	/**
-	 * @param {PackageURL} root - content of pom.xml for component report
+	 * @param {PackageURL} root - add main/root component for sbom
 	 * @return Sbom
 	 */
 	addRoot (root) {}
 
 	/**
-	 * @return PackageURL
+	 * @return {PackageURL} root component of sbom.
 	 */
 	getRoot (){}
 
 	/**
-	 * @param {Set} deps
+	 * @param {Array} deps
 	 * @return Sbom
 	 */
 	filterIgnoredDeps(deps){}
 
 	/**
-	 * @param {PackageURL} sourceRef
-	 * @param {PackageURL} targetRef
+	 * @param {Component} sourceRef current target Component ( Starting from root component by clients)
+	 * @param {PackageURL} targetRef current dependency to add to Dependencies list of component sourceRef
 	 * @return Sbom
 	 */
 	addDependency(sourceRef, targetRef){}
