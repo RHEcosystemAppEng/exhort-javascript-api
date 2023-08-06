@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
+import os from "node:os";
 import { getCustomPath } from "../tools.js";
 import path from 'node:path'
 import CycloneDxSbom from '../cyclone_dx_sbom.js'
@@ -43,6 +44,14 @@ function provideStack(manifest, opts = {}) {
 	}
 }
 
+function getComponent(data, opts) {
+	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
+	let tmpPackageJson = path.join(tmpDir, 'package.json')
+	fs.writeFileSync(tmpPackageJson, data)
+	return getSBOM(tmpPackageJson,opts,false)
+
+}
+
 /**
  * Provide content and content type for maven-maven component analysis.
  * @param {string} data - content of pom.xml for component report
@@ -52,13 +61,15 @@ function provideStack(manifest, opts = {}) {
 function provideComponent(data, opts = {}) {
 	return {
 		ecosystem,
-		content: getSBOM(data, opts, false),
+		content: getComponent(data,opts),
 		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
 
 
-
+function getNpmListing(npm, allFilter, manifestDir) {
+	return `${npm} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
+}
 
 /**
  * Create SBOM json string for npm Package.
@@ -68,7 +79,7 @@ function provideComponent(data, opts = {}) {
  * @private
  */
 function getSBOM(manifest, opts = {}, includeTransitive) {
-	// get custom maven path
+	// get custom npm path
 	let npm = getCustomPath('npm', opts)
 	// verify maven is accessible
 	execSync(`${npm} --version`, err => {
@@ -86,7 +97,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		})
 	}
 	let allFilter = includeTransitive? " --all" : ""
-	let npmListing = `${npm} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`
+	let npmListing = getNpmListing(npm, allFilter, manifestDir)
 	let npmOutput = execSync(npmListing, err => {
 		if (err) {
 			throw new Error('failed to get npmOutput json from npm')
@@ -102,6 +113,12 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 
 	let dependencies = depsObject["dependencies"];
 	addAllDependencies(cycloneDxSbom,cycloneDxSbom.getRoot(),dependencies)
+	let packageJson = fs.readFileSync(manifest).toString()
+	let packageJsonObject = JSON.parse(packageJson);
+	if(packageJsonObject.exhortignore !== undefined) {
+		let ignoredDeps = Array.from(packageJsonObject.exhortignore);
+		cycloneDxSbom.filterIgnoredDeps(ignoredDeps)
+	}
 	return cycloneDxSbom.getAsJsonString()
 }
 
