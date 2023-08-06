@@ -91,7 +91,12 @@ export default class CycloneDxSbom extends Sbom{
 			this.dependencies.push(createDependency(sourceRef.purl))
 			dependencyIndex = this.getDependencyIndex(sourceRef.purl)
 		}
-		this.dependencies[dependencyIndex].dependsOn.push(targetRef.toString())
+
+		//Only if the dependency doesn't exists on the dependency list of dependency, then add it to this list.
+		if(this.dependencies[dependencyIndex].dependsOn.findIndex(dep => dep === targetRef.toString()) === -1)
+		{
+			this.dependencies[dependencyIndex].dependsOn.push(targetRef.toString())
+		}
 		//TODO check validation if exists.
 		// sourceComp.dependencies.add(targetComponent.bomRef)
 		// if(this.sbomModel.dependencies.streams.find(dep => dep.ref === targetRef.ref) === undefined)
