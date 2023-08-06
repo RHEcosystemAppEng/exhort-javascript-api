@@ -1,6 +1,4 @@
 import Sbom from './sbom.js'
-
-
 /**
  *
  * @param component {PackageURL}
@@ -129,9 +127,21 @@ export default class CycloneDxSbom extends Sbom{
 		}
 		return JSON.stringify(this.sbomObject)
 	}
+
+	/**
+	 *
+	 * @param {String} dependency - purl string of the component.
+	 * @return {int} - the index of the dependency in dependencies Array, returns -1 if not found.
+	 */
 	getDependencyIndex(dependency){
 		return this.dependencies.findIndex(dep => dep.ref === dependency)
 	}
+
+	/**
+	 *
+	 * @param {Conponent} theComponent - Component Object with purl field.
+	 * @return {int} index of the found component entry, if not found returns -1.
+	 */
 	getComponentIndex(theComponent){
 
 		return this.components.findIndex(component => component.purl === theComponent.purl)
@@ -144,5 +154,32 @@ export default class CycloneDxSbom extends Sbom{
 	{
 		return getComponent(purl,"library")
 	}
+	/**
+	 * @inheritDoc
+	 */
+	filterIgnoredDeps(deps){
+		deps.forEach(dep => {
+			let index = this.components.findIndex(component => component.name === dep );
+			if(index>=0)
+			{
+				this.components.splice(index,1)
+			}
+			index = this.dependencies.findIndex(dependency => dependency.ref.includes(dep));
+			if(index>=0)
+			{
+				this.dependencies.splice(index,1)
+			}
+
+			this.dependencies.forEach(dependency => {
+				let indexDependsOn = dependency.dependsOn.findIndex(theDep => theDep.includes(dep));
+				if (indexDependsOn > -1 )
+				{
+					dependency.dependsOn.splice(indexDependsOn,1)
+				}
+			})
+		})
+		return this
+	}
+
 
 }
