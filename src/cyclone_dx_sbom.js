@@ -105,7 +105,8 @@ export default class CycloneDxSbom extends Sbom{
 			this.dependencies.push(createDependency(targetRef.toString()))
 		}
 		let newComponent = getComponent(targetRef,"library");
-		if(this.getComponentIndex(targetRef) < 0)
+		// Only if component doesn't exists in component list, add it to the list.
+		if(this.getComponentIndex(newComponent) < 0)
 		{
 			this.components.push(newComponent)
 		}
