@@ -1,10 +1,11 @@
 import { expect } from 'chai'
 import fs from 'fs'
-import {before} from "mocha";
 import sinon from "sinon";
-import javaMvnProvider from '../../src/providers/java_maven.js'
 
-before(async function () { sinon.useFakeTimers(new Date(2023,7,7))})
+
+
+import javaMvnProvider from '../../src/providers/java_maven.js'
+let clock
 suite('testing the java-maven data provider', () => {
 	[
 		{name: 'pom.xml', expected: true},
@@ -61,4 +62,4 @@ suite('testing the java-maven data provider', () => {
 		// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
 
 	})
-})
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> {clock.restore()});
