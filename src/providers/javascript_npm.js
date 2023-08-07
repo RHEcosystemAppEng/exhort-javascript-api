@@ -81,7 +81,7 @@ function getNpmListing(npm, allFilter, manifestDir) {
 function getSBOM(manifest, opts = {}, includeTransitive) {
 	// get custom npm path
 	let npm = getCustomPath('npm', opts)
-	// verify maven is accessible
+	// verify npm is accessible
 	execSync(`${npm} --version`, err => {
 		if (err) {
 			throw new Error('npm is not accessible')

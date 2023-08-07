@@ -4,6 +4,8 @@ import fs from 'node:fs'
 import { getCustomPath } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
+import CycloneDxSbom from '../cyclone_dx_sbom.js'
+import {PackageURL} from 'packageurl-js'
 
 export default { isSupported, provideComponent, provideStack }
 
@@ -38,7 +40,7 @@ function isSupported(manifestName) {
 function provideStack(manifest, opts = {}) {
 	return {
 		ecosystem,
-		content: getGraph(manifest, opts),
+		content: createSbomStackAnalysis(manifest, opts),
 		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
@@ -52,9 +54,52 @@ function provideStack(manifest, opts = {}) {
 function provideComponent(data, opts = {}) {
 	return {
 		ecosystem,
-		content: JSON.stringify(getList(data, opts)),
+		content: getSbomForComponentAnalysis(data, opts),
 		contentType: 'application/vnd.cyclonedx+json'
 	}
+}
+
+/**
+ * convert a dog graph dependency into a Package URL Object.
+ * @param {string} root one dependency from one line of a dot graph
+ * @return {PackageURL} returns package URL of the artifact
+ * @private
+ */
+function dotGraphToPurl(root) {
+	let parts = root.split(":")
+	let group = parts[0].replaceAll("\"","")
+	let name = parts[1]
+	let version = parts[3].replaceAll("\"","")
+	return new PackageURL('maven',group,name,version,undefined,undefined);
+
+
+}
+
+/**
+ *
+ * @param {String} dotGraphList Dot Graph tree String of the pom.xml manifest
+ * @return {String} formatted sbom Json String with all dependencies
+ * @private
+ */
+function createSbomFileFromDotGraphFormat(dotGraphList) {
+	// get root component
+	let lines = dotGraphList.replaceAll(";","").split('\n');
+	let root = lines[0].split("\"")[1];
+	let rootPurl = dotGraphToPurl(root);
+	lines.splice(0,1);
+	let sbom = new CycloneDxSbom()
+	sbom.addRoot(rootPurl)
+	lines.forEach(pair => {
+		if(pair.trim() !== "}") {
+	     let thePair = pair.split("->")
+	     if(thePair.length === 2) {
+			 let from = dotGraphToPurl(thePair[0].trim())
+			 let to = dotGraphToPurl(thePair[1].trim())
+			 sbom.addDependency(sbom.purlToComponent(from), to)
+		 }
+		}
+	})
+	return sbom.getAsJsonString()
 }
 
 /**
@@ -64,7 +109,7 @@ function provideComponent(data, opts = {}) {
  * @returns {string} the Dot Graph content
  * @private
  */
-function getGraph(manifest, opts = {}) {
+function createSbomStackAnalysis(manifest, opts = {}) {
 	// get custom maven path
 	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
@@ -99,20 +144,21 @@ function getGraph(manifest, opts = {}) {
 	})
 	// read dependency tree from temp file
 	let content= fs.readFileSync(`${tmpDepTree}`)
+	let sbom = createSbomFileFromDotGraphFormat(content.toString());
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependency graph as string
-	return content.toString()
+	return sbom
 }
 
 /**
  * Create a dependency list for a manifest content.
  * @param {string} data - content of pom.xml
  * @param {{}} [opts={}] - optional various options to pass along the application
- * @returns {[Package]} the Dot Graph content
+ * @returns {[Dependency]} the Dot Graph content
  * @private
  */
-function getList(data, opts = {}) {
+function getSbomForComponentAnalysis(data, opts = {}) {
 	// get custom maven path
 	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
@@ -136,15 +182,60 @@ function getList(data, opts = {}) {
 	// iterate over all dependencies in original pom and collect all ignored ones
 	let ignored = getDependencies(tmpTargetPom).filter(d => d.ignore)
 	// iterate over all dependencies and create a package for every non-ignored one
-	/** @type [Package] */
-	let packages = getDependencies(tmpEffectivePom)
-		.filter(d => !(dependencyIn(d, ignored)))
-		.map(dep => { return {name: `${dep.groupId}:${dep.artifactId}`, version: dep.version} })
-
+	/** @type [Dependency] */
+	let dependencies = getDependencies(tmpEffectivePom)
+		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
+	let cycloneDxSbom = new CycloneDxSbom();
+	let rootDependency = getRootFromPom(tmpTargetPom);
+	let purlRoot = toPurl(rootDependency.groupId,rootDependency.artifactId,rootDependency.version)
+	cycloneDxSbom.addRoot(purlRoot)
+	let rootComponent = cycloneDxSbom.getRoot();
+	dependencies.forEach(dep => {
+		let currentPurl = toPurl(dep.groupId,dep.artifactId,dep.version)
+		cycloneDxSbom.addDependency(rootComponent,currentPurl)
+	})
 	// delete temp files and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
-	// return packages list
-	return packages
+	// return dependencies list
+	return cycloneDxSbom.getAsJsonString()
+}
+
+
+
+
+/**
+ *
+ * @param pom.xml manifest path
+ * @return {Dependency} returns the root dependency for the pom
+ * @private
+ */
+function getRootFromPom(manifest) {
+
+	let parser = new XMLParser()
+	let buf = fs.readFileSync(manifest)
+	let pomStruct = parser.parse(buf.toString())
+	let pomRoot = pomStruct['project'];
+	/** @type Dependency */
+	let rootDependency = {
+		groupId: pomRoot['groupId'],
+		artifactId: pomRoot['artifactId'],
+		version: pomRoot['version'],
+		scope: '*',
+		ignore: false
+	}
+	return rootDependency
+}
+
+/**
+ * Returns a PackageUrl For maven dependencies
+ * @param group
+ * @param artifact
+ * @param version
+ * @return {PackageURL}
+ */
+function toPurl(group,artifact,version)
+{
+	return new PackageURL('maven',group,artifact,version,undefined,undefined);
 }
 
 /**
@@ -195,5 +286,10 @@ function dependencyIn(dep, deps) {
 	return deps.filter(d => dep.artifactId === d.artifactId &&
 		dep.groupId === d.groupId &&
 		dep.version === d.version &&
+		dep.scope === d.scope) .length > 0
+}
+function dependencyInExcludingVersion(dep, deps) {
+	return deps.filter(d => dep.artifactId === d.artifactId &&
+		dep.groupId === d.groupId &&
 		dep.scope === d.scope) .length > 0
 }

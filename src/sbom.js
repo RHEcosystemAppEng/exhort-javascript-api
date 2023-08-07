@@ -11,7 +11,7 @@ export default class Sbom {
 	addRoot (root) {}
 
 	/**
-	 * @return {PackageURL} root component of sbom.
+	 * @return {{{"bom-ref": string, name, purl: string, type, version}}} root component of sbom.
 	 */
 	getRoot (){}
 

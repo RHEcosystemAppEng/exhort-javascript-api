@@ -1,0 +1,137 @@
+{
+	"bomFormat": "CycloneDX",
+	"specVersion": "1.4",
+	"version": 1,
+	"metadata": {
+		"timestamp": "2023-08-06T21:00:00.000Z",
+		"component": {
+			"group": "com.redhat.examples",
+			"name": "custom-metrics-demo",
+			"version": "0.0.1-SNAPSHOT",
+			"purl": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT"
+		}
+	},
+	"components": [
+		{
+			"group": "com.redhat.examples",
+			"name": "custom-metrics-demo",
+			"version": "0.0.1-SNAPSHOT",
+			"purl": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-actuator",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7"
+		},
+		{
+			"group": "io.micrometer",
+			"name": "micrometer-registry-prometheus",
+			"version": "1.8.5",
+			"purl": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-web",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-streams",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1"
+		},
+		{
+			"group": "org.springframework.kafka",
+			"name": "spring-kafka",
+			"version": "2.8.5",
+			"purl": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5"
+		},
+		{
+			"group": "org.projectlombok",
+			"name": "lombok",
+			"version": "1.18.24",
+			"purl": "pkg:maven/org.projectlombok/lombok@1.18.24",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.projectlombok/lombok@1.18.24"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-test",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7"
+		},
+		{
+			"group": "org.springframework.kafka",
+			"name": "spring-kafka-test",
+			"version": "2.8.5",
+			"purl": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5"
+		}
+	],
+	"dependencies": [
+		{
+			"ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+				"pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+				"pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+				"pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+				"pkg:maven/org.projectlombok/lombok@1.18.24",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+				"pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.projectlombok/lombok@1.18.24",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5",
+			"dependsOn": []
+		}
+	]
+}

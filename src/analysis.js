@@ -13,7 +13,7 @@ export default { requestComponent, requestStack }
  */
 async function requestStack(provider, manifest, url, html = false, opts = {}) {
 	let provided = provider.provideStack(manifest, opts) // throws error if content providing failed
-	let resp = await fetch(`${url}/api/v3/analysis}`, {
+	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
 			'Accept': html ? 'text/html' : 'application/json',
@@ -35,7 +35,7 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
  */
 async function requestComponent(provider, data, url, opts = {}) {
 	let provided = provider.provideComponent(data, opts) // throws error if content providing failed
-	let resp = await fetch(`${url}/api/v3/analysis}`, {
+	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
