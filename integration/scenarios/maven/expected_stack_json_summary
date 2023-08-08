@@ -4,8 +4,8 @@
     "transitive": 0
   },
   "vulnerabilities": {
-    "total": 7,
     "direct": 1,
+    "total": 7,
     "critical": 1,
     "high": 3,
     "medium": 2,
