@@ -39,7 +39,7 @@ suite('testing the javascript-npm data provider', () => {
 				content: expectedSbom
 			})
 		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 1000)
+		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 10000)
 
 		test(`verify package.json data provided for component analysis with scenario ${scenario}`, async () => {
 			// load the expected list for the scenario
@@ -74,4 +74,4 @@ suite('testing the javascript-npm data provider', () => {
 	})
 
 
-}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> {clock.restore()});
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> clock.restore());

@@ -30,7 +30,7 @@ suite('testing the analysis module for sending api requests', () => {
 	};
 
 	test('invoking the requestComponent should return a json report', interceptAndRun(
-		rest.post(`${backendUrl}/api/v3/analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+		rest.post(`${backendUrl}/api/v3/analysis`, (req, res, ctx) => {
 			// interception route, will return ok response for our fake content type
 			if (fakeProvided.contentType === req.headers.get('content-type')) {
 				return res(ctx.json({dummy: 'response'}))
@@ -69,7 +69,7 @@ suite('testing the analysis module for sending api requests', () => {
 
 		test('invoking the requestStack for html should return a string report', interceptAndRun(
 			// interception route, will return ok response for our fake content type
-			rest.post(`${backendUrl}/api/v3/analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+			rest.post(`${backendUrl}/api/v3/analysis`, (req, res, ctx) => {
 				if (fakeProvided.contentType === req.headers.get('content-type')) {
 					return res(ctx.text('<html lang="en">html-content</html>'))
 				}
@@ -84,7 +84,7 @@ suite('testing the analysis module for sending api requests', () => {
 
 		test('invoking the requestStack for non-html should return a json report', interceptAndRun(
 			// interception route, will return ok response for our fake content type
-			rest.post(`${backendUrl}/api/v3/analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+			rest.post(`${backendUrl}/api/v3/analysis`, (req, res, ctx) => {
 				if (fakeProvided.contentType === req.headers.get('content-type')) {
 					return res(ctx.json({dummy: 'response'}))
 				}
@@ -114,7 +114,7 @@ suite('testing the analysis module for sending api requests', () => {
 
 		test('when the relevant token environment variables are set, verify corresponding headers are included', interceptAndRun(
 			// interception route, will return ok response if found the expected token
-			rest.post(`${backendUrl}/api/v3/analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+			rest.post(`${backendUrl}/api/v3/analysis`, (req, res, ctx) => {
 				if ('dummy-snyk-token' === req.headers.get('ex-snyk-token')) {
 					return res(ctx.json({ok: 'ok'}))
 				}
@@ -129,7 +129,7 @@ suite('testing the analysis module for sending api requests', () => {
 
 		test('when the relevant token environment variables are not set, verify no corresponding headers are included', interceptAndRun(
 			// interception route, will return ok response if found the expected token
-			rest.post(`${backendUrl}/api/v3/analysis/${fakeProvided.ecosystem}`, (req, res, ctx) => {
+			rest.post(`${backendUrl}/api/v3/analysis`, (req, res, ctx) => {
 				if (!req.headers.get('ex-snyk-token')) {
 					return res(ctx.json({ok: 'ok'}))
 				}
