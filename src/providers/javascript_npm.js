@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import os from "node:os";
 import { getCustomPath } from "../tools.js";
 import path from 'node:path'
-import CycloneDxSbom from '../cyclone_dx_sbom.js'
+import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
 
 export default { isSupported, provideComponent, provideStack }
@@ -108,18 +108,18 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let rootVersion = depsObject["version"]
 	let mainComponent = toPurl(rootName,rootVersion);
 
-	let cycloneDxSbom = new CycloneDxSbom();
-	cycloneDxSbom.addRoot(mainComponent)
+	let sbom = new Sbom();
+	sbom.addRoot(mainComponent)
 
 	let dependencies = depsObject["dependencies"];
-	addAllDependencies(cycloneDxSbom,cycloneDxSbom.getRoot(),dependencies)
+	addAllDependencies(sbom,sbom.getRoot(),dependencies)
 	let packageJson = fs.readFileSync(manifest).toString()
 	let packageJsonObject = JSON.parse(packageJson);
 	if(packageJsonObject.exhortignore !== undefined) {
 		let ignoredDeps = Array.from(packageJsonObject.exhortignore);
-		cycloneDxSbom.filterIgnoredDeps(ignoredDeps)
+		sbom.filterIgnoredDeps(ignoredDeps)
 	}
-	return cycloneDxSbom.getAsJsonString()
+	return sbom.getAsJsonString()
 }
 
 

@@ -1,7 +1,6 @@
 import { expect } from 'chai'
 import fs from 'fs'
 import sinon from "sinon";
-import { before } from 'mocha'
 import javascriptNpmProvider from "../../src/providers/javascript_npm.js"
 
 

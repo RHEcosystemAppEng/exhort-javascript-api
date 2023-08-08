@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import { getCustomPath } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
-import CycloneDxSbom from '../cyclone_dx_sbom.js'
+import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
 
 export default { isSupported, provideComponent, provideStack }
@@ -87,16 +87,16 @@ function createSbomFileFromDotGraphFormat(dotGraphList) {
 	let root = lines[0].split("\"")[1];
 	let rootPurl = dotGraphToPurl(root);
 	lines.splice(0,1);
-	let sbom = new CycloneDxSbom()
+	let sbom = new Sbom()
 	sbom.addRoot(rootPurl)
 	lines.forEach(pair => {
 		if(pair.trim() !== "}") {
-	     let thePair = pair.split("->")
-	     if(thePair.length === 2) {
-			 let from = dotGraphToPurl(thePair[0].trim())
-			 let to = dotGraphToPurl(thePair[1].trim())
-			 sbom.addDependency(sbom.purlToComponent(from), to)
-		 }
+			let thePair = pair.split("->")
+			if(thePair.length === 2) {
+				let from = dotGraphToPurl(thePair[0].trim())
+				let to = dotGraphToPurl(thePair[1].trim())
+				sbom.addDependency(sbom.purlToComponent(from), to)
+			}
 		}
 	})
 	return sbom.getAsJsonString()
@@ -185,19 +185,19 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 	/** @type [Dependency] */
 	let dependencies = getDependencies(tmpEffectivePom)
 		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
-	let cycloneDxSbom = new CycloneDxSbom();
+	let sbom = new Sbom();
 	let rootDependency = getRootFromPom(tmpTargetPom);
 	let purlRoot = toPurl(rootDependency.groupId,rootDependency.artifactId,rootDependency.version)
-	cycloneDxSbom.addRoot(purlRoot)
-	let rootComponent = cycloneDxSbom.getRoot();
+	sbom.addRoot(purlRoot)
+	let rootComponent = sbom.getRoot();
 	dependencies.forEach(dep => {
 		let currentPurl = toPurl(dep.groupId,dep.artifactId,dep.version)
-		cycloneDxSbom.addDependency(rootComponent,currentPurl)
+		sbom.addDependency(rootComponent,currentPurl)
 	})
 	// delete temp files and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependencies list
-	return cycloneDxSbom.getAsJsonString()
+	return sbom.getAsJsonString()
 }
 
 

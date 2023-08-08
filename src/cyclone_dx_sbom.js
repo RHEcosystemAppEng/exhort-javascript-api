@@ -1,4 +1,3 @@
-import Sbom from './sbom.js'
 /**
  *
  * @param component {PackageURL}
@@ -42,14 +41,13 @@ function createDependency(dependency)
 
 
 
-export default class CycloneDxSbom extends Sbom{
+export default class CycloneDxSbom {
 
 	sbomObject
 	rootComponent
 	components
 	dependencies
 	constructor() {
-		super();
 		this.dependencies = new Array()
 		this.components = new Array()
 
