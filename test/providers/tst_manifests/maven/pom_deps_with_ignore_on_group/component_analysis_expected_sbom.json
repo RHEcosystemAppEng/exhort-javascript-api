@@ -3,7 +3,7 @@
 	"specVersion": "1.4",
 	"version": 1,
 	"metadata": {
-		"timestamp": "2023-08-06T21:00:00.000Z",
+		"timestamp": "2023-08-07T00:00:00.000Z",
 		"component": {
 			"group": "pom-with-deps-and-ignore",
 			"name": "pom-with-dependency-not-ignored-for-tests",
