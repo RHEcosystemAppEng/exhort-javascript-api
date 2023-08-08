@@ -12,7 +12,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis }
  */
 const url = getCustom(
 	'EXHORT_BACKEND_URL',
-	'http://dev-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
+	'http://dev-exhort.apps.cn-lab2-eu.lue0.p1.openshiftapps.com'
 )
 
 /**
@@ -36,7 +36,7 @@ async function stackAnalysis(manifest, html = false, opts = {}) {
  * @param {string} data - the content of the manifest
  * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Promise<AnalysisReport>}
- * @throws {Error} if o matching provider, failed to get create content, or backend request failed
+ * @throws {Error} if no matching provider, failed to get create content, or backend request failed
  */
 async function componentAnalysis(manifestType, data, opts = {}) {
 	let provider = match(manifestType, availableProviders) // throws error if no matching provider

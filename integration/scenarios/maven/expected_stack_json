@@ -5,8 +5,8 @@
       "transitive": 0
     },
     "vulnerabilities": {
-      "total": 7,
       "direct": 1,
+      "total": 7,
       "critical": 1,
       "high": 3,
       "medium": 2,
@@ -23,35 +23,7 @@
   },
   "dependencies": [
     {
-      "ref": {
-        "name": "log4j:log4j",
-        "version": "1.2.17"
-      },
-      "highestVulnerability": {
-        "id": "SNYK-JAVA-LOG4J-1300176",
-        "title": "Man-in-the-Middle (MitM)",
-        "source": "snyk",
-        "cvss": {
-          "attackVector": "Network",
-          "attackComplexity": "High",
-          "privilegesRequired": "None",
-          "userInteraction": "None",
-          "scope": "Unchanged",
-          "confidentialityImpact": "Low",
-          "integrityImpact": "None",
-          "availabilityImpact": "None",
-          "exploitCodeMaturity": null,
-          "remediationLevel": null,
-          "reportConfidence": null,
-          "cvss": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
-        },
-        "cvssScore": 3.7,
-        "severity": "LOW",
-        "cves": [
-          "CVE-2020-9488"
-        ],
-        "unique": false
-      },
+      "ref": "pkg:maven/log4j/log4j@1.2.17",
       "issues": [
         {
           "id": "SNYK-JAVA-LOG4J-572732",
@@ -230,8 +202,33 @@
         }
       ],
       "transitive": [],
+      "recommendation": null,
       "remediations": {},
-      "recommendation": null
+      "highestVulnerability": {
+        "id": "SNYK-JAVA-LOG4J-1300176",
+        "title": "Man-in-the-Middle (MitM)",
+        "source": "snyk",
+        "cvss": {
+          "attackVector": "Network",
+          "attackComplexity": "High",
+          "privilegesRequired": "None",
+          "userInteraction": "None",
+          "scope": "Unchanged",
+          "confidentialityImpact": "Low",
+          "integrityImpact": "None",
+          "availabilityImpact": "None",
+          "exploitCodeMaturity": null,
+          "remediationLevel": null,
+          "reportConfidence": null,
+          "cvss": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+        },
+        "cvssScore": 3.7,
+        "severity": "LOW",
+        "cves": [
+          "CVE-2020-9488"
+        ],
+        "unique": false
+      }
     }
   ]
 }

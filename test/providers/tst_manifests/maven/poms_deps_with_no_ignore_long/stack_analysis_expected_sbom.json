@@ -1,0 +1,1619 @@
+{
+	"bomFormat": "CycloneDX",
+	"specVersion": "1.4",
+	"version": 1,
+	"metadata": {
+		"timestamp": "2023-08-07T00:00:00.000Z",
+		"component": {
+			"group": "com.redhat.examples",
+			"name": "custom-metrics-demo",
+			"version": "0.0.1-SNAPSHOT",
+			"purl": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT"
+		}
+	},
+	"components": [
+		{
+			"group": "com.redhat.examples",
+			"name": "custom-metrics-demo",
+			"version": "0.0.1-SNAPSHOT",
+			"purl": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-actuator",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7"
+		},
+		{
+			"group": "io.micrometer",
+			"name": "micrometer-registry-prometheus",
+			"version": "1.8.5",
+			"purl": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-web",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-streams",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1"
+		},
+		{
+			"group": "org.springframework.kafka",
+			"name": "spring-kafka",
+			"version": "2.8.5",
+			"purl": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5"
+		},
+		{
+			"group": "org.projectlombok",
+			"name": "lombok",
+			"version": "1.18.24",
+			"purl": "pkg:maven/org.projectlombok/lombok@1.18.24",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.projectlombok/lombok@1.18.24"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-test",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7"
+		},
+		{
+			"group": "org.springframework.kafka",
+			"name": "spring-kafka-test",
+			"version": "2.8.5",
+			"purl": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter@2.6.7"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-actuator-autoconfigure",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-actuator-autoconfigure@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-actuator-autoconfigure@2.6.7"
+		},
+		{
+			"group": "io.micrometer",
+			"name": "micrometer-core",
+			"version": "1.8.5",
+			"purl": "pkg:maven/io.micrometer/micrometer-core@1.8.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.micrometer/micrometer-core@1.8.5"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot@2.6.7"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-autoconfigure",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-autoconfigure@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-autoconfigure@2.6.7"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-logging",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.6.7"
+		},
+		{
+			"group": "jakarta.annotation",
+			"name": "jakarta.annotation-api",
+			"version": "1.3.5",
+			"purl": "pkg:maven/jakarta.annotation/jakarta.annotation-api@1.3.5",
+			"type": "library",
+			"bom-ref": "pkg:maven/jakarta.annotation/jakarta.annotation-api@1.3.5"
+		},
+		{
+			"group": "org.yaml",
+			"name": "snakeyaml",
+			"version": "1.29",
+			"purl": "pkg:maven/org.yaml/snakeyaml@1.29",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.yaml/snakeyaml@1.29"
+		},
+		{
+			"group": "ch.qos.logback",
+			"name": "logback-classic",
+			"version": "1.2.11",
+			"purl": "pkg:maven/ch.qos.logback/logback-classic@1.2.11",
+			"type": "library",
+			"bom-ref": "pkg:maven/ch.qos.logback/logback-classic@1.2.11"
+		},
+		{
+			"group": "org.apache.logging.log4j",
+			"name": "log4j-to-slf4j",
+			"version": "2.17.2",
+			"purl": "pkg:maven/org.apache.logging.log4j/log4j-to-slf4j@2.17.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.logging.log4j/log4j-to-slf4j@2.17.2"
+		},
+		{
+			"group": "org.slf4j",
+			"name": "jul-to-slf4j",
+			"version": "1.7.36",
+			"purl": "pkg:maven/org.slf4j/jul-to-slf4j@1.7.36",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.slf4j/jul-to-slf4j@1.7.36"
+		},
+		{
+			"group": "ch.qos.logback",
+			"name": "logback-core",
+			"version": "1.2.11",
+			"purl": "pkg:maven/ch.qos.logback/logback-core@1.2.11",
+			"type": "library",
+			"bom-ref": "pkg:maven/ch.qos.logback/logback-core@1.2.11"
+		},
+		{
+			"group": "org.apache.logging.log4j",
+			"name": "log4j-api",
+			"version": "2.17.2",
+			"purl": "pkg:maven/org.apache.logging.log4j/log4j-api@2.17.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.logging.log4j/log4j-api@2.17.2"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-actuator",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-actuator@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-actuator@2.6.7"
+		},
+		{
+			"group": "com.fasterxml.jackson.datatype",
+			"name": "jackson-datatype-jsr310",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.13.2"
+		},
+		{
+			"group": "org.hdrhistogram",
+			"name": "HdrHistogram",
+			"version": "2.1.12",
+			"purl": "pkg:maven/org.hdrhistogram/HdrHistogram@2.1.12",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.hdrhistogram/HdrHistogram@2.1.12"
+		},
+		{
+			"group": "org.latencyutils",
+			"name": "LatencyUtils",
+			"version": "2.0.3",
+			"purl": "pkg:maven/org.latencyutils/LatencyUtils@2.0.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.latencyutils/LatencyUtils@2.0.3"
+		},
+		{
+			"group": "io.prometheus",
+			"name": "simpleclient_common",
+			"version": "0.12.0",
+			"purl": "pkg:maven/io.prometheus/simpleclient_common@0.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.prometheus/simpleclient_common@0.12.0"
+		},
+		{
+			"group": "io.prometheus",
+			"name": "simpleclient",
+			"version": "0.12.0",
+			"purl": "pkg:maven/io.prometheus/simpleclient@0.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.prometheus/simpleclient@0.12.0"
+		},
+		{
+			"group": "io.prometheus",
+			"name": "simpleclient_tracer_otel",
+			"version": "0.12.0",
+			"purl": "pkg:maven/io.prometheus/simpleclient_tracer_otel@0.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.prometheus/simpleclient_tracer_otel@0.12.0"
+		},
+		{
+			"group": "io.prometheus",
+			"name": "simpleclient_tracer_otel_agent",
+			"version": "0.12.0",
+			"purl": "pkg:maven/io.prometheus/simpleclient_tracer_otel_agent@0.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.prometheus/simpleclient_tracer_otel_agent@0.12.0"
+		},
+		{
+			"group": "io.prometheus",
+			"name": "simpleclient_tracer_common",
+			"version": "0.12.0",
+			"purl": "pkg:maven/io.prometheus/simpleclient_tracer_common@0.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.prometheus/simpleclient_tracer_common@0.12.0"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-json",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-json@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-json@2.6.7"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-starter-tomcat",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-starter-tomcat@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-starter-tomcat@2.6.7"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-web",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-web@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-web@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-webmvc",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-webmvc@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-webmvc@5.3.19"
+		},
+		{
+			"group": "com.fasterxml.jackson.datatype",
+			"name": "jackson-datatype-jdk8",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jdk8@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jdk8@2.13.2"
+		},
+		{
+			"group": "com.fasterxml.jackson.module",
+			"name": "jackson-module-parameter-names",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.module/jackson-module-parameter-names@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.module/jackson-module-parameter-names@2.13.2"
+		},
+		{
+			"group": "org.apache.tomcat.embed",
+			"name": "tomcat-embed-core",
+			"version": "9.0.62",
+			"purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.62",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.62"
+		},
+		{
+			"group": "org.apache.tomcat.embed",
+			"name": "tomcat-embed-el",
+			"version": "9.0.62",
+			"purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@9.0.62",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@9.0.62"
+		},
+		{
+			"group": "org.apache.tomcat.embed",
+			"name": "tomcat-embed-websocket",
+			"version": "9.0.62",
+			"purl": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.62",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.62"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-beans",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-beans@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-beans@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-aop",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-aop@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-aop@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-expression",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-expression@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-expression@5.3.19"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-clients",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-clients@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-clients@3.0.1"
+		},
+		{
+			"group": "org.rocksdb",
+			"name": "rocksdbjni",
+			"version": "6.19.3",
+			"purl": "pkg:maven/org.rocksdb/rocksdbjni@6.19.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.rocksdb/rocksdbjni@6.19.3"
+		},
+		{
+			"group": "org.slf4j",
+			"name": "slf4j-api",
+			"version": "1.7.36",
+			"purl": "pkg:maven/org.slf4j/slf4j-api@1.7.36",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.slf4j/slf4j-api@1.7.36"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-annotations",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.13.2"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-databind",
+			"version": "2.13.2.1",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.1"
+		},
+		{
+			"group": "com.github.luben",
+			"name": "zstd-jni",
+			"version": "1.5.0-2",
+			"purl": "pkg:maven/com.github.luben/zstd-jni@1.5.0-2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.github.luben/zstd-jni@1.5.0-2"
+		},
+		{
+			"group": "org.lz4",
+			"name": "lz4-java",
+			"version": "1.7.1",
+			"purl": "pkg:maven/org.lz4/lz4-java@1.7.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.lz4/lz4-java@1.7.1"
+		},
+		{
+			"group": "org.xerial.snappy",
+			"name": "snappy-java",
+			"version": "1.1.8.1",
+			"purl": "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.1"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-core",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-context",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-context@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-context@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-messaging",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-messaging@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-messaging@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-tx",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-tx@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-tx@5.3.19"
+		},
+		{
+			"group": "org.springframework.retry",
+			"name": "spring-retry",
+			"version": "1.3.3",
+			"purl": "pkg:maven/org.springframework.retry/spring-retry@1.3.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.retry/spring-retry@1.3.3"
+		},
+		{
+			"group": "com.google.code.findbugs",
+			"name": "jsr305",
+			"version": "3.0.2",
+			"purl": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-test",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-test@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-test@2.6.7"
+		},
+		{
+			"group": "org.springframework.boot",
+			"name": "spring-boot-test-autoconfigure",
+			"version": "2.6.7",
+			"purl": "pkg:maven/org.springframework.boot/spring-boot-test-autoconfigure@2.6.7",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework.boot/spring-boot-test-autoconfigure@2.6.7"
+		},
+		{
+			"group": "com.jayway.jsonpath",
+			"name": "json-path",
+			"version": "2.6.0",
+			"purl": "pkg:maven/com.jayway.jsonpath/json-path@2.6.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.jayway.jsonpath/json-path@2.6.0"
+		},
+		{
+			"group": "jakarta.xml.bind",
+			"name": "jakarta.xml.bind-api",
+			"version": "2.3.3",
+			"purl": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@2.3.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@2.3.3"
+		},
+		{
+			"group": "org.assertj",
+			"name": "assertj-core",
+			"version": "3.21.0",
+			"purl": "pkg:maven/org.assertj/assertj-core@3.21.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.assertj/assertj-core@3.21.0"
+		},
+		{
+			"group": "org.hamcrest",
+			"name": "hamcrest",
+			"version": "2.2",
+			"purl": "pkg:maven/org.hamcrest/hamcrest@2.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.hamcrest/hamcrest@2.2"
+		},
+		{
+			"group": "org.junit.jupiter",
+			"name": "junit-jupiter",
+			"version": "5.8.2",
+			"purl": "pkg:maven/org.junit.jupiter/junit-jupiter@5.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.jupiter/junit-jupiter@5.8.2"
+		},
+		{
+			"group": "org.mockito",
+			"name": "mockito-core",
+			"version": "4.0.0",
+			"purl": "pkg:maven/org.mockito/mockito-core@4.0.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.mockito/mockito-core@4.0.0"
+		},
+		{
+			"group": "org.mockito",
+			"name": "mockito-junit-jupiter",
+			"version": "4.0.0",
+			"purl": "pkg:maven/org.mockito/mockito-junit-jupiter@4.0.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.mockito/mockito-junit-jupiter@4.0.0"
+		},
+		{
+			"group": "org.skyscreamer",
+			"name": "jsonassert",
+			"version": "1.5.0",
+			"purl": "pkg:maven/org.skyscreamer/jsonassert@1.5.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.skyscreamer/jsonassert@1.5.0"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-core",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-core@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-core@5.3.19"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-test",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-test@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-test@5.3.19"
+		},
+		{
+			"group": "org.xmlunit",
+			"name": "xmlunit-core",
+			"version": "2.8.4",
+			"purl": "pkg:maven/org.xmlunit/xmlunit-core@2.8.4",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.xmlunit/xmlunit-core@2.8.4"
+		},
+		{
+			"group": "net.minidev",
+			"name": "json-smart",
+			"version": "2.4.8",
+			"purl": "pkg:maven/net.minidev/json-smart@2.4.8",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.minidev/json-smart@2.4.8"
+		},
+		{
+			"group": "net.minidev",
+			"name": "accessors-smart",
+			"version": "2.4.8",
+			"purl": "pkg:maven/net.minidev/accessors-smart@2.4.8",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.minidev/accessors-smart@2.4.8"
+		},
+		{
+			"group": "org.ow2.asm",
+			"name": "asm",
+			"version": "9.1",
+			"purl": "pkg:maven/org.ow2.asm/asm@9.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.ow2.asm/asm@9.1"
+		},
+		{
+			"group": "jakarta.activation",
+			"name": "jakarta.activation-api",
+			"version": "1.2.2",
+			"purl": "pkg:maven/jakarta.activation/jakarta.activation-api@1.2.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/jakarta.activation/jakarta.activation-api@1.2.2"
+		},
+		{
+			"group": "org.junit.jupiter",
+			"name": "junit-jupiter-params",
+			"version": "5.8.2",
+			"purl": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.8.2"
+		},
+		{
+			"group": "org.junit.jupiter",
+			"name": "junit-jupiter-engine",
+			"version": "5.8.2",
+			"purl": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.8.2"
+		},
+		{
+			"group": "org.junit.platform",
+			"name": "junit-platform-engine",
+			"version": "1.8.2",
+			"purl": "pkg:maven/org.junit.platform/junit-platform-engine@1.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.platform/junit-platform-engine@1.8.2"
+		},
+		{
+			"group": "net.bytebuddy",
+			"name": "byte-buddy",
+			"version": "1.11.22",
+			"purl": "pkg:maven/net.bytebuddy/byte-buddy@1.11.22",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.bytebuddy/byte-buddy@1.11.22"
+		},
+		{
+			"group": "net.bytebuddy",
+			"name": "byte-buddy-agent",
+			"version": "1.11.22",
+			"purl": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.11.22",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.11.22"
+		},
+		{
+			"group": "org.objenesis",
+			"name": "objenesis",
+			"version": "3.2",
+			"purl": "pkg:maven/org.objenesis/objenesis@3.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.objenesis/objenesis@3.2"
+		},
+		{
+			"group": "com.vaadin.external.google",
+			"name": "android-json",
+			"version": "0.0.20131108.vaadin1",
+			"purl": "pkg:maven/com.vaadin.external.google/android-json@0.0.20131108.vaadin1",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.vaadin.external.google/android-json@0.0.20131108.vaadin1"
+		},
+		{
+			"group": "org.springframework",
+			"name": "spring-jcl",
+			"version": "5.3.19",
+			"purl": "pkg:maven/org.springframework/spring-jcl@5.3.19",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.springframework/spring-jcl@5.3.19"
+		},
+		{
+			"group": "org.apache.zookeeper",
+			"name": "zookeeper",
+			"version": "3.6.3",
+			"purl": "pkg:maven/org.apache.zookeeper/zookeeper@3.6.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.zookeeper/zookeeper@3.6.3"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-clients",
+			"version": "test",
+			"purl": "pkg:maven/org.apache.kafka/kafka-clients@test",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-clients@test"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-metadata",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-metadata@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-metadata@3.0.1"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-streams-test-utils",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-streams-test-utils@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-streams-test-utils@3.0.1"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka_2.13",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka_2.13@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka_2.13@3.0.1"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka_2.13",
+			"version": "test",
+			"purl": "pkg:maven/org.apache.kafka/kafka_2.13@test",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka_2.13@test"
+		},
+		{
+			"group": "org.junit.jupiter",
+			"name": "junit-jupiter-api",
+			"version": "5.8.2",
+			"purl": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.8.2"
+		},
+		{
+			"group": "org.apache.zookeeper",
+			"name": "zookeeper-jute",
+			"version": "3.6.3",
+			"purl": "pkg:maven/org.apache.zookeeper/zookeeper-jute@3.6.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.zookeeper/zookeeper-jute@3.6.3"
+		},
+		{
+			"group": "org.apache.yetus",
+			"name": "audience-annotations",
+			"version": "0.5.0",
+			"purl": "pkg:maven/org.apache.yetus/audience-annotations@0.5.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.yetus/audience-annotations@0.5.0"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-handler",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-handler@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-handler@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-transport-native-epoll",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-transport-native-epoll@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-transport-native-epoll@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-common",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-common@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-common@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-resolver",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-resolver@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-resolver@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-buffer",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-buffer@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-buffer@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-transport",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-transport@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-transport@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-codec",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-codec@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-codec@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-transport-native-unix-common",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-transport-native-unix-common@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-transport-native-unix-common@4.1.76.Final"
+		},
+		{
+			"group": "io.netty",
+			"name": "netty-transport-classes-epoll",
+			"version": "4.1.76.Final",
+			"purl": "pkg:maven/io.netty/netty-transport-classes-epoll@4.1.76.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.netty/netty-transport-classes-epoll@4.1.76.Final"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-server-common",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-server-common@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-server-common@3.0.1"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-raft",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-raft@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-raft@3.0.1"
+		},
+		{
+			"group": "com.yammer.metrics",
+			"name": "metrics-core",
+			"version": "2.2.0",
+			"purl": "pkg:maven/com.yammer.metrics/metrics-core@2.2.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.yammer.metrics/metrics-core@2.2.0"
+		},
+		{
+			"group": "org.scala-lang",
+			"name": "scala-library",
+			"version": "2.13.6",
+			"purl": "pkg:maven/org.scala-lang/scala-library@2.13.6",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.scala-lang/scala-library@2.13.6"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-storage",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-storage@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-storage@3.0.1"
+		},
+		{
+			"group": "net.sourceforge.argparse4j",
+			"name": "argparse4j",
+			"version": "0.7.0",
+			"purl": "pkg:maven/net.sourceforge.argparse4j/argparse4j@0.7.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.sourceforge.argparse4j/argparse4j@0.7.0"
+		},
+		{
+			"group": "com.fasterxml.jackson.module",
+			"name": "jackson-module-scala_2.13",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.module/jackson-module-scala_2.13@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.module/jackson-module-scala_2.13@2.13.2"
+		},
+		{
+			"group": "com.fasterxml.jackson.dataformat",
+			"name": "jackson-dataformat-csv",
+			"version": "2.13.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-csv@2.13.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-csv@2.13.2"
+		},
+		{
+			"group": "net.sf.jopt-simple",
+			"name": "jopt-simple",
+			"version": "5.0.4",
+			"purl": "pkg:maven/net.sf.jopt-simple/jopt-simple@5.0.4",
+			"type": "library",
+			"bom-ref": "pkg:maven/net.sf.jopt-simple/jopt-simple@5.0.4"
+		},
+		{
+			"group": "org.scala-lang.modules",
+			"name": "scala-collection-compat_2.13",
+			"version": "2.4.4",
+			"purl": "pkg:maven/org.scala-lang.modules/scala-collection-compat_2.13@2.4.4",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.scala-lang.modules/scala-collection-compat_2.13@2.4.4"
+		},
+		{
+			"group": "org.scala-lang.modules",
+			"name": "scala-java8-compat_2.13",
+			"version": "1.0.0",
+			"purl": "pkg:maven/org.scala-lang.modules/scala-java8-compat_2.13@1.0.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.scala-lang.modules/scala-java8-compat_2.13@1.0.0"
+		},
+		{
+			"group": "org.scala-lang",
+			"name": "scala-reflect",
+			"version": "2.13.6",
+			"purl": "pkg:maven/org.scala-lang/scala-reflect@2.13.6",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.scala-lang/scala-reflect@2.13.6"
+		},
+		{
+			"group": "com.typesafe.scala-logging",
+			"name": "scala-logging_2.13",
+			"version": "3.9.3",
+			"purl": "pkg:maven/com.typesafe.scala-logging/scala-logging_2.13@3.9.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.typesafe.scala-logging/scala-logging_2.13@3.9.3"
+		},
+		{
+			"group": "io.dropwizard.metrics",
+			"name": "metrics-core",
+			"version": "4.2.9",
+			"purl": "pkg:maven/io.dropwizard.metrics/metrics-core@4.2.9",
+			"type": "library",
+			"bom-ref": "pkg:maven/io.dropwizard.metrics/metrics-core@4.2.9"
+		},
+		{
+			"group": "commons-cli",
+			"name": "commons-cli",
+			"version": "1.4",
+			"purl": "pkg:maven/commons-cli/commons-cli@1.4",
+			"type": "library",
+			"bom-ref": "pkg:maven/commons-cli/commons-cli@1.4"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-storage-api",
+			"version": "3.0.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-storage-api@3.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-storage-api@3.0.1"
+		},
+		{
+			"group": "com.thoughtworks.paranamer",
+			"name": "paranamer",
+			"version": "2.8",
+			"purl": "pkg:maven/com.thoughtworks.paranamer/paranamer@2.8",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.thoughtworks.paranamer/paranamer@2.8"
+		},
+		{
+			"group": "org.opentest4j",
+			"name": "opentest4j",
+			"version": "1.2.0",
+			"purl": "pkg:maven/org.opentest4j/opentest4j@1.2.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.opentest4j/opentest4j@1.2.0"
+		},
+		{
+			"group": "org.junit.platform",
+			"name": "junit-platform-commons",
+			"version": "1.8.2",
+			"purl": "pkg:maven/org.junit.platform/junit-platform-commons@1.8.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.junit.platform/junit-platform-commons@1.8.2"
+		},
+		{
+			"group": "org.apiguardian",
+			"name": "apiguardian-api",
+			"version": "1.1.2",
+			"purl": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2"
+		}
+	],
+	"dependencies": [
+		{
+			"ref": "pkg:maven/com.redhat.examples/custom-metrics-demo@0.0.1-SNAPSHOT",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+				"pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+				"pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+				"pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+				"pkg:maven/org.projectlombok/lombok@1.18.24",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+				"pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-actuator@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-starter@2.6.7",
+				"pkg:maven/org.springframework.boot/spring-boot-actuator-autoconfigure@2.6.7",
+				"pkg:maven/io.micrometer/micrometer-core@1.8.5"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.micrometer/micrometer-registry-prometheus@1.8.5",
+			"dependsOn": [
+				"pkg:maven/io.prometheus/simpleclient_common@0.12.0"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-starter-json@2.6.7",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-tomcat@2.6.7",
+				"pkg:maven/org.springframework/spring-web@5.3.19",
+				"pkg:maven/org.springframework/spring-webmvc@5.3.19"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-streams@3.0.1",
+			"dependsOn": [
+				"pkg:maven/org.apache.kafka/kafka-clients@3.0.1",
+				"pkg:maven/org.rocksdb/rocksdbjni@6.19.3",
+				"pkg:maven/org.slf4j/slf4j-api@1.7.36",
+				"pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.13.2",
+				"pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.1"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.kafka/spring-kafka@2.8.5",
+			"dependsOn": [
+				"pkg:maven/org.springframework/spring-context@5.3.19",
+				"pkg:maven/org.springframework/spring-messaging@5.3.19",
+				"pkg:maven/org.springframework/spring-tx@5.3.19",
+				"pkg:maven/org.springframework.retry/spring-retry@1.3.3",
+				"pkg:maven/com.google.code.findbugs/jsr305@3.0.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.projectlombok/lombok@1.18.24",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-test@2.6.7",
+				"pkg:maven/org.springframework.boot/spring-boot-test-autoconfigure@2.6.7",
+				"pkg:maven/com.jayway.jsonpath/json-path@2.6.0",
+				"pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@2.3.3",
+				"pkg:maven/org.assertj/assertj-core@3.21.0",
+				"pkg:maven/org.hamcrest/hamcrest@2.2",
+				"pkg:maven/org.junit.jupiter/junit-jupiter@5.8.2",
+				"pkg:maven/org.mockito/mockito-core@4.0.0",
+				"pkg:maven/org.mockito/mockito-junit-jupiter@4.0.0",
+				"pkg:maven/org.skyscreamer/jsonassert@1.5.0",
+				"pkg:maven/org.springframework/spring-core@5.3.19",
+				"pkg:maven/org.springframework/spring-test@5.3.19",
+				"pkg:maven/org.xmlunit/xmlunit-core@2.8.4"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.kafka/spring-kafka-test@2.8.5",
+			"dependsOn": [
+				"pkg:maven/org.apache.zookeeper/zookeeper@3.6.3",
+				"pkg:maven/org.apache.kafka/kafka-clients@test",
+				"pkg:maven/org.apache.kafka/kafka-metadata@3.0.1",
+				"pkg:maven/org.apache.kafka/kafka-streams-test-utils@3.0.1",
+				"pkg:maven/org.apache.kafka/kafka_2.13@3.0.1",
+				"pkg:maven/org.apache.kafka/kafka_2.13@test",
+				"pkg:maven/org.junit.jupiter/junit-jupiter-api@5.8.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot@2.6.7",
+				"pkg:maven/org.springframework.boot/spring-boot-autoconfigure@2.6.7",
+				"pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.6.7",
+				"pkg:maven/jakarta.annotation/jakarta.annotation-api@1.3.5",
+				"pkg:maven/org.yaml/snakeyaml@1.29"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-actuator-autoconfigure@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.springframework.boot/spring-boot-actuator@2.6.7",
+				"pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.13.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.micrometer/micrometer-core@1.8.5",
+			"dependsOn": [
+				"pkg:maven/org.hdrhistogram/HdrHistogram@2.1.12",
+				"pkg:maven/org.latencyutils/LatencyUtils@2.0.3"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-autoconfigure@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-logging@2.6.7",
+			"dependsOn": [
+				"pkg:maven/ch.qos.logback/logback-classic@1.2.11",
+				"pkg:maven/org.apache.logging.log4j/log4j-to-slf4j@2.17.2",
+				"pkg:maven/org.slf4j/jul-to-slf4j@1.7.36"
+			]
+		},
+		{
+			"ref": "pkg:maven/jakarta.annotation/jakarta.annotation-api@1.3.5",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.yaml/snakeyaml@1.29",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/ch.qos.logback/logback-classic@1.2.11",
+			"dependsOn": [
+				"pkg:maven/ch.qos.logback/logback-core@1.2.11"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.logging.log4j/log4j-to-slf4j@2.17.2",
+			"dependsOn": [
+				"pkg:maven/org.apache.logging.log4j/log4j-api@2.17.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.slf4j/jul-to-slf4j@1.7.36",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/ch.qos.logback/logback-core@1.2.11",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.logging.log4j/log4j-api@2.17.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-actuator@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jsr310@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.hdrhistogram/HdrHistogram@2.1.12",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.latencyutils/LatencyUtils@2.0.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.prometheus/simpleclient_common@0.12.0",
+			"dependsOn": [
+				"pkg:maven/io.prometheus/simpleclient@0.12.0"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.prometheus/simpleclient@0.12.0",
+			"dependsOn": [
+				"pkg:maven/io.prometheus/simpleclient_tracer_otel@0.12.0",
+				"pkg:maven/io.prometheus/simpleclient_tracer_otel_agent@0.12.0"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.prometheus/simpleclient_tracer_otel@0.12.0",
+			"dependsOn": [
+				"pkg:maven/io.prometheus/simpleclient_tracer_common@0.12.0"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.prometheus/simpleclient_tracer_otel_agent@0.12.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.prometheus/simpleclient_tracer_common@0.12.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-json@2.6.7",
+			"dependsOn": [
+				"pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jdk8@2.13.2",
+				"pkg:maven/com.fasterxml.jackson.module/jackson-module-parameter-names@2.13.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-starter-tomcat@2.6.7",
+			"dependsOn": [
+				"pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.62",
+				"pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@9.0.62",
+				"pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.62"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-web@5.3.19",
+			"dependsOn": [
+				"pkg:maven/org.springframework/spring-beans@5.3.19"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-webmvc@5.3.19",
+			"dependsOn": [
+				"pkg:maven/org.springframework/spring-aop@5.3.19",
+				"pkg:maven/org.springframework/spring-expression@5.3.19"
+			]
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.datatype/jackson-datatype-jdk8@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.module/jackson-module-parameter-names@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-core@9.0.62",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-el@9.0.62",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.tomcat.embed/tomcat-embed-websocket@9.0.62",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-beans@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-aop@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-expression@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-clients@3.0.1",
+			"dependsOn": [
+				"pkg:maven/com.github.luben/zstd-jni@1.5.0-2",
+				"pkg:maven/org.lz4/lz4-java@1.7.1",
+				"pkg:maven/org.xerial.snappy/snappy-java@1.1.8.1"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.rocksdb/rocksdbjni@6.19.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.slf4j/slf4j-api@1.7.36",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.13.2.1",
+			"dependsOn": [
+				"pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/com.github.luben/zstd-jni@1.5.0-2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.lz4/lz4-java@1.7.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.xerial.snappy/snappy-java@1.1.8.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-context@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-messaging@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-tx@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.retry/spring-retry@1.3.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-test@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework.boot/spring-boot-test-autoconfigure@2.6.7",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.jayway.jsonpath/json-path@2.6.0",
+			"dependsOn": [
+				"pkg:maven/net.minidev/json-smart@2.4.8"
+			]
+		},
+		{
+			"ref": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@2.3.3",
+			"dependsOn": [
+				"pkg:maven/jakarta.activation/jakarta.activation-api@1.2.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.assertj/assertj-core@3.21.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.hamcrest/hamcrest@2.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.junit.jupiter/junit-jupiter@5.8.2",
+			"dependsOn": [
+				"pkg:maven/org.junit.jupiter/junit-jupiter-params@5.8.2",
+				"pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.8.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.mockito/mockito-core@4.0.0",
+			"dependsOn": [
+				"pkg:maven/net.bytebuddy/byte-buddy@1.11.22",
+				"pkg:maven/net.bytebuddy/byte-buddy-agent@1.11.22",
+				"pkg:maven/org.objenesis/objenesis@3.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.mockito/mockito-junit-jupiter@4.0.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.skyscreamer/jsonassert@1.5.0",
+			"dependsOn": [
+				"pkg:maven/com.vaadin.external.google/android-json@0.0.20131108.vaadin1"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-core@5.3.19",
+			"dependsOn": [
+				"pkg:maven/org.springframework/spring-jcl@5.3.19"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-test@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.xmlunit/xmlunit-core@2.8.4",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/net.minidev/json-smart@2.4.8",
+			"dependsOn": [
+				"pkg:maven/net.minidev/accessors-smart@2.4.8"
+			]
+		},
+		{
+			"ref": "pkg:maven/net.minidev/accessors-smart@2.4.8",
+			"dependsOn": [
+				"pkg:maven/org.ow2.asm/asm@9.1"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.ow2.asm/asm@9.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/jakarta.activation/jakarta.activation-api@1.2.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.junit.jupiter/junit-jupiter-params@5.8.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.junit.jupiter/junit-jupiter-engine@5.8.2",
+			"dependsOn": [
+				"pkg:maven/org.junit.platform/junit-platform-engine@1.8.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.junit.platform/junit-platform-engine@1.8.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/net.bytebuddy/byte-buddy@1.11.22",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/net.bytebuddy/byte-buddy-agent@1.11.22",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.objenesis/objenesis@3.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.vaadin.external.google/android-json@0.0.20131108.vaadin1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.springframework/spring-jcl@5.3.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.zookeeper/zookeeper@3.6.3",
+			"dependsOn": [
+				"pkg:maven/org.apache.zookeeper/zookeeper-jute@3.6.3",
+				"pkg:maven/org.apache.yetus/audience-annotations@0.5.0",
+				"pkg:maven/io.netty/netty-handler@4.1.76.Final",
+				"pkg:maven/io.netty/netty-transport-native-epoll@4.1.76.Final"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-clients@test",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-metadata@3.0.1",
+			"dependsOn": [
+				"pkg:maven/org.apache.kafka/kafka-server-common@3.0.1",
+				"pkg:maven/org.apache.kafka/kafka-raft@3.0.1",
+				"pkg:maven/com.yammer.metrics/metrics-core@2.2.0"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-streams-test-utils@3.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka_2.13@3.0.1",
+			"dependsOn": [
+				"pkg:maven/org.scala-lang/scala-library@2.13.6",
+				"pkg:maven/org.apache.kafka/kafka-storage@3.0.1",
+				"pkg:maven/net.sourceforge.argparse4j/argparse4j@0.7.0",
+				"pkg:maven/com.fasterxml.jackson.module/jackson-module-scala_2.13@2.13.2",
+				"pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-csv@2.13.2",
+				"pkg:maven/net.sf.jopt-simple/jopt-simple@5.0.4",
+				"pkg:maven/org.scala-lang.modules/scala-collection-compat_2.13@2.4.4",
+				"pkg:maven/org.scala-lang.modules/scala-java8-compat_2.13@1.0.0",
+				"pkg:maven/org.scala-lang/scala-reflect@2.13.6",
+				"pkg:maven/com.typesafe.scala-logging/scala-logging_2.13@3.9.3",
+				"pkg:maven/io.dropwizard.metrics/metrics-core@4.2.9",
+				"pkg:maven/commons-cli/commons-cli@1.4"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka_2.13@test",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.junit.jupiter/junit-jupiter-api@5.8.2",
+			"dependsOn": [
+				"pkg:maven/org.opentest4j/opentest4j@1.2.0",
+				"pkg:maven/org.junit.platform/junit-platform-commons@1.8.2",
+				"pkg:maven/org.apiguardian/apiguardian-api@1.1.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/org.apache.zookeeper/zookeeper-jute@3.6.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.yetus/audience-annotations@0.5.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-handler@4.1.76.Final",
+			"dependsOn": [
+				"pkg:maven/io.netty/netty-common@4.1.76.Final",
+				"pkg:maven/io.netty/netty-resolver@4.1.76.Final",
+				"pkg:maven/io.netty/netty-buffer@4.1.76.Final",
+				"pkg:maven/io.netty/netty-transport@4.1.76.Final",
+				"pkg:maven/io.netty/netty-codec@4.1.76.Final"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-transport-native-epoll@4.1.76.Final",
+			"dependsOn": [
+				"pkg:maven/io.netty/netty-transport-native-unix-common@4.1.76.Final",
+				"pkg:maven/io.netty/netty-transport-classes-epoll@4.1.76.Final"
+			]
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-common@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-resolver@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-buffer@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-transport@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-codec@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-transport-native-unix-common@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.netty/netty-transport-classes-epoll@4.1.76.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-server-common@3.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-raft@3.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.yammer.metrics/metrics-core@2.2.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.scala-lang/scala-library@2.13.6",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-storage@3.0.1",
+			"dependsOn": [
+				"pkg:maven/org.apache.kafka/kafka-storage-api@3.0.1"
+			]
+		},
+		{
+			"ref": "pkg:maven/net.sourceforge.argparse4j/argparse4j@0.7.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.module/jackson-module-scala_2.13@2.13.2",
+			"dependsOn": [
+				"pkg:maven/com.thoughtworks.paranamer/paranamer@2.8"
+			]
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-csv@2.13.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/net.sf.jopt-simple/jopt-simple@5.0.4",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.scala-lang.modules/scala-collection-compat_2.13@2.4.4",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.scala-lang.modules/scala-java8-compat_2.13@1.0.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.scala-lang/scala-reflect@2.13.6",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.typesafe.scala-logging/scala-logging_2.13@3.9.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/io.dropwizard.metrics/metrics-core@4.2.9",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/commons-cli/commons-cli@1.4",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-storage-api@3.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.thoughtworks.paranamer/paranamer@2.8",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.opentest4j/opentest4j@1.2.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.junit.platform/junit-platform-commons@1.8.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apiguardian/apiguardian-api@1.1.2",
+			"dependsOn": []
+		}
+	]
+}

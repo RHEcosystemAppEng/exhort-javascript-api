@@ -13,6 +13,10 @@
 
 export class PackageRef {
     /**
+    * PackageURL identifier
+    */
+    'purl'?: string;
+    /**
     * <groupId>:<artifactId> for Java packages
     */
     'name'?: string;
@@ -24,6 +28,12 @@ export class PackageRef {
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
+        {
+            "name": "purl",
+            "baseName": "purl",
+            "type": "string",
+            "format": ""
+        },
         {
             "name": "name",
             "baseName": "name",
