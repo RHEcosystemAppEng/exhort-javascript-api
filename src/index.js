@@ -1,5 +1,5 @@
 import { availableProviders, match } from './provider.js'
-import {AnalysisReport} from '../dist/generated/backend/AnalysisReport.js'
+import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
