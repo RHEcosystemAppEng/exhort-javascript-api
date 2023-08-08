@@ -3,6 +3,7 @@
  * @param component {PackageURL}
  * @param type type of package - application or library
  * @return {{"bom-ref": string, name, purl: string, type, version}}
+ * @private
  */
 function getComponent(component,type) {
 	let componentObject;
@@ -54,7 +55,8 @@ export default class CycloneDxSbom {
 
 	}
 	/**
-	 * @inheritDoc
+	 * @param {PackageURL} root - add main/root component for sbom
+	 * @return {CycloneDxSbom} the CycloneDxSbom Sbom Object
 	 */
 	addRoot (root) {
 
@@ -67,13 +69,16 @@ export default class CycloneDxSbom {
 
 
 	/**
-	 * @inheritDoc
+	 * @return {{{"bom-ref": string, name, purl: string, type, version}}} root component of sbom.
 	 */
 	getRoot (){
 		return this.rootComponent
 	}
+
 	/**
-	 * @inheritDoc
+	 * @param {Component} sourceRef current target Component ( Starting from root component by clients)
+	 * @param {PackageURL} targetRef current dependency to add to Dependencies list of component sourceRef
+	 * @return Sbom
 	 */
 	addDependency(sourceRef, targetRef){
 		let componentIndex = this.getComponentIndex(sourceRef);
@@ -93,9 +98,6 @@ export default class CycloneDxSbom {
 		{
 			this.dependencies[dependencyIndex].dependsOn.push(targetRef.toString())
 		}
-		//TODO check validation if exists.
-		// sourceComp.dependencies.add(targetComponent.bomRef)
-		// if(this.sbomModel.dependencies.streams.find(dep => dep.ref === targetRef.ref) === undefined)
 		if(this.getDependencyIndex(targetRef.toString()) < 0)
 		{
 			this.dependencies.push(createDependency(targetRef.toString()))
@@ -109,7 +111,7 @@ export default class CycloneDxSbom {
 		return this
 	}
 	/**
-	 * @inheritDoc
+	 * @return String CycloneDx Sbom json object in a string format
 	 */
 	getAsJsonString(){
 		this.sbomObject = {
@@ -139,21 +141,25 @@ export default class CycloneDxSbom {
 	 *
 	 * @param {Conponent} theComponent - Component Object with purl field.
 	 * @return {int} index of the found component entry, if not found returns -1.
+	 * @private
 	 */
 	getComponentIndex(theComponent){
 
 		return this.components.findIndex(component => component.purl === theComponent.purl)
 	}
 
-	/**
-	 * @inheritDoc
+	/** This method gets a PackageUrl, and returns a Component of CycloneDx Sbom
+	 * @param purl {PackageURL}
+	 * @return component
 	 */
 	purlToComponent(purl)
 	{
 		return getComponent(purl,"library")
 	}
 	/**
-	 * @inheritDoc
+	 * This method gets an array of dependencies to be ignored, and remove all of them from CycloneDx Sbom
+	 * @param {Array} dependencies to be removed from sbom
+	 * @return {CycloneDxSbom} without ignored dependencies
 	 */
 	filterIgnoredDeps(deps){
 		deps.forEach(dep => {

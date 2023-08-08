@@ -143,6 +143,34 @@ Excluding a package from any analysis can be achieved by marking the package for
 </li>
 
 </ul>
+<ul>
+<li>
+<em>Javascript NPM </em> users can add a root (key, value) pair with value of list of names (strings) to be ignored (without versions), and key called <b>exhortignore</b> in <em>package.json</em>,  example:
+
+```json
+{
+  "name": "sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.18"
+  },
+  "exhortignore": [
+    "jsonwebtoken"
+  ]
+}
+
+```
+</li>
+
+</ul>
 
 <h3>Customization</h3>
 <p>
@@ -158,7 +186,8 @@ import fs from 'node:fs'
 
 let options = {
   'EXHORT_SNYK_TOKEN': 'my-secret-snyk-token',
-  'EXHORT_MVN_PATH': '/path/to/my/mvn'
+  'EXHORT_MVN_PATH': '/path/to/my/mvn',
+  'EXHORT_NPM_PATH': '/path/to/npm'
 }
 
 // Get stack analysis in JSON format
@@ -209,6 +238,12 @@ following keys for setting custom paths for the said executables.
 <td><em>mvn</em></td>
 <td>EXHORT_MVN_PATH</td>
 </tr>
+<tr>
+<td><a href="https://www.npmjs.com/">NPM</a></td>
+<td><em>npm</em></td>
+<td>EXHORT_NPM_PATH</td>
+</tr>
+
 </table>
 
 <!-- Badge links -->

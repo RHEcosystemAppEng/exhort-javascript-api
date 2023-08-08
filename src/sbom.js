@@ -22,8 +22,9 @@ export default class Sbom {
 	}
 
 	/**
-	 * @param {Array} deps
-	 * @return Sbom
+	 * This method gets an array of dependencies to be ignored, and remove all of them from sbom
+	 * @param {Array} dependencies to be removed from sbom
+	 * @return {Sbom} without ignored dependencies
 	 */
 	filterIgnoredDeps(deps){
 		return this.sbomModel.filterIgnoredDeps(deps)
@@ -46,7 +47,7 @@ export default class Sbom {
 	}
 
 	/**
-	 *
+	 * This method gets a PackageUrl, and returns a Component of Sbom
 	 * @param purl {PackageURL}
 	 * @return component
 	 */
