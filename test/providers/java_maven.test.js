@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import fs from 'fs'
 import sinon from "sinon";
+// import exhort from "../../src/index.js"
 
 
 
@@ -27,6 +28,19 @@ suite('testing the java-maven data provider', () => {
 		"poms_deps_with_no_ignore_long"
 	].forEach(testCase => {
 		let scenario = testCase.replace('pom_deps_', '').replaceAll('_', ' ')
+		// test(`custom adhoc test`, async () => {
+		//
+		// 	let options = {
+		// 		'EXHORT_SNYK_TOKEN': 'insert-token'
+		// 	}
+		// 	let httpStatus = await exhort.validateToken(options);
+		//
+		// 	let pom = fs.readFileSync(`/tmp/exhort-maven/pom.xml`,).toString().trim()
+		// 	let analysisReport = await exhort.componentAnalysis("pom.xml", pom);
+		// 	console.log(analysisReport)
+		// 	analysisReport = await exhort.stackAnalysis(`/tmp/exhort-maven/pom.xml`,true);
+		// 	console.log(analysisReport)
+		// }).timeout(process.env.GITHUB_ACTIONS ? 30000 : 5000)
 
 		test(`verify maven data provided for stack analysis with scenario ${scenario}`, async () => {
 			// load the expected graph for the scenario

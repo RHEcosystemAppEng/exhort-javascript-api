@@ -265,7 +265,7 @@ function getDependencies(manifest) {
 		ignored.push({
 			groupId: dep['groupId'],
 			artifactId: dep['artifactId'],
-			version: dep['version'] ? dep['version'] : '*',
+			version: dep['version'] ? dep['version'].toString() : '*',
 			scope: '*',
 			ignore: ignore
 		})

@@ -4,7 +4,7 @@ import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
 
-export default { AnalysisReport, componentAnalysis, stackAnalysis }
+export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
 
 /**
  * @type {string} backend url to send requests to
@@ -41,4 +41,8 @@ async function stackAnalysis(manifest, html = false, opts = {}) {
 async function componentAnalysis(manifestType, data, opts = {}) {
 	let provider = match(manifestType, availableProviders) // throws error if no matching provider
 	return await analysis.requestComponent(provider, data, url, opts) // throws error request sending failed
+}
+
+async function validateToken(opts = {}) {
+	return await analysis.validateToken(url, opts) // throws error request sending failed
 }
