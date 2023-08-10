@@ -20,6 +20,19 @@ function interceptAndRun(handler, test) {
 	};
 }
 
+function determineResponse(req, res, ctx) {
+	let response
+	if (req.headers.get("ex-snyk-token") === null) {
+		response = res(ctx.status(400));
+
+	} else if (req.headers.get("ex-snyk-token") === "good-dummy-token") {
+		response = res(ctx.status(200));
+	} else {
+		response = res(ctx.status(401));
+	}
+	return response
+}
+
 suite('testing the analysis module for sending api requests', () => {
 	let backendUrl = 'http://url.lru' // dummy backend url will be used for fake server
 	// fake provided data, in prod will be provided by the provider and used for creating requests
@@ -96,6 +109,54 @@ suite('testing the analysis module for sending api requests', () => {
 				expect(res).to.deep.equal({dummy: 'response'})
 			}
 		))
+	})
+	suite('testing the validateToken function', () => {
+
+		test('invoking validateToken function with good token', interceptAndRun(
+			// interception route, will return ok response for our fake content type
+			rest.get(`${backendUrl}/api/v3/token`, (req, res, ctx) => {
+				return determineResponse(req, res, ctx);
+
+			}),
+			async () => {
+				let options = {
+					'EXHORT_SNYK_TOKEN': 'good-dummy-token'
+				}
+				// verify response as expected
+				let res = await analysis.validateToken(backendUrl, options)
+				expect(res).to.equal(200)
+			}
+		))
+		test('invoking validateToken function with bad token', interceptAndRun(
+			// interception route, will return ok response for our fake content type
+			rest.get(`${backendUrl}/api/v3/token`, (req, res, ctx) => {
+				return determineResponse(req, res, ctx);
+
+			}),
+			async () => {
+				let options = {
+					'EXHORT_SNYK_TOKEN': 'bad-dummy-token'
+				}
+				// verify response as expected
+				let res = await analysis.validateToken(backendUrl, options)
+				expect(res).to.equal(401)
+			}
+		))
+		test('invoking validateToken function without token', interceptAndRun(
+			// interception route, will return ok response for our fake content type
+			rest.get(`${backendUrl}/api/v3/token`, (req, res, ctx) => {
+				return determineResponse(req, res, ctx);
+
+			}),
+			async () => {
+				let options = {
+				}
+				// verify response as expected
+				let res = await analysis.validateToken(backendUrl, options)
+				expect(res).to.equal(400)
+			}
+		))
+
 	})
 
 	suite('verify environment variables to token headers mechanism', () => {

@@ -1,6 +1,6 @@
 import {getCustom} from "./tools.js";
 
-export default { requestComponent, requestStack }
+export default { requestComponent, requestStack, validateToken }
 
 /**
  * Send a stack analysis request and get the report as 'text/html' or 'application/json'.
@@ -45,6 +45,23 @@ async function requestComponent(provider, data, url, opts = {}) {
 		body: provided.content
 	})
 	return resp.json()
+}
+
+/**
+ *
+ * @param url the backend url to send the request to
+ * @param {{}} [opts={}] - optional various options to pass headers for t he validateToken Request
+ * @return {Promise<number>} return the HTTP status Code of the response from the validate token request.
+ */
+async function validateToken(url, opts = {}) {
+	let resp = await fetch(`${url}/api/v3/token`, {
+		method: 'GET',
+		headers: {
+			// 'Accept': 'text/plain',
+			...getTokenHeaders(opts),
+		}
+	})
+	return resp.status
 }
 
 /**
