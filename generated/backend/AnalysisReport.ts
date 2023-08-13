@@ -10,28 +10,14 @@
  * Do not edit the class manually.
  */
 
-import { DependencyReport } from '../backend/DependencyReport';
-import { Summary } from '../backend/Summary';
+import { AnalysisReportValue } from '../backend/AnalysisReportValue';
 
 export class AnalysisReport {
-    'summary'?: Summary;
-    'dependencies'?: Array<DependencyReport>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
-        {
-            "name": "summary",
-            "baseName": "summary",
-            "type": "Summary",
-            "format": ""
-        },
-        {
-            "name": "dependencies",
-            "baseName": "dependencies",
-            "type": "Array<DependencyReport>",
-            "format": ""
-        }    ];
+    ];
 
     static getAttributeTypeMap() {
         return AnalysisReport.attributeTypeMap;

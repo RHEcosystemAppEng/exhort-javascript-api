@@ -11,13 +11,16 @@
  */
 
 import { Issue } from '../backend/Issue';
-import { PackageRef } from '../backend/PackageRef';
 import { Remediation } from '../backend/Remediation';
 
 export class TransitiveDependencyReport {
-    'ref'?: PackageRef;
+    /**
+    * PackageURL used to identify a dependency artifact
+    */
+    'ref'?: any;
     'issues'?: Array<Issue>;
     'remediations'?: { [key: string]: Remediation; };
+    'highestVulnerability'?: Issue;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -25,7 +28,7 @@ export class TransitiveDependencyReport {
         {
             "name": "ref",
             "baseName": "ref",
-            "type": "PackageRef",
+            "type": "any",
             "format": ""
         },
         {
@@ -38,6 +41,12 @@ export class TransitiveDependencyReport {
             "name": "remediations",
             "baseName": "remediations",
             "type": "{ [key: string]: Remediation; }",
+            "format": ""
+        },
+        {
+            "name": "highestVulnerability",
+            "baseName": "highestVulnerability",
+            "type": "Issue",
             "format": ""
         }    ];
 

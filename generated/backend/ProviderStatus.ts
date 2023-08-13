@@ -13,8 +13,8 @@
 
 export class ProviderStatus {
     'ok'?: boolean;
-    'provider'?: string;
-    'status'?: number;
+    'name'?: string;
+    'code'?: number;
     'message'?: string;
 
     static readonly discriminator: string | undefined = undefined;
@@ -27,14 +27,14 @@ export class ProviderStatus {
             "format": ""
         },
         {
-            "name": "provider",
-            "baseName": "provider",
+            "name": "name",
+            "baseName": "name",
             "type": "string",
             "format": ""
         },
         {
-            "name": "status",
-            "baseName": "status",
+            "name": "code",
+            "baseName": "code",
             "type": "number",
             "format": ""
         },

@@ -11,13 +11,11 @@
  */
 
 import { DependenciesSummary } from '../backend/DependenciesSummary';
-import { ProviderStatus } from '../backend/ProviderStatus';
 import { VulnerabilitiesSummary } from '../backend/VulnerabilitiesSummary';
 
 export class Summary {
     'dependencies'?: DependenciesSummary;
     'vulnerabilities'?: VulnerabilitiesSummary;
-    'providerStatuses'?: Array<ProviderStatus>;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -32,12 +30,6 @@ export class Summary {
             "name": "vulnerabilities",
             "baseName": "vulnerabilities",
             "type": "VulnerabilitiesSummary",
-            "format": ""
-        },
-        {
-            "name": "providerStatuses",
-            "baseName": "providerStatuses",
-            "type": "Array<ProviderStatus>",
             "format": ""
         }    ];
 

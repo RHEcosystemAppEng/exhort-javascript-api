@@ -22,7 +22,7 @@ export class CvssVector {
     'availabilityImpact'?: string;
     'exploitCodeMaturity'?: string;
     'remediationLevel'?: string;
-    'reportConficende'?: string;
+    'reportConfidence'?: string;
     'cvss'?: string;
 
     static readonly discriminator: string | undefined = undefined;
@@ -89,8 +89,8 @@ export class CvssVector {
             "format": ""
         },
         {
-            "name": "reportConficende",
-            "baseName": "reportConficende",
+            "name": "reportConfidence",
+            "baseName": "reportConfidence",
             "type": "string",
             "format": ""
         },

@@ -10,23 +10,26 @@
  * Do not edit the class manually.
  */
 
-import { DependencyReportHighestVulnerability } from '../backend/DependencyReportHighestVulnerability';
-import { DependencyReportRecommendation } from '../backend/DependencyReportRecommendation';
 import { Issue } from '../backend/Issue';
-import { PackageRef } from '../backend/PackageRef';
 import { Remediation } from '../backend/Remediation';
 import { TransitiveDependencyReport } from '../backend/TransitiveDependencyReport';
 
 export class DependencyReport {
-    'ref'?: PackageRef;
+    /**
+    * PackageURL used to identify a dependency artifact
+    */
+    'ref'?: any;
     'issues'?: Array<Issue>;
     'transitive'?: Array<TransitiveDependencyReport>;
-    'recommendation'?: DependencyReportRecommendation;
+    /**
+    * PackageURL used to identify a dependency artifact
+    */
+    'recommendation'?: any;
     /**
     * Trusted Content remediation related to identified security vulnerabilities
     */
     'remediations'?: { [key: string]: Remediation; };
-    'highestVulnerability'?: DependencyReportHighestVulnerability;
+    'highestVulnerability'?: Issue;
 
     static readonly discriminator: string | undefined = undefined;
 
@@ -34,7 +37,7 @@ export class DependencyReport {
         {
             "name": "ref",
             "baseName": "ref",
-            "type": "PackageRef",
+            "type": "any",
             "format": ""
         },
         {
@@ -52,7 +55,7 @@ export class DependencyReport {
         {
             "name": "recommendation",
             "baseName": "recommendation",
-            "type": "DependencyReportRecommendation",
+            "type": "any",
             "format": ""
         },
         {
@@ -64,7 +67,7 @@ export class DependencyReport {
         {
             "name": "highestVulnerability",
             "baseName": "highestVulnerability",
-            "type": "DependencyReportHighestVulnerability",
+            "type": "Issue",
             "format": ""
         }    ];
 

@@ -10,45 +10,39 @@
  * Do not edit the class manually.
  */
 
+import { DependencyReport } from '../backend/DependencyReport';
+import { ProviderStatus } from '../backend/ProviderStatus';
+import { Summary } from '../backend/Summary';
 
-export class PackageRef {
-    /**
-    * PackageURL identifier
-    */
-    'purl'?: string;
-    /**
-    * <groupId>:<artifactId> for Java packages
-    */
-    'name'?: string;
-    /**
-    * Package version
-    */
-    'version'?: string;
+export class AnalysisReportValue {
+    'status'?: ProviderStatus;
+    'summary'?: Summary;
+    'dependencies'?: Array<DependencyReport>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "purl",
-            "baseName": "purl",
-            "type": "string",
+            "name": "status",
+            "baseName": "status",
+            "type": "ProviderStatus",
             "format": ""
         },
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
+            "name": "summary",
+            "baseName": "summary",
+            "type": "Summary",
             "format": ""
         },
         {
-            "name": "version",
-            "baseName": "version",
-            "type": "string",
+            "name": "dependencies",
+            "baseName": "dependencies",
+            "type": "Array<DependencyReport>",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return PackageRef.attributeTypeMap;
+        return AnalysisReportValue.attributeTypeMap;
     }
 
     public constructor() {

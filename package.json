@@ -39,7 +39,7 @@
 		"precompile": "rm -rf dist",
 		"compile": "tsc -p tsconfig.json",
 		"pregen:backend": "rm -rf generated",
-		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/exhort/0.1.x/src/main/resources/META-INF/openapi.yaml -g typescript --global-property models --model-package backend -o generated",
+		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/exhort/main/api-spec/v3/openapi.yaml -g typescript --global-property models --model-package backend  --inline-schema-name-mappings  analysis_200_response=MultipartResponse,analysis_report_value=ProviderReport --generate-alias-as-model -o generated",
 		"postgen:backend": "find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} +"
 	},
 	"dependencies": {

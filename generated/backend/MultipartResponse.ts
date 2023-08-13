@@ -11,47 +11,28 @@
  */
 
 
-/**
-* Trusted Content recommendation that is not related to any security vulnerability
-*/
-export class DependencyReportRecommendation {
-    /**
-    * PackageURL identifier
-    */
-    'purl'?: string;
-    /**
-    * <groupId>:<artifactId> for Java packages
-    */
-    'name'?: string;
-    /**
-    * Package version
-    */
-    'version'?: string;
+export class MultipartResponse {
+    'jsonReport'?: any;
+    'htmlReport'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "purl",
-            "baseName": "purl",
-            "type": "string",
+            "name": "jsonReport",
+            "baseName": "json_report",
+            "type": "any",
             "format": ""
         },
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "version",
-            "baseName": "version",
+            "name": "htmlReport",
+            "baseName": "html_report",
             "type": "string",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return DependencyReportRecommendation.attributeTypeMap;
+        return MultipartResponse.attributeTypeMap;
     }
 
     public constructor() {

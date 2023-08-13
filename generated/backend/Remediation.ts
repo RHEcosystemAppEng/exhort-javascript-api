@@ -10,11 +10,13 @@
  * Do not edit the class manually.
  */
 
-import { PackageRef } from '../backend/PackageRef';
 
 export class Remediation {
     'issueRef'?: string;
-    'mavenPackage'?: PackageRef;
+    /**
+    * PackageURL used to identify a dependency artifact
+    */
+    'mavenPackage'?: any;
     'productStatus'?: string;
 
     static readonly discriminator: string | undefined = undefined;
@@ -29,7 +31,7 @@ export class Remediation {
         {
             "name": "mavenPackage",
             "baseName": "mavenPackage",
-            "type": "PackageRef",
+            "type": "any",
             "format": ""
         },
         {

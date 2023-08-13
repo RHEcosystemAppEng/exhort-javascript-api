@@ -11,14 +11,14 @@
  */
 
 import { CvssVector } from '../backend/CvssVector';
+import { Severity } from '../backend/Severity';
 
 export class Issue {
     'id'?: string;
     'title'?: string;
-    'source'?: string;
     'cvss'?: CvssVector;
-    'score'?: number;
-    'severity'?: IssueSeverityEnum;
+    'cvssScore'?: number;
+    'severity'?: Severity;
     'cves'?: Array<string>;
     'unique'?: boolean;
 
@@ -38,27 +38,21 @@ export class Issue {
             "format": ""
         },
         {
-            "name": "source",
-            "baseName": "source",
-            "type": "string",
-            "format": ""
-        },
-        {
             "name": "cvss",
             "baseName": "cvss",
             "type": "CvssVector",
             "format": ""
         },
         {
-            "name": "score",
-            "baseName": "score",
+            "name": "cvssScore",
+            "baseName": "cvssScore",
             "type": "number",
-            "format": ""
+            "format": "float"
         },
         {
             "name": "severity",
             "baseName": "severity",
-            "type": "IssueSeverityEnum",
+            "type": "Severity",
             "format": ""
         },
         {
@@ -83,5 +77,4 @@ export class Issue {
 }
 
 
-export type IssueSeverityEnum = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" ;
 
