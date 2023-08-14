@@ -12,7 +12,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken
  */
 const url = getCustom(
 	'EXHORT_BACKEND_URL',
-	'http://dev-exhort.apps.cn-lab2-eu.lue0.p1.openshiftapps.com'
+	'http://dev-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
 )
 
 /**
