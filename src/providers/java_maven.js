@@ -78,10 +78,11 @@ function dotGraphToPurl(root) {
 /**
  *
  * @param {String} dotGraphList Dot Graph tree String of the pom.xml manifest
+ * @param {[String]} ignoredDeps List of ignored dependencies to be omitted from sbom
  * @return {String} formatted sbom Json String with all dependencies
  * @private
  */
-function createSbomFileFromDotGraphFormat(dotGraphList) {
+function createSbomFileFromDotGraphFormat(dotGraphList, ignoredDeps) {
 	// get root component
 	let lines = dotGraphList.replaceAll(";","").split('\n');
 	let root = lines[0].split("\"")[1];
@@ -99,7 +100,7 @@ function createSbomFileFromDotGraphFormat(dotGraphList) {
 			}
 		}
 	})
-	return sbom.getAsJsonString()
+	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString()
 }
 
 /**
@@ -131,9 +132,11 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let depTreeCmd = `${mvn} -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
+	let ignoredDeps = new Array()
 	getDependencies(manifest).forEach(dep => {
 		if (dep.ignore) {
 			depTreeCmd += ` -Dexcludes=${dep['groupId']}:${dep['artifactId']}:${dep['scope']}:${dep['version']}`
+			ignoredDeps.push(toPurl(dep.groupId,dep.artifactId,dep.version).toString())
 		}
 	})
 	// execute dependency tree command
@@ -144,7 +147,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	})
 	// read dependency tree from temp file
 	let content= fs.readFileSync(`${tmpDepTree}`)
-	let sbom = createSbomFileFromDotGraphFormat(content.toString());
+	let sbom = createSbomFileFromDotGraphFormat(content.toString(),ignoredDeps);
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependency graph as string

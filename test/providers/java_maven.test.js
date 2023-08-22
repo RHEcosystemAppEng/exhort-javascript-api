@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import fs from 'fs'
 import sinon from "sinon";
-// import exhort from "../../src/index.js"
+// import exhort from "../../dist/src/index.js"
 
 
 
@@ -17,7 +17,7 @@ suite('testing the java-maven data provider', () => {
 		)
 	});
 
-	[
+	[   "poms_deps_with_2_ignore_long",
 		"pom_deps_with_ignore_on_artifact",
 		"pom_deps_with_ignore_on_dependency",
 		"pom_deps_with_ignore_on_group",
@@ -30,16 +30,18 @@ suite('testing the java-maven data provider', () => {
 		let scenario = testCase.replace('pom_deps_', '').replaceAll('_', ' ')
 		// test(`custom adhoc test`, async () => {
 		//
-		// 	let options = {
-		// 		'EXHORT_SNYK_TOKEN': 'insert-token'
-		// 	}
-		// 	let httpStatus = await exhort.validateToken(options);
-		//
-		// 	let pom = fs.readFileSync(`/tmp/exhort-maven/pom.xml`,).toString().trim()
+		// 	// let options = {
+		// 	// 	'EXHORT_SNYK_TOKEN': 'insert-token'
+		// 	// }
+		// 	// let httpStatus = await exhort.validateToken(options);
+		// 	analysisReport = await exhort.stackAnalysis(`/tmp/pom-xml/pom.xml`,false);
+		// 	console.log(analysisReport)
+		// 	let pom = fs.readFileSync(`/tmp/pom-xml/pom.xml`,).toString().trim()
 		// 	let analysisReport = await exhort.componentAnalysis("pom.xml", pom);
 		// 	console.log(analysisReport)
-		// 	analysisReport = await exhort.stackAnalysis(`/tmp/exhort-maven/pom.xml`,true);
+		// 	analysisReport = await exhort.stackAnalysis(`/tmp/pom-xml/pom.xml`,true);
 		// 	console.log(analysisReport)
+		//
 		// }).timeout(process.env.GITHUB_ACTIONS ? 30000 : 5000)
 
 		test(`verify maven data provided for stack analysis with scenario ${scenario}`, async () => {

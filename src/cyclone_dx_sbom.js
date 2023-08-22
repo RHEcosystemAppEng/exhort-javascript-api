@@ -185,5 +185,34 @@ export default class CycloneDxSbom {
 		return this
 	}
 
+	/**
+	 * This method gets an array of dependencies with versions( purl string format) to be ignored, and remove all of them from CycloneDx Sbom
+	 * @param {Array} dependencies to be removed from sbom
+	 * @return {CycloneDxSbom} without ignored dependencies
+	 */
+	filterIgnoredDepsIncludingVersion(deps){
+		deps.forEach(dep => {
+			let index = this.components.findIndex(component => component.purl === dep );
+			if(index>=0)
+			{
+				this.components.splice(index,1)
+			}
+			index = this.dependencies.findIndex(dependency => dependency.ref === dep);
+			if(index>=0)
+			{
+				this.dependencies.splice(index,1)
+			}
+
+			this.dependencies.forEach(dependency => {
+				let indexDependsOn = dependency.dependsOn.findIndex(theDep => theDep === dep );
+				if (indexDependsOn > -1 )
+				{
+					dependency.dependsOn.splice(indexDependsOn,1)
+				}
+			})
+		})
+		return this
+	}
+
 
 }
