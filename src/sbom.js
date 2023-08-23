@@ -31,6 +31,14 @@ export default class Sbom {
 	}
 
 	/**
+	 * This method gets an array of dependencies with versions( purl string format) to be ignored, and remove all of them from CycloneDx Sbom
+	 * @param {Array} dependencies to be removed from sbom
+	 * @return {CycloneDxSbom} without ignored dependencies
+	 */
+	filterIgnoredDepsIncludingVersion(deps) {
+		return this.sbomModel.filterIgnoredDepsIncludingVersion(deps)
+	}
+	/**
 	 * @param {Component} sourceRef current target Component ( Starting from root component by clients)
 	 * @param {PackageURL} targetRef current dependency to add to Dependencies list of component sourceRef
 	 * @return Sbom

@@ -48,7 +48,9 @@ function getComponent(data, opts) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpPackageJson = path.join(tmpDir, 'package.json')
 	fs.writeFileSync(tmpPackageJson, data)
-	return getSBOM(tmpPackageJson,opts,false)
+	let sbom = getSBOM(tmpPackageJson,opts,false);
+	fs.rmSync(tmpDir, {recursive: true, force: true})
+	return sbom
 
 }
 
