@@ -12,7 +12,7 @@ export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken
  */
 const url = getCustom(
 	'EXHORT_BACKEND_URL',
-	'http://dev-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
+	'http://alpha-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
 )
 
 /**
