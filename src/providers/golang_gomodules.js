@@ -167,6 +167,7 @@ function dependencyNotIgnored(allIgnoredDeps, purl) {
  * Create SBOM json string for go Module.
  * @param {string} manifest - path for go.mod
  * @param {{}} [opts={}] - optional various options to pass along the application
+ * @param {boolean} includeTransitive - whether the sbom should contain transitive dependencies of the main module or not.
  * @returns {string} the SBOM json content
  * @private
  */
