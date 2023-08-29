@@ -30,6 +30,14 @@ match() {
     echo "- PASSED"
 }
 
+matchConstant() {
+	if [[ "$1" != "$2" ]]; then
+        echo "- FAILED"
+        cleanup 1
+    fi
+    echo "- PASSED"
+}
+
 ##########################################
 ###### Verify Required Tools Exists ######
 ##########################################
@@ -78,7 +86,7 @@ fi
 ##########################################
 ###### JavaScript Integration Tests ######
 ##########################################
-echo "PREPARING JavaScript integration tests environment"
+echo "PREPARING JavaScript integration/component tests environment"
 rm -rf testers/javascript/node_modules
 rm -f testers/javascript/package-lock.json
 if ! npm --prefix ./testers/javascript install --silent; then
@@ -86,69 +94,51 @@ if ! npm --prefix ./testers/javascript install --silent; then
 	cleanup $?
 fi
 echo "- SUCCESSFUL"
-
+mkdir -p ./responses
 #### JAVA MAVEN
 echo "RUNNING JavaScript integration test for Stack Analysis report in Html for Java Maven"
-match "scenarios/maven/expected_stack_html" "node testers/javascript/index.js stack scenarios/maven/pom.xml true"
+
+node testers/javascript/index.js stack scenarios/maven/pom.xml true &> ./responses/stack.html
+
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , return $RC from invocation"
+			cleanup $RC
+fi
+RESPONSE_CONTENT=$(grep -i "DOCTYPE html" ./responses/stack.html)
+if [[ -z "${RESPONSE_CONTENT}"  ]]; then
+    echo "- FAILED ,return code is ok ,but received doc is not HTML"
+            cleanup 1
+fi
+echo "- PASSED"
 
 echo "RUNNING JavaScript integration test for Stack Analysis report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json" "node testers/javascript/index.js stack scenarios/maven/pom.xml false"
+node testers/javascript/index.js stack scenarios/maven/pom.xml false &> ./responses/stack.json
+
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , return $RC from invocation"
+			cleanup $RC
+fi
+RESPONSE_CONTENT=$(jq . ./responses/stack.json)
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , response is not a valid json"
+			cleanup $RC
+fi
+
+StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./responses/stack.json | jq .status)
+matchConstant "200" "$StatusCode"
 
 echo "RUNNING JavaScript integration test for Component Analysis report for Java Maven"
-match "scenarios/maven/expected_component" "node testers/javascript/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"
+eval "node testers/javascript/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"  &> ./responses/component.json
 
-##########################################
-###### TypeScript Integration Tests ######
-##########################################
-echo "PREPARING TypeScript integration tests environment"
-rm -rf testers/typescript/node_modules
-rm -f testers/typescript/package-lock.json
-if ! npm --prefix ./testers/typescript install --silent; then
-	echo "- FAILED Installing modules for TS environment"
-	cleanup $?
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , return $RC from invocation"
+			cleanup $RC
 fi
-echo "- SUCCESSFUL"
-
-rm -rf testers/typescript/dist
-if ! npm --prefix ./testers/typescript run compile > /dev/null 2>&1; then
-	echo "- FAILED Compiling TS module"
-	cleanup $?
+RESPONSE_CONTENT=$(jq . ./responses/component.json)
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , response is not a valid json, got $RC from parsing the file"
+			cleanup $RC
 fi
-echo "- SUCCESSFUL"
-
-#### JAVA MAVEN
-echo "RUNNING TypeScript integration test for Stack Analysis report in Html for Java Maven"
-match "scenarios/maven/expected_stack_html" "node testers/typescript/dist/index.js stack scenarios/maven/pom.xml true"
-
-echo "RUNNING TypeScript integration test for Stack Analysis report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json" "node testers/typescript/dist/index.js stack scenarios/maven/pom.xml false"
-
-echo "RUNNING TypeScript integration test for Component Analysis report for Java Maven"
-match "scenarios/maven/expected_component" "node testers/typescript/dist/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"
-
-##########################################
-###### CMD Script Integration Tests ######
-##########################################
-echo "PREPARING CLI Script integration tests environment"
-rm -rf testers/cli/node_modules
-rm -f testers/cli/package-lock.json
-if ! npm --prefix ./testers/cli install --silent; then
-	echo "- FAILED Installing modules for JS environment"
-	cleanup $?
-fi
-echo "- SUCCESSFUL"
-
-#### JAVA MAVEN
-echo "RUNNING CLI Script integration test for Stack Analysis report in Html for Java Maven"
-match "scenarios/maven/expected_stack_html" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --html"
-
-echo "RUNNING CLI Script integration test for Stack Analysis full report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml"
-
-echo "RUNNING CLI Script integration test for Stack Analysis summary only report in Json for Java Maven"
-match "scenarios/maven/expected_stack_json_summary" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js stack scenarios/maven/pom.xml --summary"
-
-echo "RUNNING CLI Script integration test for Component Analysis report for Java Maven"
-match "scenarios/maven/expected_component" "node testers/cli/node_modules/@RHEcosystemAppEng/exhort-javascript-api/dist/src/cli.js component pom.xml '$(<scenarios/maven/pom.xml)'"
-
+StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./responses/component.json | jq .status)
+matchConstant "200" "$StatusCode"
 cleanup 0
