@@ -1,4 +1,4 @@
-import {exec} from "child_process";
+// import {exec} from "child_process";
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
 import os from "node:os";
@@ -150,7 +150,7 @@ function extractPackageName(line) {
 function getIgnoredDeps(manifest) {
 	let goMod = fs.readFileSync(manifest).toString().trim()
 	let lines = goMod.split(EOL);
-	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep," ",{}))
+	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep," ",undefined))
 }
 
 /**
@@ -189,7 +189,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let sbom = new Sbom();
 	let rows = goGraphOutput.split(EOL);
 	let root = getParentVertexFromEdge(rows[0])
-	let mainModule = toPurl(root, "@", {})
+	let mainModule = toPurl(root, "@", undefined)
 	sbom.addRoot(mainModule)
 
 
@@ -201,10 +201,10 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		rowsWithoutBlankRows.forEach(row => {
 			if (getParentVertexFromEdge(row) !== currentParent) {
 				currentParent = getParentVertexFromEdge(row)
-				source = toPurl(currentParent, "@", {});
+				source = toPurl(currentParent, "@", undefined);
 				sourceComponent = sbom.purlToComponent(source);
 			}
-			let target = toPurl(getChildVertexFromEdge(row), "@", {});
+			let target = toPurl(getChildVertexFromEdge(row), "@", undefined);
 			if(dependencyNotIgnored(allIgnoredDeps, target) && dependencyNotIgnored(allIgnoredDeps, source) ) {
 				sbom.addDependency(sourceComponent, target)
 			}
@@ -213,7 +213,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		let directDependencies = rows.filter(row => row.startsWith(root));
 		directDependencies.forEach(pair => {
 			let dependency = getChildVertexFromEdge(pair)
-			let depPurl = toPurl(dependency, "@", {});
+			let depPurl = toPurl(dependency, "@", undefined);
 			let mainModuleComponent = sbom.purlToComponent(mainModule);
 			if(dependencyNotIgnored(allIgnoredDeps, depPurl)) {
 				sbom.addDependency(mainModuleComponent, depPurl)
@@ -240,7 +240,7 @@ function toPurl(dependency, delimiter, qualifiers) {
 	if (lastSlashIndex === -1)
 	{
 		let splitParts = dependency.split(delimiter);
-		pkg = new PackageURL(ecosystem,undefined,splitParts[0],splitParts[1],undefined,undefined)
+		pkg = new PackageURL(ecosystem,undefined,splitParts[0],splitParts[1],qualifiers,undefined)
 	}
 	else
 	{
@@ -249,11 +249,11 @@ function toPurl(dependency, delimiter, qualifiers) {
 		let parts = dependencyAndVersion.split(delimiter);
 		if(parts.length === 2 )
 		{
-			pkg = new PackageURL(ecosystem,namespace,parts[0],parts[1],undefined,undefined);
+			pkg = new PackageURL(ecosystem,namespace,parts[0],parts[1],qualifiers,undefined);
 		}
 		else
 		{
-			pkg = new PackageURL(ecosystem,namespace,parts[0],defaultMainModuleVersion,undefined,undefined);
+			pkg = new PackageURL(ecosystem,namespace,parts[0],defaultMainModuleVersion,qualifiers,undefined);
 		}
 	}
 	return pkg
