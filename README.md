@@ -122,6 +122,7 @@ $ exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 <ul>
 <li><a href="https://www.java.com/">Java</a> - <a href="https://maven.apache.org/">Maven</a></li>
 <li><a href="https://www.javascript.com//">JavaScript</a> - <a href="https://www.npmjs.com//">Npm</a></li>
+<li><a href="https://go.dev//">Golang</a> - <a href="https://go.dev/blog/using-go-modules//">Go Modules</a></li>
 </ul>
 
 <h3>Excluding Packages</h3>
@@ -166,8 +167,32 @@ Excluding a package from any analysis can be achieved by marking the package for
     "jsonwebtoken"
   ]
 }
-
 ```
+
+<em>Golang</em> users can add in go.mod a comment with //exhortignore next to the package to be ignored, or to "piggyback" on existing comment ( e.g - //indirect) , for example:
+```go
+module github.com/RHEcosystemAppEng/SaaSi/deployer
+
+go 1.19
+
+require (
+        github.com/gin-gonic/gin v1.9.1
+        github.com/google/uuid v1.1.2
+        github.com/jessevdk/go-flags v1.5.0 //exhortignore
+        github.com/kr/pretty v0.3.1
+        gopkg.in/yaml.v2 v2.4.0
+        k8s.io/apimachinery v0.26.1
+        k8s.io/client-go v0.26.1
+)
+
+require (
+        github.com/davecgh/go-spew v1.1.1 // indirect exhortignore
+        github.com/emicklei/go-restful/v3 v3.9.0 // indirect
+        github.com/go-logr/logr v1.2.3 // indirect //exhortignore
+
+)
+```
+
 </li>
 
 </ul>
@@ -187,7 +212,8 @@ import fs from 'node:fs'
 let options = {
   'EXHORT_SNYK_TOKEN': 'my-secret-snyk-token',
   'EXHORT_MVN_PATH': '/path/to/my/mvn',
-  'EXHORT_NPM_PATH': '/path/to/npm'
+  'EXHORT_NPM_PATH': '/path/to/npm',
+  'EXHORT_GO_PATH': '/path/to/go'
 }
 
 // Get stack analysis in JSON format
@@ -242,6 +268,11 @@ following keys for setting custom paths for the said executables.
 <td><a href="https://www.npmjs.com/">NPM</a></td>
 <td><em>npm</em></td>
 <td>EXHORT_NPM_PATH</td>
+</tr>
+<tr>
+<td><a href="https://go.dev/blog/using-go-modules/">Go Modules</a></td>
+<td><em>go</em></td>
+<td>EXHORT_GO_PATH</td>
 </tr>
 
 </table>
