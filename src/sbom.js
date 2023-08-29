@@ -39,7 +39,7 @@ export default class Sbom {
 		return this.sbomModel.filterIgnoredDepsIncludingVersion(deps)
 	}
 	/**
-	 * @param {Component} sourceRef current target Component ( Starting from root component by clients)
+	 * @param {component} sourceRef current source Component ( Starting from root component by clients)
 	 * @param {PackageURL} targetRef current dependency to add to Dependencies list of component sourceRef
 	 * @return Sbom
 	 */

@@ -139,7 +139,7 @@ export default class CycloneDxSbom {
 
 	/**
 	 *
-	 * @param {Conponent} theComponent - Component Object with purl field.
+	 * @param {Component} theComponent - Component Object with purl field.
 	 * @return {int} index of the found component entry, if not found returns -1.
 	 * @private
 	 */

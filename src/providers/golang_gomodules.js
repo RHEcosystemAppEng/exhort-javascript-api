@@ -105,6 +105,65 @@ function getGoModGraph(goGraphCommand, options) {
 }
 
 /**
+ *
+ * @param line one row from go.mod file
+ * @return {boolean} whether line from go.mod should be considered as ignored or not
+ */
+function ignoredLine(line) {
+	let result = false
+	if(line.match(".*exhortignore.*"))
+	{
+		if(line.match(".+//\\s*exhortignore") || line.match(".+//\\sindirect (//)?\\s*exhortignore"))
+		{
+			let trimmedRow = line.trim()
+			if(!trimmedRow.startsWith("module") && !trimmedRow.startsWith("go") && !trimmedRow.startsWith("require (") && !trimmedRow.startsWith("require(")
+				&& !trimmedRow.startsWith("exclude") && !trimmedRow.startsWith("replace") && !trimmedRow.startsWith("retract") && !trimmedRow.startsWith("use")
+				&& !trimmedRow.includes("=>"))
+			{
+				if( trimmedRow.startsWith("require ") || trimmedRow.match("^[a-z./-]+\\s[vV][0-9]\\.[0-9](\\.[0-9])?.*"))
+				{
+					result = true
+				}
+			}
+		}
+	}
+	return result
+}
+
+/**
+ * extract package name from go.mod line that contains exhortignore comment.
+ * @param line a row contains exhortignore as part of a comment
+ * @return {string} the full package name + group/namespace + version
+ * @private
+ */
+function extractPackageName(line) {
+	let trimmedRow = line.trim();
+	let firstRemarkNotationOccurrence = trimmedRow.indexOf("//");
+	return trimmedRow.substring(0,firstRemarkNotationOccurrence).trim();
+}
+
+/**
+ *
+ * @param {string } manifest - path to manifest
+ * @return {[PackageURL]} list of ignored dependencies d
+ */
+function getIgnoredDeps(manifest) {
+	let goMod = fs.readFileSync(manifest).toString().trim()
+	let lines = goMod.split(EOL);
+	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep," ",{}))
+}
+
+/**
+ *
+ * @param {[PackageURL]}allIgnoredDeps - list of purls of all dependencies that should be ignored
+ * @param {PackageURL} purl object to be checked if needed to be ignored
+ * @return {boolean}
+ */
+function dependencyNotIgnored(allIgnoredDeps, purl) {
+	return allIgnoredDeps.find(element => element.toString() === purl.toString()) === undefined;
+}
+
+/**
  * Create SBOM json string for go Module.
  * @param {string} manifest - path for go.mod
  * @param {{}} [opts={}] - optional various options to pass along the application
@@ -125,7 +184,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let options = {cwd: manifestDir}
 	let goGraphOutput
 	goGraphOutput = getGoModGraph(goGraphCommand, options);
-
+	let allIgnoredDeps = getIgnoredDeps(manifest);
 	let sbom = new Sbom();
 	let rows = goGraphOutput.split(EOL);
 	let root = getParentVertexFromEdge(rows[0])
@@ -136,14 +195,18 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	if (includeTransitive) {
 		let sourceComponent
 		let currentParent = ""
-		rows.filter(row => row.trim() !== "").forEach(row => {
+		let source;
+		let rowsWithoutBlankRows = rows.filter(row => row.trim() !== "")
+		rowsWithoutBlankRows.forEach(row => {
 			if (getParentVertexFromEdge(row) !== currentParent) {
 				currentParent = getParentVertexFromEdge(row)
-				let source = toPurl(currentParent, "@", {})
+				source = toPurl(currentParent, "@", {});
 				sourceComponent = sbom.purlToComponent(source);
 			}
 			let target = toPurl(getChildVertexFromEdge(row), "@", {});
-			sbom.addDependency(sourceComponent, target)
+			if(dependencyNotIgnored(allIgnoredDeps, target) && dependencyNotIgnored(allIgnoredDeps, source) ) {
+				sbom.addDependency(sourceComponent, target)
+			}
 		})
 	} else {
 		let directDependencies = rows.filter(row => row.startsWith(root));
@@ -151,7 +214,9 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 			let dependency = getChildVertexFromEdge(pair)
 			let depPurl = toPurl(dependency, "@", {});
 			let mainModuleComponent = sbom.purlToComponent(mainModule);
-			sbom.addDependency(mainModuleComponent, depPurl)
+			if(dependencyNotIgnored(allIgnoredDeps, depPurl)) {
+				sbom.addDependency(mainModuleComponent, depPurl)
+			}
 		})
 	}
 
