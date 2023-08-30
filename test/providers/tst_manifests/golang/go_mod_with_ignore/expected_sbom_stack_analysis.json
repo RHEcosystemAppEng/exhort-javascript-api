@@ -1191,85 +1191,20 @@
 			"bom-ref": "pkg:golang/golang.org/x/xerrors@v0.0.0-20191204190536-9bdfabe68543"
 		},
 		{
+			"group": "github.com/kr",
 			"name": "pretty",
 			"version": "v0.2.0",
-			"purl": "[object Object]",
+			"purl": "pkg:golang/github.com/kr/pretty@v0.2.0",
 			"type": "library",
-			"bom-ref": "[object Object]"
+			"bom-ref": "pkg:golang/github.com/kr/pretty@v0.2.0"
 		},
 		{
+			"group": "github.com/stoewer",
 			"name": "go-strcase",
 			"version": "v1.2.0",
-			"purl": "[object Object]",
+			"purl": "pkg:golang/github.com/stoewer/go-strcase@v1.2.0",
 			"type": "library",
-			"bom-ref": "[object Object]"
-		},
-		{
-			"name": "tools",
-			"version": "v0.0.0-20190524140312-2c0ae7006135",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
-		},
-		{
-			"group": "golang.org/x",
-			"name": "net",
-			"version": "v0.0.0-20190311183353-d8887717615a",
-			"purl": "pkg:golang/golang.org/x/net@v0.0.0-20190311183353-d8887717615a",
-			"type": "library",
-			"bom-ref": "pkg:golang/golang.org/x/net@v0.0.0-20190311183353-d8887717615a"
-		},
-		{
-			"name": "tools",
-			"version": "v0.0.0-20190524140312-2c0ae7006135",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
-		},
-		{
-			"group": "golang.org/x",
-			"name": "sync",
-			"version": "v0.0.0-20190423024810-112230192c58",
-			"purl": "pkg:golang/golang.org/x/sync@v0.0.0-20190423024810-112230192c58",
-			"type": "library",
-			"bom-ref": "pkg:golang/golang.org/x/sync@v0.0.0-20190423024810-112230192c58"
-		},
-		{
-			"name": "genproto",
-			"version": "v0.0.0-20201019141844-1ed22bb0c154",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
-		},
-		{
-			"group": "github.com/golang",
-			"name": "protobuf",
-			"version": "v1.4.1",
-			"purl": "pkg:golang/github.com/golang/protobuf@v1.4.1",
-			"type": "library",
-			"bom-ref": "pkg:golang/github.com/golang/protobuf@v1.4.1"
-		},
-		{
-			"name": "genproto",
-			"version": "v0.0.0-20201019141844-1ed22bb0c154",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
-		},
-		{
-			"group": "golang.org/x",
-			"name": "lint",
-			"version": "v0.0.0-20190313153728-d0100b6bd8b3",
-			"purl": "pkg:golang/golang.org/x/lint@v0.0.0-20190313153728-d0100b6bd8b3",
-			"type": "library",
-			"bom-ref": "pkg:golang/golang.org/x/lint@v0.0.0-20190313153728-d0100b6bd8b3"
-		},
-		{
-			"name": "genproto",
-			"version": "v0.0.0-20201019141844-1ed22bb0c154",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
+			"bom-ref": "pkg:golang/github.com/stoewer/go-strcase@v1.2.0"
 		},
 		{
 			"group": "golang.org/x",
@@ -1280,11 +1215,44 @@
 			"bom-ref": "pkg:golang/golang.org/x/tools@v0.0.0-20190524140312-2c0ae7006135"
 		},
 		{
+			"group": "golang.org/x",
+			"name": "net",
+			"version": "v0.0.0-20190311183353-d8887717615a",
+			"purl": "pkg:golang/golang.org/x/net@v0.0.0-20190311183353-d8887717615a",
+			"type": "library",
+			"bom-ref": "pkg:golang/golang.org/x/net@v0.0.0-20190311183353-d8887717615a"
+		},
+		{
+			"group": "golang.org/x",
+			"name": "sync",
+			"version": "v0.0.0-20190423024810-112230192c58",
+			"purl": "pkg:golang/golang.org/x/sync@v0.0.0-20190423024810-112230192c58",
+			"type": "library",
+			"bom-ref": "pkg:golang/golang.org/x/sync@v0.0.0-20190423024810-112230192c58"
+		},
+		{
+			"group": "google.golang.org",
 			"name": "genproto",
 			"version": "v0.0.0-20201019141844-1ed22bb0c154",
-			"purl": "[object Object]",
+			"purl": "pkg:golang/google.golang.org/genproto@v0.0.0-20201019141844-1ed22bb0c154",
 			"type": "library",
-			"bom-ref": "[object Object]"
+			"bom-ref": "pkg:golang/google.golang.org/genproto@v0.0.0-20201019141844-1ed22bb0c154"
+		},
+		{
+			"group": "github.com/golang",
+			"name": "protobuf",
+			"version": "v1.4.1",
+			"purl": "pkg:golang/github.com/golang/protobuf@v1.4.1",
+			"type": "library",
+			"bom-ref": "pkg:golang/github.com/golang/protobuf@v1.4.1"
+		},
+		{
+			"group": "golang.org/x",
+			"name": "lint",
+			"version": "v0.0.0-20190313153728-d0100b6bd8b3",
+			"purl": "pkg:golang/golang.org/x/lint@v0.0.0-20190313153728-d0100b6bd8b3",
+			"type": "library",
+			"bom-ref": "pkg:golang/golang.org/x/lint@v0.0.0-20190313153728-d0100b6bd8b3"
 		},
 		{
 			"group": "google.golang.org",
@@ -1293,13 +1261,6 @@
 			"purl": "pkg:golang/google.golang.org/grpc@v1.27.0",
 			"type": "library",
 			"bom-ref": "pkg:golang/google.golang.org/grpc@v1.27.0"
-		},
-		{
-			"name": "genproto",
-			"version": "v0.0.0-20201019141844-1ed22bb0c154",
-			"purl": "[object Object]",
-			"type": "library",
-			"bom-ref": "[object Object]"
 		},
 		{
 			"group": "google.golang.org",
