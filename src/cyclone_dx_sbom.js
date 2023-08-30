@@ -1,3 +1,5 @@
+import {PackageURL} from "packageurl-js";
+
 /**
  *
  * @param component {PackageURL}
@@ -7,25 +9,32 @@
  */
 function getComponent(component,type) {
 	let componentObject;
-	if(component.namespace) {
-		componentObject = {
-			"group": component.namespace,
-			"name": component.name,
-			"version": component.version,
-			"purl": component.toString(),
-			"type": type,
-			"bom-ref": component.toString()
+	if(component instanceof PackageURL)
+	{
+		if(component.namespace) {
+			componentObject = {
+				"group": component.namespace,
+				"name": component.name,
+				"version": component.version,
+				"purl": component.toString(),
+				"type": type,
+				"bom-ref": component.toString()
+			}
+		}
+		else
+		{
+			componentObject = {
+				"name": component.name,
+				"version": component.version,
+				"purl": component.toString(),
+				"type": type,
+				"bom-ref": component.toString()
+			}
 		}
 	}
 	else
 	{
-		componentObject = {
-			"name": component.name,
-			"version": component.version,
-			"purl": component.toString(),
-			"type": type,
-			"bom-ref": component.toString()
-		}
+	    componentObject = component
 	}
 	return componentObject
 }
@@ -76,7 +85,7 @@ export default class CycloneDxSbom {
 	}
 
 	/**
-	 * @param {Component} sourceRef current target Component ( Starting from root component by clients)
+	 * @param {component} sourceRef current target Component ( Starting from root component by clients)
 	 * @param {PackageURL} targetRef current dependency to add to Dependencies list of component sourceRef
 	 * @return Sbom
 	 */
@@ -139,7 +148,7 @@ export default class CycloneDxSbom {
 
 	/**
 	 *
-	 * @param {Component} theComponent - Component Object with purl field.
+	 * @param {component} theComponent - Component Object with purl field.
 	 * @return {int} index of the found component entry, if not found returns -1.
 	 * @private
 	 */
