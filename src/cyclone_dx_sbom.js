@@ -34,7 +34,7 @@ function getComponent(component,type) {
 	}
 	else
 	{
-	    componentObject = component
+		componentObject = component
 	}
 	return componentObject
 }
