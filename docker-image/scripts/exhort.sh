@@ -34,8 +34,8 @@ else
 
   provider_status=$(jq -rc '.summary.providerStatuses[] | select(.provider == "snyk")' <<< $report)
   message=$(echo $provider_status | jq -r '.message')
-  printf "Snyk Provider Status                  :  %s \n" $message
-
+  printf "Snyk Provider Status                  : "
+  printf "%+40s" $message $'\n'  | sed 's/  */ /g'
   printf "Critical Vulnerabilities              :  %s \n" "$(jq -r '.summary.vulnerabilities.critical' <<< $report)"
   printf "High Vulnerabilities                  :  %s \n" "$(jq -r '.summary.vulnerabilities.high' <<< $report)"
   printf "Medium Vulnerabilities                :  %s \n" "$(jq -r '.summary.vulnerabilities.medium' <<< $report)"
