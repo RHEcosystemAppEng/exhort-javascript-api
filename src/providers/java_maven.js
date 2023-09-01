@@ -72,36 +72,61 @@ function dotGraphToPurl(root) {
 	let name = parts[1]
 	let version = parts[3].replaceAll("\"","")
 	return new PackageURL('maven',group,name,version,undefined,undefined);
-
-
 }
 
 /**
  *
- * @param {String} dotGraphList Dot Graph tree String of the pom.xml manifest
+ * @param {String} dotGraphList Text graph String of the pom.xml manifest
  * @param {[String]} ignoredDeps List of ignored dependencies to be omitted from sbom
  * @return {String} formatted sbom Json String with all dependencies
  * @private
  */
-function createSbomFileFromDotGraphFormat(dotGraphList, ignoredDeps) {
+function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
+	let lines = dotGraphList.split(EOL);
 	// get root component
-	let lines = dotGraphList.replaceAll(";","").split(EOL);
-	let root = lines[0].split("\"")[1];
+	let root = lines[0];
 	let rootPurl = dotGraphToPurl(root);
-	lines.splice(0,1);
-	let sbom = new Sbom()
-	sbom.addRoot(rootPurl)
-	lines.forEach(pair => {
-		if(pair.trim() !== "}") {
-			let thePair = pair.split("->")
-			if(thePair.length === 2) {
-				let from = dotGraphToPurl(thePair[0].trim())
-				let to = dotGraphToPurl(thePair[1].trim())
-				sbom.addDependency(sbom.purlToComponent(from), to)
-			}
+	let sbom = new Sbom();
+	sbom.addRoot(rootPurl);
+	calculateTree(root, 0, lines.slice(1), sbom);
+	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
+}
+
+const DEP_REGEX = /(?:([-a-zA-Z0-9.]+:){4}[-a-zA-Z0-9.]+)/;
+
+function calculateTree(src, srcDepth, lines, sbom) {
+	if(lines.length === 0) {
+		return
+	}
+	let index = 0;
+	let target = lines[index];
+	let targetDepth = getDepth(target);
+	while(targetDepth > srcDepth && index < lines.length) {
+		if(targetDepth == srcDepth + 1) {
+			let from = dotGraphToPurl(parseDep(src))
+			let to = dotGraphToPurl(parseDep(target))
+			sbom.addDependency(sbom.purlToComponent(from), to)
+		} else {
+			calculateTree(lines[index-1], getDepth(lines[index-1]), lines.slice(index), sbom)
 		}
-	})
-	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString()
+		target = lines[++index];
+		targetDepth = getDepth(target);
+	}
+}
+
+function getDepth(line) {
+	if(line === undefined) {
+		return -1;
+	}
+	return ((line.indexOf('-') - 1) / 3) + 1;
+}
+
+function parseDep(line) {
+	let match = line.match(DEP_REGEX);
+	if(match) {
+		return match[0];
+	}
+	return line;
 }
 
 /**
@@ -129,8 +154,8 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	// create dependency graph in a temp file
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
-	// build initial command
-	let depTreeCmd = `${mvn} -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
+	// build initial command (dot outputType is not available for verbose mode)
+	let depTreeCmd = `${mvn} -q dependency:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
@@ -148,7 +173,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	})
 	// read dependency tree from temp file
 	let content= fs.readFileSync(`${tmpDepTree}`)
-	let sbom = createSbomFileFromDotGraphFormat(content.toString(),ignoredDeps);
+	let sbom = createSbomFileFromTextFormat(content.toString(),ignoredDeps);
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependency graph as string
