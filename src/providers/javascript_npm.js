@@ -90,14 +90,11 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		}
 	})
 	let manifestDir = path.dirname(manifest)
-	if(!fs.existsSync(path.join(manifestDir,"package-lock.json"))) {
-
-		execSync(`${npm} i --package-lock-only --prefix ${manifestDir}`, err => {
-			if (err) {
-				throw new Error('failed to create npmOutput list')
-			}
-		})
-	}
+	execSync(`${npm} i --package-lock-only --prefix ${manifestDir}`, err => {
+		if (err) {
+			throw new Error('failed to create npmOutput list')
+		}
+	})
 	let allFilter = includeTransitive? " --all" : ""
 	let npmListing = getNpmListing(npm, allFilter, manifestDir)
 	let npmOutput = execSync(npmListing, err => {
