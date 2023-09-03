@@ -92,7 +92,8 @@ function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
 	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 }
 
-const DEP_REGEX = /(?:([-a-zA-Z0-9.]+:){4}[-a-zA-Z0-9.]+)/;
+// const DEP_REGEX = "(?:([-a-zA-Z0-9.]+:){4}[-a-zA-Z0-9.]+)"
+const DEP_REGEX = /\s*(|s{2})*[+\][-]\s[(]?(.*):(compile|runtime|provided|test|system).*/;
 
 function calculateTree(src, srcDepth, lines, sbom) {
 	if(lines.length === 0) {
@@ -128,7 +129,7 @@ function getDepth(line) {
 function parseDep(line) {
 	let match = line.match(DEP_REGEX);
 	if(match) {
-		return match[0];
+		return match[2];
 	}
 	return line;
 }

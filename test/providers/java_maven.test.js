@@ -58,7 +58,7 @@ suite('testing the java-maven data provider', () => {
 				content: expectedSbom
 			})
 		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 5000)
+		}).timeout(process.env.GITHUB_ACTIONS ? 40000 : 10000)
 
 		test(`verify maven data provided for component analysis with scenario ${scenario}`, async () => {
 			// load the expected list for the scenario
