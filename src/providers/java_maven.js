@@ -159,7 +159,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command (dot outputType is not available for verbose mode)
-	let depTreeCmd = `${mvn} -q dependency:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
+	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
