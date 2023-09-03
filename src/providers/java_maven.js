@@ -98,6 +98,10 @@ function calculateTree(src, srcDepth, lines, sbom) {
 	if(lines.length === 0) {
 		return
 	}
+	if((lines.length === 1 && lines[0].trim() === ""))
+	{
+		return
+	}
 	let index = 0;
 	let target = lines[index];
 	let targetDepth = getDepth(target);
