@@ -61,20 +61,6 @@ function provideComponent(data, opts = {}) {
 }
 
 /**
- * convert a dog graph dependency into a Package URL Object.
- * @param {string} root one dependency from one line of a dot graph
- * @return {PackageURL} returns package URL of the artifact
- * @private
- */
-function dotGraphToPurl(root) {
-	let parts = root.split(":")
-	let group = parts[0].replaceAll("\"","")
-	let name = parts[1]
-	let version = parts[3].replaceAll("\"","")
-	return new PackageURL('maven',group,name,version,undefined,undefined);
-}
-
-/**
  *
  * @param {String} dotGraphList Text graph String of the pom.xml manifest
  * @param {[String]} ignoredDeps List of ignored dependencies to be omitted from sbom
@@ -85,40 +71,54 @@ function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
 	let lines = dotGraphList.split(EOL);
 	// get root component
 	let root = lines[0];
-	let rootPurl = dotGraphToPurl(root);
+	let rootPurl = parseDep(root);
 	let sbom = new Sbom();
 	sbom.addRoot(rootPurl);
-	calculateTree(root, 0, lines.slice(1), sbom);
+	parseDependencyTree(root, 0, lines.slice(1), sbom);
 	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 }
 
-// const DEP_REGEX = "(?:([-a-zA-Z0-9.]+:){4}[-a-zA-Z0-9.]+)"
-const DEP_REGEX = /\s*(|s{2})*[+\][-]\s[(]?(.*):(compile|runtime|provided|test|system).*/;
+const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
+const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
+const CONFLICT_REGEX = /.*- omitted for conflict with (\S+)\)/
 
-function calculateTree(src, srcDepth, lines, sbom) {
+/**
+ * Recursively populates the SBOM instance with the parsed graph
+ * @param {string} src - Source dependency to start the calculations from
+ * @param {number} srcDepth - Current depth in the graph for the given source
+ * @param {Array} lines - Array containing the text files being parsed
+ * @param {Sbom} sbom - The SBOM where the dependencies are being added
+ * @private
+ */
+function parseDependencyTree(src, srcDepth, lines, sbom) {
 	if(lines.length === 0) {
-		return
+		return;
 	}
-	if((lines.length === 1 && lines[0].trim() === ""))
-	{
-		return
+	if((lines.length === 1 && lines[0].trim() === "")) {
+		return;
 	}
 	let index = 0;
 	let target = lines[index];
 	let targetDepth = getDepth(target);
 	while(targetDepth > srcDepth && index < lines.length) {
-		if(targetDepth == srcDepth + 1) {
-			let from = dotGraphToPurl(parseDep(src))
-			let to = dotGraphToPurl(parseDep(target))
+		if(targetDepth === srcDepth + 1) {
+			let from = parseDep(src);
+			let to = parseDep(target);
 			sbom.addDependency(sbom.purlToComponent(from), to)
 		} else {
-			calculateTree(lines[index-1], getDepth(lines[index-1]), lines.slice(index), sbom)
+			parseDependencyTree(lines[index-1], getDepth(lines[index-1]), lines.slice(index), sbom)
 		}
 		target = lines[++index];
 		targetDepth = getDepth(target);
 	}
 }
 
+/**
+ * Calculates how deep in the graph is the given line
+ * @param {string} line - line to calculate the depth from
+ * @returns {number} The calculated depth
+ * @private
+ */
 function getDepth(line) {
 	if(line === undefined) {
 		return -1;
@@ -126,12 +126,26 @@ function getDepth(line) {
 	return ((line.indexOf('-') - 1) / 3) + 1;
 }
 
+/**
+ * Create a PackageURL from any line in a Text Graph dependency tree for a manifest path.
+ * @param {string} line - line to parse from a dependencies.txt file
+ * @returns {PackageURL} The parsed packageURL
+ * @private
+ */
 function parseDep(line) {
-	let match = line.match(DEP_REGEX);
-	if(match) {
-		return match[2];
+	let match = line.match(ROOT_REGEX);
+	if (!match) {
+		match = line.match(DEP_REGEX);
 	}
-	return line;
+	if(!match) {
+		throw new Error(`Unable generate SBOM from dependency tree. Line: ${line} cannot be parsed into a PackageURL`);
+	}
+	let version = match[3];
+	let override = line.match(CONFLICT_REGEX);
+	if (override) {
+		version = override[1];
+	}
+	return toPurl(match[1], match[2], version);
 }
 
 /**
