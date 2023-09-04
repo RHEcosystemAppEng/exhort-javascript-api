@@ -66,7 +66,7 @@ suite('testing the java-maven data provider', () => {
 			// read target manifest file
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			let manifestContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/pom.xml`).toString()
-			// invoke sut stack analysis for scenario manifest
+			// invoke sut component analysis for scenario manifest
 			let providedDataForStack = await javaMvnProvider.provideComponent(manifestContent)
 			// verify returned data matches expectation
 			expect(providedDataForStack).to.deep.equal({
@@ -79,4 +79,4 @@ suite('testing the java-maven data provider', () => {
 		// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
 
 	})
-}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> {clock.restore()});
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-08-07T00:00:00.000Z'))).afterAll(()=> {clock.restore()});
