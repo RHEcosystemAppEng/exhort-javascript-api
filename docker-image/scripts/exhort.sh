@@ -17,14 +17,15 @@ then
   jq --arg exit_code "$exit_code" '. + {exit_code: $exit_code}' > \
   $output_file_path
 
-  printf "\nError: Red Hat Dependency Analysis failed with Exit Code $exit_code."
-  printf "\nFor more information, please check the 'error.log' file."
+  # Print stderr message to console
+  error_message=$(sed -n '/^Error:/p' error.log)
+  printf "\n[ERROR] Red Hat Dependency Analytics failed with exit code $exit_code.\n$error_message"
   exit 1
 else
   # In case of success print details from report into console
-  printf "Red Hat Dependency Analysis task is being executed.\n"
+  printf "Red Hat Dependency Analytics task is being executed.\n"
   printf "=%.0s" {1..50}
-  printf "\nRed Hat Dependency Analysis Report\n"
+  printf "\nRed Hat Dependency Analytics Report\n"
   printf "=%.0s" {1..50}
   printf "\n"
   printf "Total Scanned Dependencies            :  %s \n" "$(jq -r '.summary.dependencies.scanned' <<< $report)"
