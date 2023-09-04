@@ -6,6 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
+import  {EOL} from 'os'
 
 export default { isSupported, provideComponent, provideStack }
 
@@ -84,7 +85,7 @@ function dotGraphToPurl(root) {
  */
 function createSbomFileFromDotGraphFormat(dotGraphList, ignoredDeps) {
 	// get root component
-	let lines = dotGraphList.replaceAll(";","").split('\n');
+	let lines = dotGraphList.replaceAll(";","").split(EOL);
 	let root = lines[0].split("\"")[1];
 	let rootPurl = dotGraphToPurl(root);
 	lines.splice(0,1);
