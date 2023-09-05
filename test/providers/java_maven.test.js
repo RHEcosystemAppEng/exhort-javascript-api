@@ -25,7 +25,8 @@ suite('testing the java-maven data provider', () => {
 		"pom_deps_with_ignore_on_wrong",
 		"pom_deps_with_no_ignore",
 		"poms_deps_with_ignore_long",
-		"poms_deps_with_no_ignore_long"
+		"poms_deps_with_no_ignore_long",
+		"pom_deps_with_no_ignore_common_paths"
 	].forEach(testCase => {
 		let scenario = testCase.replace('pom_deps_', '').replaceAll('_', ' ')
 		// test(`custom adhoc test`, async () => {
@@ -57,7 +58,7 @@ suite('testing the java-maven data provider', () => {
 				content: expectedSbom
 			})
 		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 5000)
+		}).timeout(process.env.GITHUB_ACTIONS ? 40000 : 10000)
 
 		test(`verify maven data provided for component analysis with scenario ${scenario}`, async () => {
 			// load the expected list for the scenario
@@ -65,7 +66,7 @@ suite('testing the java-maven data provider', () => {
 			// read target manifest file
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			let manifestContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/pom.xml`).toString()
-			// invoke sut stack analysis for scenario manifest
+			// invoke sut component analysis for scenario manifest
 			let providedDataForStack = await javaMvnProvider.provideComponent(manifestContent)
 			// verify returned data matches expectation
 			expect(providedDataForStack).to.deep.equal({
@@ -78,4 +79,4 @@ suite('testing the java-maven data provider', () => {
 		// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
 
 	})
-}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> {clock.restore()});
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-08-07T00:00:00.000Z'))).afterAll(()=> {clock.restore()});
