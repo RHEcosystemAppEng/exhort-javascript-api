@@ -5,22 +5,22 @@
     "metadata": {
         "timestamp": "2023-08-07T00:00:00.000Z",
         "component": {
-            "group": "com.example",
-            "name": "demo",
-            "version": "0.0.1-SNAPSHOT",
-            "purl": "pkg:maven/com.example/demo@0.0.1-SNAPSHOT",
+            "group": "pom-with-deps-no-ignore",
+            "name": "pom-with-dependency-not-ignored-common-paths",
+            "version": "0.0.1",
+            "purl": "pkg:maven/pom-with-deps-no-ignore/pom-with-dependency-not-ignored-common-paths@0.0.1",
             "type": "application",
-            "bom-ref": "pkg:maven/com.example/demo@0.0.1-SNAPSHOT"
+            "bom-ref": "pkg:maven/pom-with-deps-no-ignore/pom-with-dependency-not-ignored-common-paths@0.0.1"
         }
     },
     "components": [
         {
-            "group": "com.example",
-            "name": "demo",
-            "version": "0.0.1-SNAPSHOT",
-            "purl": "pkg:maven/com.example/demo@0.0.1-SNAPSHOT",
+            "group": "pom-with-deps-no-ignore",
+            "name": "pom-with-dependency-not-ignored-common-paths",
+            "version": "0.0.1",
+            "purl": "pkg:maven/pom-with-deps-no-ignore/pom-with-dependency-not-ignored-common-paths@0.0.1",
             "type": "application",
-            "bom-ref": "pkg:maven/com.example/demo@0.0.1-SNAPSHOT"
+            "bom-ref": "pkg:maven/pom-with-deps-no-ignore/pom-with-dependency-not-ignored-common-paths@0.0.1"
         },
         {
             "group": "org.springframework.boot",
@@ -512,6 +512,14 @@
         },
         {
             "group": "io.quarkus",
+            "name": "quarkus-vertx-http",
+            "version": "2.13.5.Final",
+            "purl": "pkg:maven/io.quarkus/quarkus-vertx-http@2.13.5.Final",
+            "type": "library",
+            "bom-ref": "pkg:maven/io.quarkus/quarkus-vertx-http@2.13.5.Final"
+        },
+        {
+            "group": "io.quarkus",
             "name": "quarkus-resteasy-server-common",
             "version": "2.7.7.Final",
             "purl": "pkg:maven/io.quarkus/quarkus-resteasy-server-common@2.7.7.Final",
@@ -629,6 +637,14 @@
             "purl": "pkg:maven/com.sun.activation/jakarta.activation@1.2.2",
             "type": "library",
             "bom-ref": "pkg:maven/com.sun.activation/jakarta.activation@1.2.2"
+        },
+        {
+            "group": "org.keycloak",
+            "name": "keycloak-saml-core",
+            "version": "1.8.1.Final",
+            "purl": "pkg:maven/org.keycloak/keycloak-saml-core@1.8.1.Final",
+            "type": "library",
+            "bom-ref": "pkg:maven/org.keycloak/keycloak-saml-core@1.8.1.Final"
         },
         {
             "group": "org.apache.santuario",
@@ -1257,12 +1273,14 @@
     ],
     "dependencies": [
         {
-            "ref": "pkg:maven/com.example/demo@0.0.1-SNAPSHOT",
+            "ref": "pkg:maven/pom-with-deps-no-ignore/pom-with-dependency-not-ignored-common-paths@0.0.1",
             "dependsOn": [
                 "pkg:maven/org.springframework.boot/spring-boot-starter@2.3.5.RELEASE",
                 "pkg:maven/org.springframework.boot/spring-boot-starter-test@2.3.5.RELEASE",
                 "pkg:maven/org.springframework.boot/spring-boot-starter-web@2.3.5.RELEASE",
                 "pkg:maven/io.quarkus/quarkus-resteasy@2.7.7.Final",
+                "pkg:maven/org.keycloak/keycloak-saml-core@1.8.1.Final",
+                "pkg:maven/io.quarkus/quarkus-vertx-http@2.13.5.Final",
                 "pkg:maven/io.quarkus/quarkus-jdbc-postgresql@2.13.6.Final"
             ]
         },
@@ -1652,7 +1670,24 @@
         {
             "ref": "pkg:maven/io.quarkus/quarkus-resteasy@2.7.7.Final",
             "dependsOn": [
+                "pkg:maven/io.quarkus/quarkus-vertx-http@2.13.5.Final",
                 "pkg:maven/io.quarkus/quarkus-resteasy-server-common@2.7.7.Final"
+            ]
+        },
+        {
+            "ref": "pkg:maven/io.quarkus/quarkus-vertx-http@2.13.5.Final",
+            "dependsOn": [
+                "pkg:maven/io.quarkus/quarkus-core@2.13.5.Final",
+                "pkg:maven/io.quarkus/quarkus-security-runtime-spi@2.13.5.Final",
+                "pkg:maven/io.quarkus/quarkus-credentials@2.13.5.Final",
+                "pkg:maven/io.quarkus/quarkus-mutiny@2.13.5.Final",
+                "pkg:maven/io.smallrye.common/smallrye-common-vertx-context@1.13.1",
+                "pkg:maven/io.quarkus/quarkus-vertx-http-dev-console-runtime-spi@2.13.5.Final",
+                "pkg:maven/io.quarkus.security/quarkus-security@1.1.4.Final",
+                "pkg:maven/io.quarkus/quarkus-vertx@2.13.5.Final",
+                "pkg:maven/io.smallrye.reactive/smallrye-mutiny-vertx-web@2.27.0",
+                "pkg:maven/io.vertx/vertx-web@4.3.4",
+                "pkg:maven/io.github.crac/org-crac@0.1.1"
             ]
         },
         {
@@ -1765,6 +1800,12 @@
         {
             "ref": "pkg:maven/com.sun.activation/jakarta.activation@1.2.2",
             "dependsOn": []
+        },
+        {
+            "ref": "pkg:maven/org.keycloak/keycloak-saml-core@1.8.1.Final",
+            "dependsOn": [
+                "pkg:maven/org.apache.santuario/xmlsec@1.5.1"
+            ]
         },
         {
             "ref": "pkg:maven/org.apache.santuario/xmlsec@1.5.1",

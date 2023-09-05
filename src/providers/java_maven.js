@@ -61,47 +61,91 @@ function provideComponent(data, opts = {}) {
 }
 
 /**
- * convert a dog graph dependency into a Package URL Object.
- * @param {string} root one dependency from one line of a dot graph
- * @return {PackageURL} returns package URL of the artifact
- * @private
- */
-function dotGraphToPurl(root) {
-	let parts = root.split(":")
-	let group = parts[0].replaceAll("\"","")
-	let name = parts[1]
-	let version = parts[3].replaceAll("\"","")
-	return new PackageURL('maven',group,name,version,undefined,undefined);
-
-
-}
-
-/**
  *
- * @param {String} dotGraphList Dot Graph tree String of the pom.xml manifest
+ * @param {String} dotGraphList Text graph String of the pom.xml manifest
  * @param {[String]} ignoredDeps List of ignored dependencies to be omitted from sbom
  * @return {String} formatted sbom Json String with all dependencies
  * @private
  */
-function createSbomFileFromDotGraphFormat(dotGraphList, ignoredDeps) {
+function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
+	let lines = dotGraphList.split(EOL);
 	// get root component
-	let lines = dotGraphList.replaceAll(";","").split(EOL);
-	let root = lines[0].split("\"")[1];
-	let rootPurl = dotGraphToPurl(root);
-	lines.splice(0,1);
-	let sbom = new Sbom()
-	sbom.addRoot(rootPurl)
-	lines.forEach(pair => {
-		if(pair.trim() !== "}") {
-			let thePair = pair.split("->")
-			if(thePair.length === 2) {
-				let from = dotGraphToPurl(thePair[0].trim())
-				let to = dotGraphToPurl(thePair[1].trim())
-				sbom.addDependency(sbom.purlToComponent(from), to)
-			}
+	let root = lines[0];
+	let rootPurl = parseDep(root);
+	let sbom = new Sbom();
+	sbom.addRoot(rootPurl);
+	parseDependencyTree(root, 0, lines.slice(1), sbom);
+	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
+}
+
+const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
+const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
+const CONFLICT_REGEX = /.*- omitted for conflict with (\S+)\)/
+
+/**
+ * Recursively populates the SBOM instance with the parsed graph
+ * @param {string} src - Source dependency to start the calculations from
+ * @param {number} srcDepth - Current depth in the graph for the given source
+ * @param {Array} lines - Array containing the text files being parsed
+ * @param {Sbom} sbom - The SBOM where the dependencies are being added
+ * @private
+ */
+function parseDependencyTree(src, srcDepth, lines, sbom) {
+	if(lines.length === 0) {
+		return;
+	}
+	if((lines.length === 1 && lines[0].trim() === "")) {
+		return;
+	}
+	let index = 0;
+	let target = lines[index];
+	let targetDepth = getDepth(target);
+	while(targetDepth > srcDepth && index < lines.length) {
+		if(targetDepth === srcDepth + 1) {
+			let from = parseDep(src);
+			let to = parseDep(target);
+			sbom.addDependency(sbom.purlToComponent(from), to)
+		} else {
+			parseDependencyTree(lines[index-1], getDepth(lines[index-1]), lines.slice(index), sbom)
 		}
-	})
-	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString()
+		target = lines[++index];
+		targetDepth = getDepth(target);
+	}
+}
+
+/**
+ * Calculates how deep in the graph is the given line
+ * @param {string} line - line to calculate the depth from
+ * @returns {number} The calculated depth
+ * @private
+ */
+function getDepth(line) {
+	if(line === undefined) {
+		return -1;
+	}
+	return ((line.indexOf('-') - 1) / 3) + 1;
+}
+
+/**
+ * Create a PackageURL from any line in a Text Graph dependency tree for a manifest path.
+ * @param {string} line - line to parse from a dependencies.txt file
+ * @returns {PackageURL} The parsed packageURL
+ * @private
+ */
+function parseDep(line) {
+	let match = line.match(ROOT_REGEX);
+	if (!match) {
+		match = line.match(DEP_REGEX);
+	}
+	if(!match) {
+		throw new Error(`Unable generate SBOM from dependency tree. Line: ${line} cannot be parsed into a PackageURL`);
+	}
+	let version = match[3];
+	let override = line.match(CONFLICT_REGEX);
+	if (override) {
+		version = override[1];
+	}
+	return toPurl(match[1], match[2], version);
 }
 
 /**
@@ -129,8 +173,8 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	// create dependency graph in a temp file
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
-	// build initial command
-	let depTreeCmd = `${mvn} -q dependency:tree -DoutputType=dot -DoutputFile=${tmpDepTree} -f ${manifest}`
+	// build initial command (dot outputType is not available for verbose mode)
+	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
@@ -148,7 +192,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	})
 	// read dependency tree from temp file
 	let content= fs.readFileSync(`${tmpDepTree}`)
-	let sbom = createSbomFileFromDotGraphFormat(content.toString(),ignoredDeps);
+	let sbom = createSbomFileFromTextFormat(content.toString(),ignoredDeps);
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependency graph as string
