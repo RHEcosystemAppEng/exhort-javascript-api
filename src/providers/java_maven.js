@@ -174,7 +174,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command (dot outputType is not available for verbose mode)
-	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
+	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -Dscope=compile -Dscope=runtime -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
@@ -192,6 +192,9 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	})
 	// read dependency tree from temp file
 	let content= fs.readFileSync(`${tmpDepTree}`)
+	if(process.env["EXHORT_DEBUG"] === "true") {
+		console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content.toString())
+	}
 	let sbom = createSbomFileFromTextFormat(content.toString(),ignoredDeps);
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})

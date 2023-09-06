@@ -1,3 +1,4 @@
+import {EOL} from "os";
 import {PackageURL} from "packageurl-js";
 
 /**
@@ -133,6 +134,9 @@ export default class CycloneDxSbom {
 			},
 			"components" : this.components,
 			"dependencies" : this.dependencies
+		}
+		if(process.env["EXHORT_DEBUG"] === "true") {
+			console.log("SBOM Generated for manifest, to be sent to exhort service:" + EOL + JSON.stringify(this.sbomObject, null, 4))
 		}
 		return JSON.stringify(this.sbomObject)
 	}
