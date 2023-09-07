@@ -1,19 +1,72 @@
+import {rootPath} from "get-root-path";
+import {EOL} from "os";
 import { availableProviders, match } from './provider.js'
 import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
+import path from 'node:path'
+
+import PropertiesReader from 'properties-reader'
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
+
+export const exhortDevDefaultUrl = 'http://alpha-exhort.apps.sssc-cl01.appeng.rhecoeng.com';
+
+
+export const exhortDefaultUrl = "https://rhda.rhcloud.com";
+
+
+
+/** This function is used to determine exhort url backend according to the following logic:
+ * If EXHORT_DEV_MODE = true, then take the value of the EXHORT BACKEND URL of dev/staging environment in such a way:
+ * take it as environment variable if exists, otherwise, take it from opts object if exists, otherwise, use the hardcoded default of DEV environment.
+ * If EXHORT_DEV_MODE = false , then select the production url of EXHORT Backend, which is hardcoded.
+ * EXHORT_DEV_MODE evaluated in the following order and selected when it finds it first:
+ * 1. Environment Variable
+ * 2. (key,value) from opts object
+ * 3. Bundled value in configuration.properties file inside the package
+ * @param {{}} [opts={}] - optional various options to override default EXHORT_DEV_MODE and DEV_EXHORT_BACKEND_URL.
+ * @return {string} - The selected exhort backend
+ * @private
+ */
+function selectExhortBackend(opts= {}) {
+	let result
+	// fs.existsSync()
+
+
+	// console.log(path.resolve(rootPath,"config","config.properties"))
+
+	let properties = PropertiesReader(path.join(rootPath,"config","config.properties"));
+	// let error={}
+	// console.log(error)
+	let exhortDevModeBundled = properties.get("EXHORT_DEV_MODE").toString()
+	let exhortDevMode = getCustom("EXHORT_DEV_MODE",exhortDevModeBundled,opts)
+	if(exhortDevMode !== null && exhortDevMode.toString() === "true") {
+		result = getCustom('DEV_EXHORT_BACKEND_URL',exhortDevDefaultUrl,opts);
+	}
+	else
+	{
+		result = exhortDefaultUrl
+	}
+	return result;
+}
+
+/**
+ *
+ * @param opts
+ * @return {string}
+ */
+export function testSelectExhortBackend(opts)
+{
+	return selectExhortBackend(opts)
+}
 
 /**
  * @type {string} backend url to send requests to
  * @private
  */
-const url = getCustom(
-	'EXHORT_BACKEND_URL',
-	'http://alpha-exhort.apps.sssc-cl01.appeng.rhecoeng.com'
-)
+let url
 
 /**
  * Get stack analysis report for a manifest file.
@@ -25,6 +78,7 @@ const url = getCustom(
  * 		or backend request failed
  */
 async function stackAnalysis(manifest, html = false, opts = {}) {
+	url = selectExhortBackend(opts)
 	fs.accessSync(manifest, fs.constants.R_OK) // throws error if file unreadable
 	let provider = match(manifest, availableProviders) // throws error if no matching provider
 	return await analysis.requestStack(provider, manifest, url, html, opts) // throws error request sending failed
@@ -39,6 +93,7 @@ async function stackAnalysis(manifest, html = false, opts = {}) {
  * @throws {Error} if no matching provider, failed to get create content, or backend request failed
  */
 async function componentAnalysis(manifestType, data, opts = {}) {
+	url = selectExhortBackend(opts)
 	let provider = match(manifestType, availableProviders) // throws error if no matching provider
 	return await analysis.requestComponent(provider, data, url, opts) // throws error request sending failed
 }
