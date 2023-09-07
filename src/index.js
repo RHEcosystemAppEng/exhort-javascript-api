@@ -1,5 +1,4 @@
 import {rootPath} from "get-root-path";
-import {EOL} from "os";
 import { availableProviders, match } from './provider.js'
 import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
