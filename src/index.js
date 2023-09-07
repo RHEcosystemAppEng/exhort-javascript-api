@@ -98,5 +98,6 @@ async function componentAnalysis(manifestType, data, opts = {}) {
 }
 
 async function validateToken(opts = {}) {
+	url = selectExhortBackend(opts)
 	return await analysis.validateToken(url, opts) // throws error request sending failed
 }
