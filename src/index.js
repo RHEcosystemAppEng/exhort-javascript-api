@@ -15,7 +15,7 @@ export const exhortDevDefaultUrl = 'http://alpha-exhort.apps.sssc-cl01.appeng.rh
 
 export const exhortDefaultUrl = "https://rhda.rhcloud.com";
 
-
+export let properties = PropertiesReader(path.join(rootPath,"config","config.properties"));
 
 /** This function is used to determine exhort url backend according to the following logic:
  * If EXHORT_DEV_MODE = true, then take the value of the EXHORT BACKEND URL of dev/staging environment in such a way:
@@ -36,7 +36,7 @@ function selectExhortBackend(opts= {}) {
 
 	// console.log(path.resolve(rootPath,"config","config.properties"))
 
-	let properties = PropertiesReader(path.join(rootPath,"config","config.properties"));
+
 	// let error={}
 	// console.log(error)
 	let exhortDevModeBundled = properties.get("EXHORT_DEV_MODE").toString()
