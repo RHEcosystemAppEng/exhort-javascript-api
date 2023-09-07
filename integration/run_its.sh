@@ -33,6 +33,7 @@ match() {
 matchConstant() {
 	if [[ "$1" != "$2" ]]; then
         echo "- FAILED"
+        echo "expected = $1, actual= $2"
         cleanup 1
     fi
     echo "- PASSED"
@@ -141,4 +142,13 @@ if [ "$?" -ne 0 ]; then
 fi
 StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./responses/component.json | jq .status)
 matchConstant "200" "$StatusCode"
+
+echo "RUNNING JavaScript integration test for Validate Token Function With wrong token, expecting getting 401 http status code "
+answerAboutToken=$(node testers/javascript/index.js validateToken veryBadToken)
+matchConstant "401" "$answerAboutToken"
+
+echo "RUNNING JavaScript integration test for Validate Token Function With no token at all, Expecting getting 400 http status code"
+answerAboutToken=$(node testers/javascript/index.js validateToken )
+matchConstant "400" "$answerAboutToken"
+
 cleanup 0
