@@ -1,12 +1,8 @@
-import {rootPath} from "get-root-path";
 import { availableProviders, match } from './provider.js'
 import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
-import path from 'node:path'
-
-import PropertiesReader from 'properties-reader'
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
 

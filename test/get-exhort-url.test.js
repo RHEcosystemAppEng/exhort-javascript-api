@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import {exhortDefaultUrl, exhortDevDefaultUrl, testSelectExhortBackend,properties} from "../src/index.js"
+import {exhortDefaultUrl, exhortDevDefaultUrl, testSelectExhortBackend} from "../src/index.js"
 
 suite('testing Select Exhort Backend function when EXHORT_DEV_MODE environment variable is True', () => {
 
@@ -108,14 +108,7 @@ suite('testing Select Exhort Backend function when EXHORT_DEV_MODE environment v
 
 	test('When Nothing set, Choose default backend (production) ', () => {
 		let selectedUrl = testSelectExhortBackend({});
-		if(properties.get("EXHORT_DEV_MODE").toString().trim() === "false" )
-		{
-			expect(selectedUrl).to.be.equals(exhortDefaultUrl)
-		}
-		else
-		{
-			expect(true).to.be.true
-		}
+		expect(selectedUrl).to.be.equals(exhortDefaultUrl)
 	});
 
 
