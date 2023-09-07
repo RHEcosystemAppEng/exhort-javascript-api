@@ -49,9 +49,7 @@
 	"dependencies": {
 		"@cyclonedx/cyclonedx-library": "^4.0.0",
 		"fast-xml-parser": "^4.2.4",
-		"get-root-path": "^2.0.2",
 		"packageurl-js": "^1.0.2",
-		"properties-reader": "^2.3.0",
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
