@@ -73,4 +73,4 @@ suite('testing the javascript-npm data provider', () => {
 	})
 
 
-}).beforeAll(() => clock = sinon.useFakeTimers(new Date(2023,7,7))).afterAll(()=> clock.restore());
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-08-07T00:00:00.000Z'))).afterAll(()=> clock.restore());
