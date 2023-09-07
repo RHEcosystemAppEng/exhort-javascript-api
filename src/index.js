@@ -15,7 +15,7 @@ export const exhortDevDefaultUrl = 'http://alpha-exhort.apps.sssc-cl01.appeng.rh
 
 export const exhortDefaultUrl = "https://rhda.rhcloud.com";
 
-export let properties = PropertiesReader(path.join(rootPath,"config","config.properties"));
+
 
 /** This function is used to determine exhort url backend according to the following logic:
  * If EXHORT_DEV_MODE = true, then take the value of the EXHORT BACKEND URL of dev/staging environment in such a way:
@@ -24,22 +24,14 @@ export let properties = PropertiesReader(path.join(rootPath,"config","config.pro
  * EXHORT_DEV_MODE evaluated in the following order and selected when it finds it first:
  * 1. Environment Variable
  * 2. (key,value) from opts object
- * 3. Bundled value in configuration.properties file inside the package
+ * 3. Default False ( points to production URL )
  * @param {{}} [opts={}] - optional various options to override default EXHORT_DEV_MODE and DEV_EXHORT_BACKEND_URL.
  * @return {string} - The selected exhort backend
  * @private
  */
 function selectExhortBackend(opts= {}) {
 	let result
-	// fs.existsSync()
-
-
-	// console.log(path.resolve(rootPath,"config","config.properties"))
-
-
-	// let error={}
-	// console.log(error)
-	let exhortDevModeBundled = properties.get("EXHORT_DEV_MODE").toString()
+	let exhortDevModeBundled = "false"
 	let exhortDevMode = getCustom("EXHORT_DEV_MODE",exhortDevModeBundled,opts)
 	if(exhortDevMode !== null && exhortDevMode.toString() === "true") {
 		result = getCustom('DEV_EXHORT_BACKEND_URL',exhortDevDefaultUrl,opts);
