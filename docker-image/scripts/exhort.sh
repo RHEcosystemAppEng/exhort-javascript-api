@@ -45,7 +45,7 @@ else
 
   # Save report along with exit code into output file.
   jq -n {} | \
-  jq --argjson report "$report" '. + {report: $report}' | \
+  jq --slurpfile report <(echo "$report") '. + {report: $report[0]}' | \
   jq --arg exit_code "$exit_code" '. + {exit_code: $exit_code}' > \
   $output_file_path
 
