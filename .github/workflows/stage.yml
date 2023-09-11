@@ -97,6 +97,7 @@ jobs:
             ${{ env.DOCKERFILE_PATH }}
           build-args: |
             GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN=${{ env.GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN }}
+          context: docker-image
           
       - name: Push Image To Registry
         uses: redhat-actions/push-to-registry@v2
