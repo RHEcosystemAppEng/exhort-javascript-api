@@ -78,5 +78,9 @@ function getTokenHeaders(opts = {}) {
 			headers[`ex-${vendor}-token`] = token
 		}
 	})
+	let rhdaToken = getCustom("rhda-token", null,opts);
+	if(rhdaToken){
+		headers[`rhda-token`] = rhdaToken
+	}
 	return headers
 }
