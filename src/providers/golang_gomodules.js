@@ -116,8 +116,8 @@ function ignoredLine(line) {
 		if(line.match(".+//\\s*exhortignore") || line.match(".+//\\sindirect (//)?\\s*exhortignore"))
 		{
 			let trimmedRow = line.trim()
-			if(!trimmedRow.startsWith("module") && !trimmedRow.startsWith("go") && !trimmedRow.startsWith("require (") && !trimmedRow.startsWith("require(")
-				&& !trimmedRow.startsWith("exclude") && !trimmedRow.startsWith("replace") && !trimmedRow.startsWith("retract") && !trimmedRow.startsWith("use")
+			if(!trimmedRow.startsWith("module ") && !trimmedRow.startsWith("go ") && !trimmedRow.startsWith("require (") && !trimmedRow.startsWith("require(")
+				&& !trimmedRow.startsWith("exclude ") && !trimmedRow.startsWith("replace ") && !trimmedRow.startsWith("retract ") && !trimmedRow.startsWith("use ")
 				&& !trimmedRow.includes("=>"))
 			{
 				if( trimmedRow.startsWith("require ") || trimmedRow.match("^[a-z./-]+\\s[vV][0-9]\\.[0-9](\\.[0-9])?.*"))

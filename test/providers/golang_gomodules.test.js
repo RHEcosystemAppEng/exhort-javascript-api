@@ -19,7 +19,8 @@ suite('testing the golang-go-modules data provider', () => {
 	[
 		"go_mod_light_no_ignore",
 		"go_mod_no_ignore",
-		"go_mod_with_ignore"
+		"go_mod_with_ignore",
+		"go_mod_test_ignore"
 	].forEach(testCase => {
 		let scenario = testCase.replace('go_mod_', '').replaceAll('_', ' ')
 		test(`verify go.mod sbom provided for stack analysis with scenario ${scenario}`, async () => {
