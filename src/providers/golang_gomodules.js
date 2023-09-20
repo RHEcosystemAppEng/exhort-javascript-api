@@ -120,7 +120,7 @@ function ignoredLine(line) {
 				&& !trimmedRow.startsWith("exclude ") && !trimmedRow.startsWith("replace ") && !trimmedRow.startsWith("retract ") && !trimmedRow.startsWith("use ")
 				&& !trimmedRow.includes("=>"))
 			{
-				if( trimmedRow.startsWith("require ") || trimmedRow.match("^[a-z./-]+\\s[vV][0-9]\\.[0-9](\\.[0-9])?.*"))
+				if( trimmedRow.startsWith("require ") || trimmedRow.match("^[a-z.0-9/-]+\\s{1,2}[vV][0-9]\\.[0-9](\\.[0-9]){0,2}.*"))
 				{
 					result = true
 				}
@@ -150,7 +150,7 @@ function extractPackageName(line) {
 function getIgnoredDeps(manifest) {
 	let goMod = fs.readFileSync(manifest).toString().trim()
 	let lines = goMod.split(EOL);
-	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep," ",undefined))
+	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep,/[ ]{1,3}/,undefined))
 }
 
 /**
@@ -161,6 +161,17 @@ function getIgnoredDeps(manifest) {
  */
 function dependencyNotIgnored(allIgnoredDeps, purl) {
 	return allIgnoredDeps.find(element => element.toString() === purl.toString()) === undefined;
+}
+
+function enforceRemovingIgnoredDepsInCaseOfAutomaticVersionUpdate(ignoredDeps, sbom) {
+	// In case there is a dependency commented with exhortignore , but it is still in the list of direct dependencies of root, then
+	// the reason for that is that go mod graph changed automatically the version of package/module to different version, and because of
+	// mismatch between the version in go.mod manifest and go mod graph, it wasn't delete ==> in this case need to remove from sbom according to name only.
+	ignoredDeps.forEach(packageUrl => {
+		if (sbom.checkIfPackageInsideDependsOnList(sbom.getRoot(), packageUrl.name)) {
+			sbom.filterIgnoredDeps(ignoredDeps.filter(purl => purl.name === packageUrl.name).map(purl => purl.name))
+		}
+	})
 }
 
 /**
@@ -185,7 +196,8 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let options = {cwd: manifestDir}
 	let goGraphOutput
 	goGraphOutput = getGoModGraph(goGraphCommand, options);
-	let allIgnoredDeps = getIgnoredDeps(manifest);
+	let ignoredDeps = getIgnoredDeps(manifest);
+	let allIgnoredDeps = ignoredDeps.map((dep) => dep.toString())
 	let sbom = new Sbom();
 	let rows = goGraphOutput.split(EOL);
 	let root = getParentVertexFromEdge(rows[0])
@@ -205,20 +217,23 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 				sourceComponent = sbom.purlToComponent(source);
 			}
 			let target = toPurl(getChildVertexFromEdge(row), "@", undefined);
-			if(dependencyNotIgnored(allIgnoredDeps, target) && dependencyNotIgnored(allIgnoredDeps, source) ) {
-				sbom.addDependency(sourceComponent, target)
-			}
+			sbom.addDependency(sourceComponent, target)
+
 		})
+		// at the end, filter out all ignored dependencies including versions.
+		sbom.filterIgnoredDepsIncludingVersion(allIgnoredDeps)
+		enforceRemovingIgnoredDepsInCaseOfAutomaticVersionUpdate(ignoredDeps, sbom);
 	} else {
 		let directDependencies = rows.filter(row => row.startsWith(root));
 		directDependencies.forEach(pair => {
 			let dependency = getChildVertexFromEdge(pair)
 			let depPurl = toPurl(dependency, "@", undefined);
 			let mainModuleComponent = sbom.purlToComponent(mainModule);
-			if(dependencyNotIgnored(allIgnoredDeps, depPurl)) {
+			if(dependencyNotIgnored(ignoredDeps, depPurl)) {
 				sbom.addDependency(mainModuleComponent, depPurl)
 			}
 		})
+		enforceRemovingIgnoredDepsInCaseOfAutomaticVersionUpdate(ignoredDeps,sbom)
 	}
 
 	return sbom.getAsJsonString()
@@ -229,7 +244,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
  * Utility function for creating Purl String
 
  * @param {string }dependency the name of the artifact, can include a namespace(group) or not - namespace/artifactName.
- * @param {string} delimiter delimiter between name of dependency and version
+ * @param {RegExp} delimiter delimiter between name of dependency and version
  * @param { object } qualifiers - contains key values related to the go environment
  * @private
  * @returns {PackageURL|null} PackageUrl Object ready to be used in SBOM
