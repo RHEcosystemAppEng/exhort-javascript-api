@@ -154,16 +154,18 @@ function toPurl(name, version) {
  * @private
  */
 function addAllDependencies(sbom, from, dependencies) {
-	Object.entries(dependencies).forEach(entry => {
-		let name, artifact ;
-		[name, artifact] = entry;
-		let purl = toPurl(name,artifact.version);
-		sbom.addDependency(from,purl)
-		let transitiveDeps = artifact.dependencies
-		if(transitiveDeps !== undefined)
-		{
-			addAllDependencies(sbom,sbom.purlToComponent(purl),transitiveDeps)
-		}
-	});
+	Object.entries(dependencies)
+		.filter(entry => entry[1].version !== undefined)
+		.forEach(entry => {
+			let name, artifact ;
+			[name, artifact] = entry;
+			let purl = toPurl(name,artifact.version);
+			sbom.addDependency(from,purl)
+			let transitiveDeps = artifact.dependencies
+			if(transitiveDeps !== undefined)
+			{
+				addAllDependencies(sbom,sbom.purlToComponent(purl),transitiveDeps)
+			}
+		});
 
 }
