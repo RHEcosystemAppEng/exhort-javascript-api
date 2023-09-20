@@ -227,5 +227,30 @@ export default class CycloneDxSbom {
 		return this
 	}
 
+	/** This method gets a component object, and a string name, and checks if the name is a substring of the component' purl.
+	 * @param {} component to search in its dependencies
+	 * @param {String} name to be checked.
+	 *
+	 * @return {boolean}
+	 */
+	checkIfPackageInsideDependsOnList(component, name)
+	{
+
+		let dependencyIndex = this.getDependencyIndex(component.purl)
+		if(dependencyIndex < 0)
+		{
+			return false
+		}
+
+		//Only if the dependency doesn't exists on the dependency list of dependency, then add it to this list.
+		if(this.dependencies[dependencyIndex].dependsOn.findIndex(dep => dep.includes(name) ) >= 0)
+		{
+			return true;
+		}
+		else {
+			return false
+		}
+	}
+
 
 }

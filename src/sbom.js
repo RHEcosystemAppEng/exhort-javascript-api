@@ -62,6 +62,17 @@ export default class Sbom {
 	purlToComponent(purl){
 		return this.sbomModel.purlToComponent(purl)
 	}
+
+	/** This method gets a component object, and a string name, and checks if the name is a substring of the component' purl.
+	 * @param {} component to search in its dependencies
+	 * @param {String} name to be checked.
+	 *
+	 * @return {boolean}
+	 */
+	checkIfPackageInsideDependsOnList(component, name)
+	{
+		return this.sbomModel.checkIfPackageInsideDependsOnList(component,name)
+	}
 }
 
 
