@@ -5,7 +5,7 @@ FROM registry.access.redhat.com/ubi9/nodejs-18 as builder
 USER root
 
 # assign token for reading packages from github package registry
-ARG GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN=''
+ARG PACKAGE_REGISTRY_ACCESS_TOKEN=''
 
 # install Java
 RUN curl -kL https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.tar.gz -o /tmp/java-package.tar.gz \
@@ -15,9 +15,9 @@ RUN curl -kL https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.tar
 RUN curl -kL https://dlcdn.apache.org/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz -o /tmp/maven-package.tar.gz \
     && tar xvzf /tmp/maven-package.tar.gz -C /usr/
 
-# install go package manager
-RUN curl -kL https://go.dev/dl/go1.20.6.linux-amd64.tar.gz -o /tmp/go-package.tar.gz \
-    && tar xvzf /tmp/go-package.tar.gz -C /usr/
+# install golang package manager
+RUN curl -kL https://go.dev/dl/go1.21.1.linux-amd64.tar.gz -o /tmp/golang-package.tar.gz \
+    && tar xvzf /tmp/golang-package.tar.gz -C /usr/
 
 # install python package manager (pip)
 RUN python3 -m ensurepip --upgrade
@@ -28,12 +28,12 @@ RUN curl -kL https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -o
 # copy the .npmrc file
 COPY configs/.npmrc .
 # replace placeholder with the actual environment variable
-RUN sed -i "s/__GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN__/${GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN}/g" ./.npmrc
+RUN sed -i "s/__PACKAGE_REGISTRY_ACCESS_TOKEN__/${PACKAGE_REGISTRY_ACCESS_TOKEN}/g" ./.npmrc
 # install Exhort javascript API
 RUN npm install --global @RHEcosystemAppEng/exhort-javascript-api
 
-# add exhort script
-COPY scripts/exhort.sh /
+# add RHDA script
+COPY scripts/rhda.sh /
 
 # assign executable permissions to all installed binaries
 RUN chmod +x /usr/jdk-20.0.2/bin/java \
@@ -42,7 +42,7 @@ RUN chmod +x /usr/jdk-20.0.2/bin/java \
     && chmod +x /usr/local/bin/pip3 \
     && chmod +x /usr/bin/jq \
     && chmod +x /opt/app-root/src/.npm-global/bin/exhort-javascript-api \
-    && chmod +x /exhort.sh 
+    && chmod +x /rhda.sh 
 
 # use default user
 USER default 
@@ -65,10 +65,10 @@ ENV MAVEN_HOME=/usr/apache-maven-3.9.4
 
 # Copy golang executable from the builder stage
 COPY --from=builder /usr/go/ /usr/go/
-ENV GO_HOME=/usr/go
+ENV GOLANG_HOME=/usr/go
 
 # Update PATH
-ENV PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin:$GO_HOME/bin
+ENV PATH=$PATH:$JAVA_HOME/bin:$MAVEN_HOME/bin:$GOLANG_HOME/bin
 
 # Copy python executable from the builder stage
 COPY --from=builder /usr/bin/python3 /usr/bin/python3
@@ -87,5 +87,5 @@ COPY --from=builder /usr/bin/jq /usr/bin/jq
 # Copy exhort-javascript-api executable from the builder stage
 COPY --from=builder /opt/app-root/src/.npm-global/ /opt/app-root/src/.npm-global/
 
-# Copy exhort executable script from the builder stage
-COPY --from=builder /exhort.sh /exhort.sh
+# Copy RHDA executable script from the builder stage
+COPY --from=builder /rhda.sh /rhda.sh
