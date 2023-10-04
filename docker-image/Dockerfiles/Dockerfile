@@ -25,6 +25,9 @@ RUN python3 -m ensurepip --upgrade
 # install jq JSON formating tool
 RUN curl -kL https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -o /usr/bin/jq 
 
+# install linux utils Package to enable UUID generation
+RUN yum install util-linux
+
 # copy the .npmrc file
 COPY configs/.npmrc .
 # replace placeholder with the actual environment variable
@@ -41,19 +44,22 @@ RUN chmod +x /usr/jdk-20.0.2/bin/java \
     && chmod +x /usr/go/bin/go \
     && chmod +x /usr/local/bin/pip3 \
     && chmod +x /usr/bin/jq \
+    && chmod +x /usr/bin/uuidgen \
     && chmod +x /opt/app-root/src/.npm-global/bin/exhort-javascript-api \
     && chmod +x /rhda.sh 
 
 # use default user
 USER default 
 
-#second stage
+# second stage
 FROM registry.access.redhat.com/ubi9/nodejs-18-minimal
 
 LABEL org.opencontainers.image.source https://github.com/RHEcosystemAppEng/exhort-javascript-api
 
 # assign token for exhort authentication with Snyk provider
 ENV EXHORT_SNYK_TOKEN=''
+# assign rhda token for rhda user authentication with exhort
+ENV RHDA_TOKEN=''
 
 # Copy java executable from the builder stage
 COPY --from=builder /usr/jdk-20.0.2/ /usr/jdk-20.0.2/
@@ -83,6 +89,9 @@ RUN ln -s /usr/bin/python3 /usr/bin/python \
 
 # Copy jq executable from the builder stage
 COPY --from=builder /usr/bin/jq /usr/bin/jq
+
+# Copy uuidgen executable from the builder stage
+COPY --from=builder /usr/bin/uuidgen /usr/bin/uuidgen
 
 # Copy exhort-javascript-api executable from the builder stage
 COPY --from=builder /opt/app-root/src/.npm-global/ /opt/app-root/src/.npm-global/
