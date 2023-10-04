@@ -125,6 +125,17 @@ export default class Python_controller {
 		linesOfRequirements.forEach( (dep) => {
 			bringAllDependencies(dependencies,getDependencyName(dep),CachedEnvironmentDeps,includeTransitive)
 		})
+		dependencies.sort((dep1,dep2) =>{
+			const DEP1 = dep1.name.toLowerCase()
+			const DEP2 = dep2.name.toLowerCase()
+			if(DEP1 < DEP2) {
+				return -1;
+			}
+			if(DEP1 > DEP2)
+			{
+				return 1;
+			}
+			return 0;})
 		return dependencies
 	}
 }
