@@ -26,34 +26,6 @@
 			"bom-ref": "pkg:pypi/anyio@3.6.2"
 		},
 		{
-			"name": "contextvars",
-			"version": "2.4",
-			"purl": "pkg:pypi/contextvars@2.4",
-			"type": "library",
-			"bom-ref": "pkg:pypi/contextvars@2.4"
-		},
-		{
-			"name": "immutables",
-			"version": "0.19",
-			"purl": "pkg:pypi/immutables@0.19",
-			"type": "library",
-			"bom-ref": "pkg:pypi/immutables@0.19"
-		},
-		{
-			"name": "typing-extensions",
-			"version": "4.1.1",
-			"purl": "pkg:pypi/typing-extensions@4.1.1",
-			"type": "library",
-			"bom-ref": "pkg:pypi/typing-extensions@4.1.1"
-		},
-		{
-			"name": "dataclasses",
-			"version": "0.8",
-			"purl": "pkg:pypi/dataclasses@0.8",
-			"type": "library",
-			"bom-ref": "pkg:pypi/dataclasses@0.8"
-		},
-		{
 			"name": "idna",
 			"version": "2.10",
 			"purl": "pkg:pypi/idna@2.10",
@@ -110,20 +82,6 @@
 			"bom-ref": "pkg:pypi/click@8.0.4"
 		},
 		{
-			"name": "importlib-metadata",
-			"version": "4.8.3",
-			"purl": "pkg:pypi/importlib-metadata@4.8.3",
-			"type": "library",
-			"bom-ref": "pkg:pypi/importlib-metadata@4.8.3"
-		},
-		{
-			"name": "zipp",
-			"version": "3.6.0",
-			"purl": "pkg:pypi/zipp@3.6.0",
-			"type": "library",
-			"bom-ref": "pkg:pypi/zipp@3.6.0"
-		},
-		{
 			"name": "contextlib2",
 			"version": "21.6.0",
 			"purl": "pkg:pypi/contextlib2@21.6.0",
@@ -143,6 +101,13 @@
 			"purl": "pkg:pypi/pydantic@1.9.2",
 			"type": "library",
 			"bom-ref": "pkg:pypi/pydantic@1.9.2"
+		},
+		{
+			"name": "typing-extensions",
+			"version": "4.1.1",
+			"purl": "pkg:pypi/typing-extensions@4.1.1",
+			"type": "library",
+			"bom-ref": "pkg:pypi/typing-extensions@4.1.1"
 		},
 		{
 			"name": "starlette",
@@ -192,6 +157,27 @@
 			"purl": "pkg:pypi/h11@0.13.0",
 			"type": "library",
 			"bom-ref": "pkg:pypi/h11@0.13.0"
+		},
+		{
+			"name": "immutables",
+			"version": "0.19",
+			"purl": "pkg:pypi/immutables@0.19",
+			"type": "library",
+			"bom-ref": "pkg:pypi/immutables@0.19"
+		},
+		{
+			"name": "importlib-metadata",
+			"version": "4.8.3",
+			"purl": "pkg:pypi/importlib-metadata@4.8.3",
+			"type": "library",
+			"bom-ref": "pkg:pypi/importlib-metadata@4.8.3"
+		},
+		{
+			"name": "zipp",
+			"version": "3.6.0",
+			"purl": "pkg:pypi/zipp@3.6.0",
+			"type": "library",
+			"bom-ref": "pkg:pypi/zipp@3.6.0"
 		},
 		{
 			"name": "requests",
@@ -258,32 +244,9 @@
 		{
 			"ref": "pkg:pypi/anyio@3.6.2",
 			"dependsOn": [
-				"pkg:pypi/contextvars@2.4",
-				"pkg:pypi/dataclasses@0.8",
 				"pkg:pypi/idna@2.10",
-				"pkg:pypi/sniffio@1.2.0",
-				"pkg:pypi/typing-extensions@4.1.1"
+				"pkg:pypi/sniffio@1.2.0"
 			]
-		},
-		{
-			"ref": "pkg:pypi/contextvars@2.4",
-			"dependsOn": [
-				"pkg:pypi/immutables@0.19"
-			]
-		},
-		{
-			"ref": "pkg:pypi/immutables@0.19",
-			"dependsOn": [
-				"pkg:pypi/typing-extensions@4.1.1"
-			]
-		},
-		{
-			"ref": "pkg:pypi/typing-extensions@4.1.1",
-			"dependsOn": []
-		},
-		{
-			"ref": "pkg:pypi/dataclasses@0.8",
-			"dependsOn": []
 		},
 		{
 			"ref": "pkg:pypi/idna@2.10",
@@ -291,15 +254,11 @@
 		},
 		{
 			"ref": "pkg:pypi/sniffio@1.2.0",
-			"dependsOn": [
-				"pkg:pypi/contextvars@2.4"
-			]
+			"dependsOn": []
 		},
 		{
 			"ref": "pkg:pypi/asgiref@3.4.1",
-			"dependsOn": [
-				"pkg:pypi/typing-extensions@4.1.1"
-			]
+			"dependsOn": []
 		},
 		{
 			"ref": "pkg:pypi/beautifulsoup4@4.12.2",
@@ -321,19 +280,6 @@
 		},
 		{
 			"ref": "pkg:pypi/click@8.0.4",
-			"dependsOn": [
-				"pkg:pypi/importlib-metadata@4.8.3"
-			]
-		},
-		{
-			"ref": "pkg:pypi/importlib-metadata@4.8.3",
-			"dependsOn": [
-				"pkg:pypi/typing-extensions@4.1.1",
-				"pkg:pypi/zipp@3.6.0"
-			]
-		},
-		{
-			"ref": "pkg:pypi/zipp@3.6.0",
 			"dependsOn": []
 		},
 		{
@@ -350,16 +296,17 @@
 		{
 			"ref": "pkg:pypi/pydantic@1.9.2",
 			"dependsOn": [
-				"pkg:pypi/dataclasses@0.8",
 				"pkg:pypi/typing-extensions@4.1.1"
 			]
 		},
 		{
+			"ref": "pkg:pypi/typing-extensions@4.1.1",
+			"dependsOn": []
+		},
+		{
 			"ref": "pkg:pypi/starlette@0.17.1",
 			"dependsOn": [
-				"pkg:pypi/anyio@3.6.2",
-				"pkg:pypi/contextlib2@21.6.0",
-				"pkg:pypi/typing-extensions@4.1.1"
+				"pkg:pypi/anyio@3.6.2"
 			]
 		},
 		{
@@ -387,16 +334,25 @@
 		},
 		{
 			"ref": "pkg:pypi/werkzeug@2.0.3",
-			"dependsOn": [
-				"pkg:pypi/dataclasses@0.8"
-			]
+			"dependsOn": []
 		},
 		{
 			"ref": "pkg:pypi/h11@0.13.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:pypi/immutables@0.19",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:pypi/importlib-metadata@4.8.3",
 			"dependsOn": [
-				"pkg:pypi/dataclasses@0.8",
-				"pkg:pypi/typing-extensions@4.1.1"
+				"pkg:pypi/zipp@3.6.0"
 			]
+		},
+		{
+			"ref": "pkg:pypi/zipp@3.6.0",
+			"dependsOn": []
 		},
 		{
 			"ref": "pkg:pypi/requests@2.25.1",
@@ -420,8 +376,7 @@
 			"dependsOn": [
 				"pkg:pypi/asgiref@3.4.1",
 				"pkg:pypi/click@8.0.4",
-				"pkg:pypi/h11@0.13.0",
-				"pkg:pypi/typing-extensions@4.1.1"
+				"pkg:pypi/h11@0.13.0"
 			]
 		}
 	]
