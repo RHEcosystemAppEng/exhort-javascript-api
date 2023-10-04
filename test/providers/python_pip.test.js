@@ -1,7 +1,9 @@
 import { expect } from 'chai'
 import fs from 'fs'
+import {execSync} from "node:child_process";
 import sinon from "sinon";
 import pythonPip from "../../src/providers/python_pip.js"
+import {getCustomPath } from "../../src/tools.js"
 
 
 
@@ -58,6 +60,9 @@ suite('testing the python-pip data provider', () => {
 		}).timeout(process.env.GITHUB_ACTIONS ? 15000 : 10000)
 	});
 
+}).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-10-01T00:00:00.000Z'))).afterAll(()=> clock.restore());
+
+suite('testing the python-pip data provider', () => {
 	[
 		"pip_requirements_virtual_env_txt_no_ignore",
 		"pip_requirements_virtual_env_with_ignore"
@@ -69,7 +74,12 @@ suite('testing the python-pip data provider', () => {
 			process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			// invoke sut stack analysis for scenario manifest
-
+			let pipPath = getCustomPath("pip3");
+			execSync(`${pipPath} install -r test/providers/tst_manifests/pip/${testCase}/requirements.txt`, err => {
+				if (err) {
+					throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
+				}
+			})
 			let providedDataForStack = await pythonPip.provideStack(`test/providers/tst_manifests/pip/${testCase}/requirements.txt`)
 			// new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date
 
@@ -86,4 +96,4 @@ suite('testing the python-pip data provider', () => {
 
 	})
 
-}).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-10-01T00:00:00.000Z'))).afterAll(()=> clock.restore());
+}).beforeAll(() => {clock = sinon.useFakeTimers(new Date('2023-10-01T00:00:00.000Z'))}).afterAll(()=> clock.restore());
