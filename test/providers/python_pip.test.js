@@ -28,7 +28,12 @@ suite('testing the python-pip data provider', () => {
 			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/pip/${testCase}/expected_stack_sbom.json`,).toString()
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			// invoke sut stack analysis for scenario manifest
-
+			let pipPath = getCustomPath("pip3");
+			execSync(`${pipPath} install -r test/providers/tst_manifests/pip/${testCase}/requirements.txt`, err => {
+				if (err) {
+					throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
+				}
+			})
 			let providedDataForStack = await pythonPip.provideStack(`test/providers/tst_manifests/pip/${testCase}/requirements.txt`)
 			// new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date
 
@@ -74,12 +79,6 @@ suite('testing the python-pip data provider', () => {
 			process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			// invoke sut stack analysis for scenario manifest
-			let pipPath = getCustomPath("pip3");
-			execSync(`${pipPath} install -r test/providers/tst_manifests/pip/${testCase}/requirements.txt`, err => {
-				if (err) {
-					throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
-				}
-			})
 			let providedDataForStack = await pythonPip.provideStack(`test/providers/tst_manifests/pip/${testCase}/requirements.txt`)
 			// new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date
 
