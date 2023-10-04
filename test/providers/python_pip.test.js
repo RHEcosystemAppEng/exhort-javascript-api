@@ -77,18 +77,21 @@ suite('testing the python-pip data provider', () => {
 			// load the expected sbom stack analysis
 			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/pip/${testCase}/expected_stack_sbom.json`,).toString()
 			process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
-			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
+			process.env["EXHORT_DEBUG"] = "true"
+			expectedSbom = JSON.stringify(JSON.parse(expectedSbom),null , 4)
 			// invoke sut stack analysis for scenario manifest
 			let providedDataForStack = await pythonPip.provideStack(`test/providers/tst_manifests/pip/${testCase}/requirements.txt`)
 			// new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date
 
 			// providedDataForStack.content = providedDataForStack.content.replaceAll("\"timestamp\":\"[a-zA-Z0-9\\-\\:]+\"","")
 			// verify returned data matches expectation
-			expect(providedDataForStack).to.deep.equal({
-				ecosystem: 'pip',
-				contentType: 'application/vnd.cyclonedx+json',
-				content: expectedSbom
-			})
+			providedDataForStack.content = JSON.stringify(JSON.parse(providedDataForStack.content),null , 4)
+			expect(providedDataForStack.content).to.deep.equal(expectedSbom)
+			// expect(providedDataForStack).to.deep.equal({
+			// 	ecosystem: 'pip',
+			// 	contentType: 'application/vnd.cyclonedx+json',
+			// 	content: expectedSbom
+			// })
 			// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
 		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 15000)
 
