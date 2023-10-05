@@ -73,6 +73,13 @@ export default class Sbom {
 	{
 		return this.sbomModel.checkIfPackageInsideDependsOnList(component,name)
 	}
+
+	/** Removes the root component from the sbom
+	 */
+	removeRootComponent()
+	{
+		return this.sbomModel.removeRootComponent()
+	}
 }
 
 
