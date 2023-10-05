@@ -99,7 +99,7 @@ mkdir -p ./responses
 #### JAVA MAVEN
 echo "RUNNING JavaScript integration test for Stack Analysis report in Html for Java Maven"
 
-node testers/javascript/index.js stack scenarios/maven/pom.xml true &> ./responses/stack.html
+node --no-warnings testers/javascript/index.js stack scenarios/maven/pom.xml true &> ./responses/stack.html
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -113,7 +113,7 @@ fi
 echo "- PASSED"
 
 echo "RUNNING JavaScript integration test for Stack Analysis report in Json for Java Maven"
-node testers/javascript/index.js stack scenarios/maven/pom.xml false &> ./responses/stack.json
+node --no-warnings testers/javascript/index.js stack scenarios/maven/pom.xml false &> ./responses/stack.json
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -129,7 +129,7 @@ StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./re
 matchConstant "200" "$StatusCode"
 
 echo "RUNNING JavaScript integration test for Component Analysis report for Java Maven"
-eval "node testers/javascript/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"  &> ./responses/component.json
+eval "node --no-warnings testers/javascript/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"  &> ./responses/component.json
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -144,11 +144,11 @@ StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./re
 matchConstant "200" "$StatusCode"
 
 echo "RUNNING JavaScript integration test for Validate Token Function With wrong token, expecting getting 401 http status code "
-answerAboutToken=$(node testers/javascript/index.js validateToken veryBadToken)
+answerAboutToken=$(node --no-warnings testers/javascript/index.js validateToken veryBadToken)
 matchConstant "401" "$answerAboutToken"
 
 echo "RUNNING JavaScript integration test for Validate Token Function With no token at all, Expecting getting 400 http status code"
-answerAboutToken=$(node testers/javascript/index.js validateToken )
+answerAboutToken=$(node --no-warnings testers/javascript/index.js validateToken )
 matchConstant "400" "$answerAboutToken"
 
 cleanup 0
