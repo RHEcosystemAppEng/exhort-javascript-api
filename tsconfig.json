@@ -1,5 +1,5 @@
 {
-	"include": ["src/**/*", "generated/backend/**/*"],
+	"include": ["src/**/*", "generated/backend/**/*","./package.json"],
 	"exclude": ["node_modules", "dist"],
 	"compilerOptions": {
 		"allowJs": true,
@@ -17,6 +17,7 @@
 		"types": ["node"],
 		"module": "esnext",
 		"outDir": "dist",
-		"target": "esnext"
+		"target": "esnext",
+		"resolveJsonModule": true
 	}
 }

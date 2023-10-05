@@ -1,8 +1,10 @@
+import {EOL} from "os";
 import { availableProviders, match } from './provider.js'
 import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
+import PackageJson from '../package.json' assert {type: 'json'};
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
 
@@ -12,6 +14,12 @@ export const exhortDevDefaultUrl = 'http://alpha-exhort.apps.sssc-cl01.appeng.rh
 export const exhortDefaultUrl = "https://rhda.rhcloud.com";
 
 
+function logOptionsAndEnvironmentsVariables(alongsideText,valueToBePrinted) {
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		console.log(`${alongsideText}: ${valueToBePrinted} ${EOL}`)
+	}
+
+}
 
 /** This function is used to determine exhort url backend according to the following logic:
  * If EXHORT_DEV_MODE = true, then take the value of the EXHORT BACKEND URL of dev/staging environment in such a way:
@@ -26,6 +34,8 @@ export const exhortDefaultUrl = "https://rhda.rhcloud.com";
  * @private
  */
 function selectExhortBackend(opts= {}) {
+
+	logOptionsAndEnvironmentsVariables("exhort-javascript-api analysis started, version: ",PackageJson.version)
 	let result
 	let exhortDevModeBundled = "false"
 	let exhortDevMode = getCustom("EXHORT_DEV_MODE",exhortDevModeBundled,opts)
@@ -36,6 +46,9 @@ function selectExhortBackend(opts= {}) {
 	{
 		result = exhortDefaultUrl
 	}
+
+	logOptionsAndEnvironmentsVariables("Chosen exhort backend URL:",result)
+
 	return result;
 }
 
