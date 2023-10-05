@@ -1,3 +1,31 @@
+import {EOL} from "os";
+
+
+export const RegexNotToBeLogged = /EXHORT_.*_TOKEN|ex-.*-token/
+/**
+ *
+ * @param {string} key to log its value from environment variables and from opts, if it exists
+ * @param {{}} [opts={}] different options of application, if key in it, log it.
+ * @param {string }defValue default value of key in case there is no option and environment variable values for key
+ */
+export function logValueFromObjects(key,opts, defValue) {
+	if(key in opts) {
+		console.log(`value of option with key ${key} = ${opts[key]} ${EOL}`)
+	}
+	else
+	{
+		console.log(`key ${key} doesn't exists on opts object ${EOL}`)
+	}
+	if(key in process.env) {
+		console.log(`value of environment variable ${key} = ${process.env[key]} ${EOL}`)
+	}
+	else
+	{
+		console.log(`environment variable ${key} doesn't exists ${EOL}`)
+	}
+	console.log(`default value for ${key} = ${defValue} ${EOL}`)
+}
+
 /**
  * Utility function will return the value for key from the environment variables,
  * if not present will return the value for key from the opts objects only if it's a string,
@@ -9,6 +37,10 @@
  * 		default supplied
  */
 export function getCustom(key, def = null, opts = {}) {
+	if (process.env["EXHORT_DEBUG"] === "true" && !key.match(RegexNotToBeLogged))
+	{
+		logValueFromObjects(key,opts,def)
+	}
 	return key in process.env ? process.env[key] : key in opts && typeof opts[key] === 'string' ? opts[key] : def
 }
 

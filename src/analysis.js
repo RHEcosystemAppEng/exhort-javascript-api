@@ -1,6 +1,11 @@
-import {getCustom} from "./tools.js";
+import {EOL} from "os";
+import {RegexNotToBeLogged, getCustom} from "./tools.js";
 
 export default { requestComponent, requestStack, validateToken }
+
+const rhdaTokenHeader = "rhda-token";
+const rhdaSourceHeader = "rhda-source"
+const rhdaOperationTypeHeader = "rhda-operation-type"
 
 /**
  * Send a stack analysis request and get the report as 'text/html' or 'application/json'.
@@ -13,6 +18,7 @@ export default { requestComponent, requestStack, validateToken }
  */
 async function requestStack(provider, manifest, url, html = false, opts = {}) {
 	let provided = provider.provideStack(manifest, opts) // throws error if content providing failed
+	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "stack-analysis"
 	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
@@ -35,6 +41,7 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
  */
 async function requestComponent(provider, data, url, opts = {}) {
 	let provided = provider.provideComponent(data, opts) // throws error if content providing failed
+	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "component-analysis"
 	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
@@ -64,6 +71,14 @@ async function validateToken(url, opts = {}) {
 	return resp.status
 }
 
+
+function setRhdaHeader(headerName,headers,opts) {
+	let rhdaHeaderValue = getCustom(headerName.toUpperCase().replaceAll("-", "_"), null, opts);
+	if (rhdaHeaderValue) {
+		headers[headerName] = rhdaHeaderValue
+	}
+}
+
 /**
  * Utility function for fetching vendor tokens
  * @param {{}} [opts={}] - optional various options to pass along the application
@@ -78,9 +93,18 @@ function getTokenHeaders(opts = {}) {
 			headers[`ex-${vendor}-token`] = token
 		}
 	})
-	let rhdaToken = getCustom("rhda-token", null,opts);
-	if(rhdaToken){
-		headers[`rhda-token`] = rhdaToken
+	setRhdaHeader(rhdaTokenHeader,headers, opts);
+	setRhdaHeader(rhdaSourceHeader,headers, opts);
+	setRhdaHeader(rhdaOperationTypeHeader, headers,opts);
+	if (process.env["EXHORT_DEBUG"] === "true")
+	{
+		console.log("Headers Values to be sent to exhort:" + EOL)
+		for (const headerKey in headers) {
+			if(!headerKey.match(RegexNotToBeLogged))
+			{
+				console.log(`${headerKey}: ${headers[headerKey]}`)
+			}
+		}
 	}
 	return headers
 }

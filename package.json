@@ -88,5 +88,6 @@
 			"json",
 			"text"
 		]
-	}
+	},
+	"eslintIgnore": ["index.js"]
 }
