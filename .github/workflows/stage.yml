@@ -18,6 +18,7 @@ on:
       - "package-lock.json"
       - "package.json"
       - "tsconfig.json"
+      - ".github/workflows/stage.yml"
 
 jobs:
   stage:
@@ -83,7 +84,7 @@ jobs:
               prerelease: true,
               generate_release_notes: true
             })
-            
+
       - name: Build Image With buildah
         id: build-image
         uses: redhat-actions/buildah-build@v2
@@ -93,9 +94,9 @@ jobs:
           dockerfiles: |
             ${{ env.DOCKERFILE_PATH }}
           build-args: |
-            GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN=${{ secrets.GITHUB_PACKAGE_REGISTRY_ACCESS_TOKEN }}
+            PACKAGE_REGISTRY_ACCESS_TOKEN=${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN }}
           context: docker-image
-          
+
       - name: Push Image To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
