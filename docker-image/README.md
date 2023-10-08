@@ -13,6 +13,7 @@ Both Docker and Podman are container runtimes that can be used to build and run 
 
 ## Images generated for Exhort Javascript API
 
-Ecosystem     | Version                                                            | IMAGE                                           | TAG               | 
-------------- | ------------------------------------------------------------------ | ----------------------------------------------- |-------------------|
-Maven & NPM   | maven 3.9.4, <br>npm 9.5.0                                         |  quay.io/ecosystem-appeng/exhort-javascript-api | 1.0-alpha         |
+Ecosystem             | Version                                                            | IMAGE                                           | TAG               | 
+----------------------| ------------------------------------------------------------------ | ----------------------------------------------- |-------------------|
+Maven & NPM           | mvn 3.9.4, <br>npm 9.5.0                                           |  quay.io/ecosystem-appeng/exhort-javascript-api | 0.7.0-alpha       |
+Maven, NPM & Golang   | mvn 3.9.4, <br>npm 9.5.0, <br>go 1.21.1                            |  quay.io/ecosystem-appeng/exhort-javascript-api | 0.7.3-alpha       |
