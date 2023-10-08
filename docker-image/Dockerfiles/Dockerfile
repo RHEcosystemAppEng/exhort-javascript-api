@@ -60,6 +60,8 @@ LABEL org.opencontainers.image.source https://github.com/RHEcosystemAppEng/exhor
 ENV EXHORT_SNYK_TOKEN=''
 # assign rhda token for rhda user authentication with exhort
 ENV RHDA_TOKEN=''
+# assign rhda source for exhort tracking purposes
+ENV RHDA_SOURCE=''
 
 # Copy java executable from the builder stage
 COPY --from=builder /usr/jdk-20.0.2/ /usr/jdk-20.0.2/
