@@ -86,9 +86,6 @@ COPY --from=builder /usr/local/lib/python3.9 /usr/local/lib/python3.9
 COPY --from=builder /usr/lib64/libpython3.9.so.1.0 /usr/lib64/libpython3.9.so.1.0
 COPY --from=builder /usr/lib64/libexpat.so.1 /usr/lib64/libexpat.so.1
 
-RUN ln -s /usr/bin/python3 /usr/bin/python \
-    && ln -s /usr/local/bin/pip3 /usr/bin/pip
-
 # Copy jq executable from the builder stage
 COPY --from=builder /usr/bin/jq /usr/bin/jq
 
