@@ -5,7 +5,7 @@ output_file_path="$2"
 
 printf "Analysing the stack. Please wait..\n\n"
 
-# Getting stack analysis report using exhort Javascript CLI.
+# Getting RHDA stack analysis report using Exhort Javascript CLI.
 report=$(exhort-javascript-api stack $manifest_file_path 2>error.log)
 
 exit_code=$?
@@ -22,26 +22,41 @@ then
   printf "\n[ERROR] Red Hat Dependency Analytics failed with exit code $exit_code.\n$error_message"
   exit 1
 else
-  # In case of success print details from report into console
-  printf "Red Hat Dependency Analytics task is being executed.\n"
-  printf "=%.0s" {1..50}
-  printf "\nRed Hat Dependency Analytics Report\n"
-  printf "=%.0s" {1..50}
-  printf "\n"
-  printf "Total Scanned Dependencies            :  %s \n" "$(jq -r '.summary.dependencies.scanned' <<< $report)"
-  printf "Total Scanned Transitive Dependencies :  %s \n" "$(jq -r '.summary.dependencies.transitive' <<< $report)"
-  printf "Total Vulnerabilities                 :  %s \n" "$(jq -r '.summary.vulnerabilities.total' <<< $report)"
-  printf "Direct Vulnerable Dependencies        :  %s \n" "$(jq -r '.summary.vulnerabilities.direct' <<< $report)"
+# In case of success print report summary into console
+printf "\nRed Hat Dependency Analytics Report\n"
+printf "=%.0s" {1..50}
+printf "\n"
+printf "Dependencies\n"
+printf "  Total Scanned      :  %s \n" "$(jq -r '.scanned.total' <<< $report)"
+printf "  Total Direct       :  %s \n" "$(jq -r '.scanned.direct' <<< $report)"
+printf "  Total Transitive   :  %s \n" "$(jq -r '.scanned.transitive' <<< $report)"
 
-  provider_status=$(jq -rc '.summary.providerStatuses[] | select(.provider == "snyk")' <<< $report)
+providers=$(jq -rc '.providers | keys[] | select(. != "trusted-content")' <<< "$report")
+for provider in $providers; do
+  printf "\nProvider: %s\n" "${provider^}"
+
+  provider_status=$(jq -r --arg provider "$provider" '.providers[$provider].status' <<< $report)
   message=$(echo $provider_status | jq -r '.message')
-  printf "Snyk Provider Status                  : "
+  printf "  Provider Status    :"
   printf "%+40s" $message $'\n'  | sed 's/  */ /g'
-  printf "Critical Vulnerabilities              :  %s \n" "$(jq -r '.summary.vulnerabilities.critical' <<< $report)"
-  printf "High Vulnerabilities                  :  %s \n" "$(jq -r '.summary.vulnerabilities.high' <<< $report)"
-  printf "Medium Vulnerabilities                :  %s \n" "$(jq -r '.summary.vulnerabilities.medium' <<< $report)"
-  printf "Low Vulnerabilities                   :  %s \n" "$(jq -r '.summary.vulnerabilities.low' <<< $report)"
-  printf "=%.0s" {1..50}
+
+  code=$(echo $provider_status | jq -r '.code')  
+  if [ "$code" -eq 200 ]; then
+    sources=$(jq -r --arg provider "$provider" '.providers[$provider].sources | keys[]' <<< "$report")
+    for source in $sources; do
+      printf "  Source: %s\n" "${source^}"
+      printf "    Vulnerabilities\n"
+      printf "      Total          :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.total' <<< $report)"
+      printf "      Direct         :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.direct' <<< $report)"
+      printf "      Transitive     :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.transitive' <<< $report)"
+      printf "      Critical       :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.critical' <<< $report)"
+      printf "      High           :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.high' <<< $report)"
+      printf "      Medium         :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.medium' <<< $report)"
+      printf "      Low            :  %s \n" "$(jq -r --arg provider "$provider" --arg source "$source" '.providers[$provider].sources[$source].summary.low' <<< $report)"
+    done
+  fi
+done
+printf "=%.0s" {1..50}
 
   # Save report along with exit code into output file.
   jq -n {} | \
