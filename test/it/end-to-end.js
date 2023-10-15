@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import {AnalysisReport} from '../../generated/backend/AnalysisReport.js'
+// import {AnalysisReport} from '../../generated/backend/AnalysisReport.js'
 import index from "../../src/index.js"
 import { expect } from 'chai'
 // import fs from 'node:fs'
@@ -27,9 +27,9 @@ suite('Integration Tests', () => {
 	//
 	// }
 	["maven",
-	  "npm",
-	  "go",
-	  "pip"
+		"npm",
+		"go",
+		"pip"
 	].forEach(packageManager => {
 		test(`Stack Analysis json for ${packageManager}`, async () => {
 			// process.env["EXHORT_DEBUG"]= "true"

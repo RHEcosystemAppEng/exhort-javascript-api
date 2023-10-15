@@ -77,7 +77,7 @@ suite('testing the python-pip data provider', () => {
 			// load the expected sbom stack analysis
 			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/pip/${testCase}/expected_stack_sbom.json`,).toString()
 			process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
-			process.env["EXHORT_DEBUG"] = "true"
+			// process.env["EXHORT_DEBUG"] = "true"
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom),null , 4)
 			// invoke sut stack analysis for scenario manifest
 			let providedDataForStack = await pythonPip.provideStack(`test/providers/tst_manifests/pip/${testCase}/requirements.txt`)
