@@ -62,8 +62,7 @@ jobs:
         run: npm run compile
 
       - name: Run integration tests
-        working-directory: integration
-        run: EXHORT_ITS_USE_REAL_API=true bash ./run_its.sh
+        run: npm run integration-tests
 
       - name: Upload coverage reports
         if: ${{ matrix.node == env.MAIN_NODE_VER }}
