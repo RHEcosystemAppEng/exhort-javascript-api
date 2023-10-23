@@ -125,7 +125,7 @@ export default class Python_controller {
 				throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
 			}
 		}).toString();
-		let allPipShowDeps = pipShowOutput.split("---");
+		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
 		let linesOfRequirements = fs.readFileSync(this.pathToRequirements).toString().split(EOL).filter( (line) => !line.startsWith("#")).map(line => line.trim())
 		let CachedEnvironmentDeps = {}
 		allPipShowDeps.forEach( (record) => {
