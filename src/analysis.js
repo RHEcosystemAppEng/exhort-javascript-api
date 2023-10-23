@@ -19,6 +19,11 @@ const rhdaOperationTypeHeader = "rhda-operation-type"
 async function requestStack(provider, manifest, url, html = false, opts = {}) {
 	let provided = provider.provideStack(manifest, opts) // throws error if content providing failed
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "stack-analysis"
+	let startTime = new Date()
+	let EndTime
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		console.log("Starting time of sending stack analysis request to exhort server= " + startTime)
+	}
 	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
@@ -28,6 +33,12 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 		},
 		body: provided.content
 	})
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		EndTime = new Date()
+		console.log("Ending time of sending stack analysis request to exhort server= " + EndTime)
+		let time = (EndTime - startTime) / 1000
+		console.log("Total Time in seconds: " + time)
+	}
 	return html ? resp.text() : resp.json()
 }
 
@@ -42,6 +53,9 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 async function requestComponent(provider, data, url, opts = {}) {
 	let provided = provider.provideComponent(data, opts) // throws error if content providing failed
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "component-analysis"
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		console.log("Starting time of sending component analysis request to exhort server= " + new Date())
+	}
 	let resp = await fetch(`${url}/api/v3/analysis`, {
 		method: 'POST',
 		headers: {
@@ -51,6 +65,9 @@ async function requestComponent(provider, data, url, opts = {}) {
 		},
 		body: provided.content
 	})
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		console.log("Ending time of sending component analysis request to exhort server= " + new Date())
+	}
 	return resp.json()
 }
 

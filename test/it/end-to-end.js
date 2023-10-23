@@ -99,3 +99,30 @@ suite('Integration Tests', () => {
 
 	});
 });
+
+// suite('Developer Test End to End', () => {
+// 	// let opts = {
+// 	// 	EXHORT_DEV_MODE: "true",
+// 	// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
+// 	//
+// 	// }
+//
+// 	test(`Stack Analysis json`, async () => {
+// 		// process.env["EXHORT_DEBUG"]= "true"
+// 		// process.env["EXHORT_DEV_MODE"]= "false"
+// 		// process.env["EXHORT_GO_PATH"]= "/home/zgrinber/test-go/go/bin/go"
+// 		// process.env["RHDA_TOKEN"] = "34JKLDS-4234809-66666666666"
+// 		// process.env["RHDA_SOURCE"] = "Zvika Client"
+// 		// let result = await index.stackAnalysis("/tmp/rajan-0410/go.mod", false, opts);
+//
+//
+// 		let pomPath = `/tmp/231023/requirements.txt`
+// 		let providedDataForStack = await index.stackAnalysis(pomPath)
+// 		console.log(JSON.stringify(providedDataForStack.summary,null , 4))
+// 		expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
+// 	}).timeout(15000);
+//
+//
+//
+//
+// });

@@ -2,7 +2,13 @@ import CycloneDxSbom from "./cyclone_dx_sbom.js";
 
 export default class Sbom {
 	sbomModel
+	#startTime
+	#endTime
 	constructor() {
+		if (process.env["EXHORT_DEBUG"] === "true") {
+			this.#startTime = new Date()
+			console.log("Starting time to create sbom = " + this.#startTime)
+		}
 		this.sbomModel = new CycloneDxSbom()
 	}
 
@@ -51,6 +57,12 @@ export default class Sbom {
 	 * @return String sbom json in a string format
 	 */
 	getAsJsonString(){
+		if (process.env["EXHORT_DEBUG"] === "true") {
+			this.#endTime = new Date()
+			console.log("Ending time to create sbom = " + this.#endTime)
+			let time = (this.#endTime - this.#startTime) / 1000
+			console.log("Total time in seconds to create sbom = " + time)
+		}
 		return this.sbomModel.getAsJsonString()
 	}
 
