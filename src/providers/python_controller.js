@@ -74,6 +74,12 @@ export default class Python_controller {
 	 */
 	getDependencies(includeTransitive)
 	{
+		let startingTime
+		let endingTime
+		if (process.env["EXHORT_DEBUG"] === "true") {
+			startingTime = new Date()
+			console.log("Starting time to get requirements.txt dependency tree = " + startingTime)
+		}
 		if(!this.realEnvironment) {
 			execSync(`${this.pathToPipBin} install -r ${this.pathToRequirements}`, err =>{
 				if (err) {
@@ -83,6 +89,12 @@ export default class Python_controller {
 		}
 		let dependencies = this.#getDependenciesImpl(includeTransitive)
 		this.#cleanEnvironment()
+		if (process.env["EXHORT_DEBUG"] === "true") {
+			endingTime = new Date()
+			console.log("Ending time to get requirements.txt dependency tree = " + endingTime)
+			let time = ( endingTime - startingTime ) / 1000
+			console.log("total time to get requirements.txt dependency tree = " + time)
+		}
 		return dependencies
 	}
 	/**
