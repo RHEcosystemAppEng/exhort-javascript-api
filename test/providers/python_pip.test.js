@@ -67,7 +67,7 @@ suite('testing the python-pip data provider', () => {
 
 }).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-10-01T00:00:00.000Z'))).afterAll(()=> clock.restore());
 
-suite('testing the python-pip data provider', () => {
+suite('testing the python-pip data provider with virtual environment', () => {
 	[
 		"pip_requirements_virtual_env_txt_no_ignore",
 		"pip_requirements_virtual_env_with_ignore"
@@ -93,7 +93,7 @@ suite('testing the python-pip data provider', () => {
 			// 	content: expectedSbom
 			// })
 			// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-		}).timeout(process.env.GITHUB_ACTIONS ? 30000 : 15000)
+		}).timeout(process.env.GITHUB_ACTIONS ? 60000 : 30000)
 
 
 	})

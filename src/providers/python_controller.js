@@ -2,6 +2,7 @@ import {execSync} from "node:child_process";
 import fs from "node:fs";
 import path from 'node:path';
 import {EOL} from "os";
+import {getCustom} from "../tools.js";
 
 
 /** @typedef {{name: string, version: string, dependencies: DependencyEntry[]}} DependencyEntry */
@@ -126,6 +127,7 @@ export default class Python_controller {
 			}
 		}).toString();
 		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
+		let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true");
 		let linesOfRequirements = fs.readFileSync(this.pathToRequirements).toString().split(EOL).filter( (line) => !line.startsWith("#")).map(line => line.trim())
 		let CachedEnvironmentDeps = {}
 		allPipShowDeps.forEach( (record) => {
@@ -135,6 +137,31 @@ export default class Python_controller {
 			CachedEnvironmentDeps[dependencyName.replace("_","-")] = record
 		})
 		linesOfRequirements.forEach( (dep) => {
+			// if matchManifestVersions setting is turned on , then
+			if(matchManifestVersions === "true")
+			{
+				let dependencyName
+				let manifestVersion
+				let installedVersion
+				let doubleEqualSignPosition
+				if(dep.includes("=="))
+				{
+					doubleEqualSignPosition = dep.indexOf("==")
+					manifestVersion = dep.substring(doubleEqualSignPosition + 2).trim()
+					if(manifestVersion.includes("#"))
+					{
+						let hashCharIndex = manifestVersion.indexOf("#");
+						manifestVersion = manifestVersion.substring(0,hashCharIndex)
+					}
+					dependencyName = getDependencyName(dep)
+					installedVersion = getDependencyVersion(CachedEnvironmentDeps[dependencyName.toLowerCase()])
+					if(manifestVersion.trim() !== installedVersion.trim())
+					{
+						throw new Error(`Can't continue with analysis - versions mismatch for dependency name ${dependencyName}, manifest version=${manifestVersion}, installed Version=${installedVersion}, if you want to allow version mismatch for analysis between installed and requested packages, set environment variable/setting - MATCH_MANIFEST_VERSIONS=false`)
+					}
+
+				}
+			}
 			bringAllDependencies(dependencies,getDependencyName(dep),CachedEnvironmentDeps,includeTransitive)
 		})
 		dependencies.sort((dep1,dep2) =>{

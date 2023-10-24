@@ -29,7 +29,6 @@ suite('testing the golang-go-modules data provider', () => {
 			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/golang/${testCase}/expected_sbom_stack_analysis.json`,).toString()
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			// invoke sut stack analysis for scenario manifest
-
 			let providedDataForStack = await golangGoModules.provideStack(`test/providers/tst_manifests/golang/${testCase}/go.mod`)
 			// new(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, ms?: number): Date
 
