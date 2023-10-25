@@ -82,11 +82,26 @@ export default class Python_controller {
 			console.log("Starting time to get requirements.txt dependency tree = " + startingTime)
 		}
 		if(!this.realEnvironment) {
-			execSync(`${this.pathToPipBin} install -r ${this.pathToRequirements}`, err =>{
-				if (err) {
-					throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
+			let installBestEfforts = getCustom("EXHORT_PYTHON_INSTALL_BEST_EFFORTS","false");
+			if(installBestEfforts === "false")
+			{
+				execSync(`${this.pathToPipBin} install -r ${this.pathToRequirements}`, err =>{
+					if (err) {
+						throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
+					}
+				})
+			}
+			// make best efforts to install the requirements.txt on the virtual environment created from the python3 passed in.
+			// that means that it will install the packages without referring to the versions, but will let pip choose the version
+			// tailored for version of the python environment( and of pip package manager) for each package.
+			else {
+				let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true");
+				if(matchManifestVersions === "true")
+				{
+					throw new Error("Conflicting settings, EXHORT_PYTHON_INSTALL_BEST_EFFORTS=true can only work with MATCH_MANIFEST_VERSIONS=false")
 				}
-			})
+				this.#installingRequirementsOneByOne()
+			}
 		}
 		let dependencies = this.#getDependenciesImpl(includeTransitive)
 		this.#cleanEnvironment()
@@ -97,6 +112,19 @@ export default class Python_controller {
 			console.log("total time to get requirements.txt dependency tree = " + time)
 		}
 		return dependencies
+	}
+
+	#installingRequirementsOneByOne() {
+		let requirementsContent = fs.readFileSync(this.pathToRequirements);
+		let requirementsRows = requirementsContent.toString().split(EOL);
+		requirementsRows.filter((line) => !line.trim().startsWith("#")).filter((line) => line.trim() !== "").forEach( (dependency) => {
+			let dependencyName = getDependencyName(dependency);
+			execSync(`${this.pathToPipBin} install ${dependencyName}`, err =>{
+				if (err) {
+					throw new Error(`Best efforts process - failed installing ${dependencyName}  in created virtual python environment --> error message: ` + err.message)
+				}
+			})
+		} )
 	}
 	/**
 	 * @private
@@ -273,10 +301,3 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 		entry["dependencies"] = targetDeps
 	})
 }
-
-/**
- *
- * @param includeTransitive
- * @return {[DependencyEntry]}
- */
-
