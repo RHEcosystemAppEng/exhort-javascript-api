@@ -3,7 +3,7 @@ import { execSync } from "node:child_process"
 import fs from 'node:fs'
 import os from "node:os";
 import {EOL} from "os";
-import { getCustomPath } from "../tools.js";
+import {getCustom, getCustomPath} from "../tools.js";
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
@@ -175,6 +175,93 @@ function enforceRemovingIgnoredDepsInCaseOfAutomaticVersionUpdate(ignoredDeps, s
 }
 
 /**
+ *
+ * @param {[string]} lines - array of lines of go.mod manifest
+ * @param {string} goMod - content of go.mod manifest
+ * @return {[string]} all dependencies from go.mod file as array
+ */
+function collectAllDepsFromManifest(lines, goMod) {
+	let result
+	// collect all deps that starts with require keyword
+
+	result = lines.filter((line) => line.trim().startsWith("require") && !line.includes("(")).map((dep) => dep.substring("require".length).trim())
+
+
+
+	// collect all deps that are inside `require` blocks
+	let currentSegmentOfGoMod = goMod
+	let requirePositionObject = decideRequireBlockIndex(currentSegmentOfGoMod)
+	while(requirePositionObject.index > -1) {
+		let depsInsideRequirementsBlock = currentSegmentOfGoMod.substring(requirePositionObject.index + requirePositionObject.startingOffeset).trim();
+		let endOfBlockIndex = depsInsideRequirementsBlock.indexOf(")")
+		let currentIndex = 0
+		while(currentIndex < endOfBlockIndex)
+		{
+			let endOfLinePosition = depsInsideRequirementsBlock.indexOf(EOL, currentIndex);
+			let dependency = depsInsideRequirementsBlock.substring(currentIndex, endOfLinePosition)
+			result.push(dependency.trim())
+			currentIndex = endOfLinePosition + 1
+		}
+		currentSegmentOfGoMod = currentSegmentOfGoMod.substring(endOfBlockIndex + 1).trim()
+		requirePositionObject = decideRequireBlockIndex(currentSegmentOfGoMod)
+	}
+
+	function decideRequireBlockIndex(goMod) {
+		let object = {}
+		let index = goMod.indexOf("require(")
+		object.startingOffeset = "require(".length
+		if (index === -1)
+		{
+			index = goMod.indexOf("require (")
+			object.startingOffeset = "require (".length
+			if(index === -1)
+			{
+				index = goMod.indexOf("require  (")
+				object.startingOffeset = "require  (".length
+			}
+		}
+		object.index = index
+		return object
+	}
+	return result
+}
+
+/**
+ *
+ * @param {string} rootElementName the rootElementName element of go mod graph, to compare only direct deps from go mod graph against go.mod manifest
+ * @param{[string]} goModGraphOutputRows the goModGraphOutputRows from go mod graph' output
+ * @param {string }manifest path to go.mod manifest on file system
+ * @private
+ */
+function performManifestVersionsCheck(rootElementName, goModGraphOutputRows, manifest) {
+	let goMod = fs.readFileSync(manifest).toString().trim()
+	let lines = goMod.split(EOL);
+	let comparisonLines = goModGraphOutputRows.filter((line)=> line.startsWith(rootElementName)).map((line)=> getChildVertexFromEdge(line))
+	let manifestDeps = collectAllDepsFromManifest(lines,goMod)
+	try {
+		comparisonLines.forEach((dependency) => {
+			let parts = dependency.split("@")
+			let version = parts[1]
+			let depName = parts[0]
+			manifestDeps.forEach(dep => {
+				let components = dep.trim().split(" ");
+				let currentDepName = components[0]
+				let currentVersion = components[1]
+				if (currentDepName === depName) {
+					if (currentVersion !== version) {
+						throw new Error(`versions mismatch for dependency name ${depName}, manifest version=${currentVersion}, installed Version=${version}, if you want to allow version mismatch for analysis between installed and requested packages, set environment variable/setting - MATCH_MANIFEST_VERSIONS=false`)
+					}
+				}
+			})
+		})
+	}
+	catch(error) {
+		console.error("Can't continue with analysis")
+		throw error
+	}
+}
+
+/**
  * Create SBOM json string for go Module.
  * @param {string} manifest - path for go.mod
  * @param {{}} [opts={}] - optional various options to pass along the application
@@ -201,6 +288,12 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let sbom = new Sbom();
 	let rows = goGraphOutput.split(EOL);
 	let root = getParentVertexFromEdge(rows[0])
+	let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","false");
+	if(matchManifestVersions === "true") {
+		{
+			performManifestVersionsCheck(root, rows, manifest)
+		}
+	}
 	let mainModule = toPurl(root, "@", undefined)
 	sbom.addRoot(mainModule)
 
