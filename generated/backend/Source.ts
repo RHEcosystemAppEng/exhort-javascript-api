@@ -10,43 +10,31 @@
  * Do not edit the class manually.
  */
 
+import { DependencyReport } from '../backend/DependencyReport';
+import { SourceSummary } from '../backend/SourceSummary';
 
-export class ProviderStatus {
-    'ok'?: boolean;
-    'name'?: string;
-    'code'?: number;
-    'message'?: string;
+export class Source {
+    'summary'?: SourceSummary;
+    'dependencies'?: Array<DependencyReport>;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "ok",
-            "baseName": "ok",
-            "type": "boolean",
+            "name": "summary",
+            "baseName": "summary",
+            "type": "SourceSummary",
             "format": ""
         },
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string",
-            "format": ""
-        },
-        {
-            "name": "code",
-            "baseName": "code",
-            "type": "number",
-            "format": ""
-        },
-        {
-            "name": "message",
-            "baseName": "message",
-            "type": "string",
+            "name": "dependencies",
+            "baseName": "dependencies",
+            "type": "Array<DependencyReport>",
             "format": ""
         }    ];
 
     static getAttributeTypeMap() {
-        return ProviderStatus.attributeTypeMap;
+        return Source.attributeTypeMap;
     }
 
     public constructor() {

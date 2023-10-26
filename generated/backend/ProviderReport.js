@@ -9,26 +9,26 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class Remediation {
-    'fixedIn';
-    'trustedContent';
+export class ProviderReport {
+    'status';
+    'sources';
     static discriminator = undefined;
     static attributeTypeMap = [
         {
-            "name": "fixedIn",
-            "baseName": "fixedIn",
-            "type": "Array<string>",
+            "name": "status",
+            "baseName": "status",
+            "type": "ProviderStatus",
             "format": ""
         },
         {
-            "name": "trustedContent",
-            "baseName": "trustedContent",
-            "type": "RemediationTrustedContent",
+            "name": "sources",
+            "baseName": "sources",
+            "type": "{ [key: string]: Source; }",
             "format": ""
         }
     ];
     static getAttributeTypeMap() {
-        return Remediation.attributeTypeMap;
+        return ProviderReport.attributeTypeMap;
     }
     constructor() {
     }

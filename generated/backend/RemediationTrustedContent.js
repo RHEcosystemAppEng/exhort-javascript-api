@@ -9,26 +9,29 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class Remediation {
-    'fixedIn';
-    'trustedContent';
+export class RemediationTrustedContent {
+    /**
+    * PackageURL used to identify a dependency artifact
+    */
+    'mavenPackage';
+    'productStatus';
     static discriminator = undefined;
     static attributeTypeMap = [
         {
-            "name": "fixedIn",
-            "baseName": "fixedIn",
-            "type": "Array<string>",
+            "name": "mavenPackage",
+            "baseName": "mavenPackage",
+            "type": "string",
             "format": ""
         },
         {
-            "name": "trustedContent",
-            "baseName": "trustedContent",
-            "type": "RemediationTrustedContent",
+            "name": "productStatus",
+            "baseName": "productStatus",
+            "type": "string",
             "format": ""
         }
     ];
     static getAttributeTypeMap() {
-        return Remediation.attributeTypeMap;
+        return RemediationTrustedContent.attributeTypeMap;
     }
     constructor() {
     }
