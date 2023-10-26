@@ -106,7 +106,7 @@ suite('Integration Tests', () => {
 
 
 	});
-});
+}).beforeAll(() => process.env["EXHORT_DEV_MODE"] = "true");
 
 // suite('Developer Test End to End', () => {
 // 	// let opts = {
