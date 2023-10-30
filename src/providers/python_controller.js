@@ -16,6 +16,7 @@ export default class Python_controller {
 	pathToPythonBin
 	realEnvironment
 	pathToRequirements
+	options
 
 	/**
 	 * Constructor to create new python controller instance to interact with pip package manager
@@ -25,12 +26,13 @@ export default class Python_controller {
 	 * @param {string} pathToRequirements
 	 * @
 	 */
-	constructor(realEnvironment,pathToPip,pathToPython,pathToRequirements) {
+	constructor(realEnvironment,pathToPip,pathToPython,pathToRequirements,options={}) {
 		this.pathToPythonBin = pathToPython
 		this.pathToPipBin = pathToPip
 		this.realEnvironment= realEnvironment
 		this.prepareEnvironment()
 		this.pathToRequirements = pathToRequirements
+		this.options = options
 	}
 	prepareEnvironment()
 	{
@@ -82,7 +84,7 @@ export default class Python_controller {
 			console.log("Starting time to get requirements.txt dependency tree = " + startingTime)
 		}
 		if(!this.realEnvironment) {
-			let installBestEfforts = getCustom("EXHORT_PYTHON_INSTALL_BEST_EFFORTS","false");
+			let installBestEfforts = getCustom("EXHORT_PYTHON_INSTALL_BEST_EFFORTS","false",this.options);
 			if(installBestEfforts === "false")
 			{
 				execSync(`${this.pathToPipBin} install -r ${this.pathToRequirements}`, err =>{
@@ -95,7 +97,7 @@ export default class Python_controller {
 			// that means that it will install the packages without referring to the versions, but will let pip choose the version
 			// tailored for version of the python environment( and of pip package manager) for each package.
 			else {
-				let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true");
+				let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true",this.options);
 				if(matchManifestVersions === "true")
 				{
 					throw new Error("Conflicting settings, EXHORT_PYTHON_INSTALL_BEST_EFFORTS=true can only work with MATCH_MANIFEST_VERSIONS=false")

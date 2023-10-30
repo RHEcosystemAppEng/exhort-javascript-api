@@ -6,7 +6,31 @@ import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
 
-export default { isSupported, provideComponent, provideStack }
+export var npmInteractions = {
+	listing: function runNpmListing(npmListing) {
+		let npmOutput = execSync(npmListing, err => {
+			if (err) {
+				throw new Error('failed to get npmOutput json from npm')
+			}
+		});
+		return npmOutput;
+	},
+	version: function checkNpmVersion(npm) {
+		execSync(`${npm} --version`, err => {
+			if (err) {
+				throw new Error('npm is not accessible')
+			}
+		})
+	},
+	createPackageLock: function createPackageLock(npm, manifestDir) {
+		execSync(`${npm} i --package-lock-only --prefix ${manifestDir}`, err => {
+			if (err) {
+				throw new Error('failed to create npmOutput list')
+			}
+		})
+	}
+}
+export default { isSupported, provideComponent, provideStack, npmInteractions }
 
 /** @typedef {import('../provider').Provider} */
 
@@ -73,6 +97,12 @@ function getNpmListing(npm, allFilter, manifestDir) {
 	return `${npm} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
 }
 
+
+
+
+
+
+
 /**
  * Create SBOM json string for npm Package.
  * @param {string} manifest - path for package.json
@@ -84,24 +114,12 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	// get custom npm path
 	let npm = getCustomPath('npm', opts)
 	// verify npm is accessible
-	execSync(`${npm} --version`, err => {
-		if (err) {
-			throw new Error('npm is not accessible')
-		}
-	})
+	npmInteractions.version(npm);
 	let manifestDir = path.dirname(manifest)
-	execSync(`${npm} i --package-lock-only --prefix ${manifestDir}`, err => {
-		if (err) {
-			throw new Error('failed to create npmOutput list')
-		}
-	})
+	npmInteractions.createPackageLock(npm, manifestDir);
 	let allFilter = includeTransitive? " --all" : ""
 	let npmListing = getNpmListing(npm, allFilter, manifestDir)
-	let npmOutput = execSync(npmListing, err => {
-		if (err) {
-			throw new Error('failed to get npmOutput json from npm')
-		}
-	});
+	let npmOutput = npmInteractions.listing(npmListing);
 	let depsObject = JSON.parse(npmOutput);
 	let rootName = depsObject["name"]
 	let rootVersion = depsObject["version"]
