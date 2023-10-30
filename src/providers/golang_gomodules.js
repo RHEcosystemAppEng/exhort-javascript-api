@@ -288,7 +288,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let sbom = new Sbom();
 	let rows = goGraphOutput.split(EOL);
 	let root = getParentVertexFromEdge(rows[0])
-	let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","false");
+	let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","false",opts);
 	if(matchManifestVersions === "true") {
 		{
 			performManifestVersionsCheck(root, rows, manifest)
