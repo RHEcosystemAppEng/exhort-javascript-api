@@ -114,10 +114,12 @@ suite('Integration Tests', () => {
 // 		// process.env["RHDA_TOKEN"] = "34JKLDS-4234809-66666666666"
 // 		// process.env["RHDA_SOURCE"] = "Zvika Client"
 // 		// let result = await index.stackAnalysis("/tmp/rajan-0410/go.mod", false, opts);
-//
+// 		let opts = {
+// 			MATCH_MANIFEST_VERSIONS: 'false'
+// 		}
 //
 // 		let pomPath = `/tmp/231023/requirements.txt`
-// 		let providedDataForStack = await index.stackAnalysis(pomPath)
+// 		let providedDataForStack = await index.stackAnalysis(pomPath,opts)
 // 		console.log(JSON.stringify(providedDataForStack.summary,null , 4))
 // 		expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
 // 	}).timeout(15000);

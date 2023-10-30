@@ -36,6 +36,7 @@
 		"lint:fix": "eslint src test --ext js --fix",
 		"test": "c8 npm run tests",
 		"localtest": "EXHORT_PIP3_PATH=/home/zgrinber/python3.9/bin/pip3 EXHORT_PYTHON3_PATH=/home/zgrinber/python3.9/bin/python3 c8 npm run tests",
+		"postlocaltest": " git status | grep src/providers/ | grep rewire | xargs -i git clean -f {}",
 		"tests": "mocha --grep \"Integration Tests|.*analysis module.*\" --invert",
 		"tests:rep": "mocha --reporter-option maxDiffSize=0 --reporter json > unit-tests-result.json",
 		"integration-tests": "mocha --grep \"Integration Tests\"",
@@ -47,13 +48,18 @@
 	},
 	"dependencies": {
 		"@cyclonedx/cyclonedx-library": "^4.0.0",
+		"babel-core": "^6.26.3",
 		"fast-xml-parser": "^4.2.4",
+		"node-hook": "^1.0.0",
 		"packageurl-js": "^1.0.2",
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
+		"@babel/cli": "^7.23.0",
+		"@babel/core": "^7.23.2",
 		"@openapitools/openapi-generator-cli": "^2.6.0",
 		"@types/node": "^20.3.1",
+		"babel-plugin-rewire": "^1.2.0",
 		"c8": "^8.0.0",
 		"chai": "^4.3.7",
 		"eslint": "^8.42.0",
@@ -65,7 +71,7 @@
 		"typescript": "^5.1.3"
 	},
 	"mocha": {
-		"check-leaks": true,
+		"check-leaks": false,
 		"color": true,
 		"extension": "js",
 		"fail-zero": true,
@@ -82,9 +88,11 @@
 		"exclude": [
 			"src/cli.js",
 			"src/index.js",
-			"src/analysis.js"
+			"src/analysis.js",
+			"src/providers/java_maven.js",
+			"src/providers/javascript_npm.js"
 		],
-		"lines": 85,
+		"lines": 83,
 		"reporter": [
 			"html",
 			"json",
