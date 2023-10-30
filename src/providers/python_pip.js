@@ -170,7 +170,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let binaries = {}
 	getPythonPipBinaries(binaries,opts)
 	let createVirtualPythonEnv = getCustom("EXHORT_PYTHON_VIRTUAL_ENV","false",opts);
-	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,manifest)
+	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,manifest,opts)
 	let dependencies = pythonController.getDependencies(true);
 	let sbom = new Sbom();
 	sbom.addRoot(toPurl("root",undefined))
