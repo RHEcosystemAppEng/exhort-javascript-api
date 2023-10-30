@@ -1,4 +1,4 @@
-import babelCore from "babel-core";
+import babelCore from "@babel/core";
 import fs from "fs";
 
 async function dynamicImportProvider(path) {

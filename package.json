@@ -47,15 +47,13 @@
 		"postgen:backend": "find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} +"
 	},
 	"dependencies": {
+		"@babel/core": "^7.23.2",
 		"@cyclonedx/cyclonedx-library": "^4.0.0",
-		"babel-core": "^6.26.3",
 		"fast-xml-parser": "^4.2.4",
-		"node-hook": "^1.0.0",
 		"packageurl-js": "^1.0.2",
 		"yargs": "^17.7.2"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.23.0",
 		"@babel/core": "^7.23.2",
 		"@openapitools/openapi-generator-cli": "^2.6.0",
 		"@types/node": "^20.3.1",
