@@ -201,7 +201,7 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpRequirementsPath = path.join(tmpDir, 'requirements.txt')
 	fs.writeFileSync(tmpRequirementsPath, data)
-	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,tmpRequirementsPath)
+	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,tmpRequirementsPath,opts)
 	let dependencies = pythonController.getDependencies(false);
 	let sbom = new Sbom();
 	sbom.addRoot(toPurl("root",undefined))

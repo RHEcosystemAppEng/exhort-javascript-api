@@ -149,6 +149,8 @@ export default class Python_controller {
 				throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
 			}
 		}).toString();
+		//debug
+		// freezeOutput = "alternative pip freeze output goes here for debugging"
 		let lines = freezeOutput.split(EOL)
 		let depNames = lines.map( line => getDependencyName(line)).join(" ")
 		let pipShowOutput = execSync(`${this.pathToPipBin} show ${depNames}`, err =>{
@@ -157,7 +159,7 @@ export default class Python_controller {
 			}
 		}).toString();
 		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
-		let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true");
+		let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true",this.options);
 		let linesOfRequirements = fs.readFileSync(this.pathToRequirements).toString().split(EOL).filter( (line) => !line.startsWith("#")).map(line => line.trim())
 		let CachedEnvironmentDeps = {}
 		allPipShowDeps.forEach( (record) => {
