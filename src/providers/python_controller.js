@@ -158,6 +158,8 @@ export default class Python_controller {
 				throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
 			}
 		}).toString();
+		//debug
+		// pipShowOutput = "alternative pip show output goes here for debugging"
 		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
 		let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true",this.options);
 		let linesOfRequirements = fs.readFileSync(this.pathToRequirements).toString().split(EOL).filter( (line) => !line.startsWith("#")).map(line => line.trim())
@@ -186,10 +188,14 @@ export default class Python_controller {
 						manifestVersion = manifestVersion.substring(0,hashCharIndex)
 					}
 					dependencyName = getDependencyName(dep)
-					installedVersion = getDependencyVersion(CachedEnvironmentDeps[dependencyName.toLowerCase()])
-					if(manifestVersion.trim() !== installedVersion.trim())
-					{
-						throw new Error(`Can't continue with analysis - versions mismatch for dependency name ${dependencyName}, manifest version=${manifestVersion}, installed Version=${installedVersion}, if you want to allow version mismatch for analysis between installed and requested packages, set environment variable/setting - MATCH_MANIFEST_VERSIONS=false`)
+					// only compare between declared version in manifest to installed version , if the package is installed.
+					if(CachedEnvironmentDeps[dependencyName.toLowerCase()] !== undefined) {
+						installedVersion = getDependencyVersion(CachedEnvironmentDeps[dependencyName.toLowerCase()])
+					}
+					if(installedVersion) {
+						if (manifestVersion.trim() !== installedVersion.trim()) {
+							throw new Error(`Can't continue with analysis - versions mismatch for dependency name ${dependencyName}, manifest version=${manifestVersion}, installed Version=${installedVersion}, if you want to allow version mismatch for analysis between installed and requested packages, set environment variable/setting - MATCH_MANIFEST_VERSIONS=false`)
+						}
 					}
 
 				}
