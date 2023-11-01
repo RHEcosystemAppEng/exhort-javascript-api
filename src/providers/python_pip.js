@@ -119,9 +119,10 @@ function getIgnoredDependencies(requirementTxtContent) {
  *
  * @param {string} requirementTxtContent content of requirments.txt in string
  * @param {Sbom} sbom object to filter out from it exhortignore dependencies.
+ * @param {{Object}} opts - various options and settings for the application
  * @private
  */
-function handleIgnoredDependencies(requirementTxtContent, sbom) {
+function handleIgnoredDependencies(requirementTxtContent, sbom,opts ={}) {
 	let ignoredDeps = getIgnoredDependencies(requirementTxtContent)
 	let ignoredDepsVersion = ignoredDeps
 		.filter(dep => !dep.toString().includes(dummyVersionNotation) )
@@ -130,7 +131,16 @@ function handleIgnoredDependencies(requirementTxtContent, sbom) {
 		.filter(dep => dep.toString().includes(dummyVersionNotation))
 		.map(dep => dep.name)
 	sbom.filterIgnoredDeps(ignoredDepsNoVersions)
-	sbom.filterIgnoredDepsIncludingVersion(ignoredDepsVersion)
+	let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true",opts);
+	if(matchManifestVersions === "true") {
+		sbom.filterIgnoredDepsIncludingVersion(ignoredDepsVersion)
+	}
+	else
+	{
+		// in case of version mismatch, need to parse the name of package from the purl, and remove the package name from sbom according to name only
+		// without version
+		sbom.filterIgnoredDeps(ignoredDepsVersion.map((dep) => dep.split("@")[0].split("pkg:pypi/")[1]))
+	}
 }
 
 /** get python and pip binaries, python3/pip3 get precedence if exists on the system path
@@ -178,7 +188,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 		addAllDependencies(sbom.getRoot(),dep,sbom)
 	})
 	let requirementTxtContent = fs.readFileSync(manifest).toString();
-	handleIgnoredDependencies(requirementTxtContent,sbom)
+	handleIgnoredDependencies(requirementTxtContent,sbom,opts)
 	// In python there is no root component, then we must remove the dummy root we added, so the sbom json will be accepted by exhort backend
 	sbom.removeRootComponent()
 	return sbom.getAsJsonString()
