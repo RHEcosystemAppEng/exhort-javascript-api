@@ -144,7 +144,7 @@ export default class Python_controller {
 	}
 	#getDependenciesImpl(includeTransitive) {
 		let dependencies = new Array()
-		let freezeOutput = execSync(`${this.pathToPipBin} freeze`, err =>{
+		let freezeOutput = execSync(`${this.pathToPipBin} freeze --all`, err =>{
 			if (err) {
 				throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
 			}
