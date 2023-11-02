@@ -251,7 +251,7 @@ function getDependencyVersion(record) {
  * @return {string} the name of dependency
  */
 function getDependencyName(depLine) {
-	const regex = /[^\w\s-_]/g;
+	const regex = /[^\w\s-_.]/g;
 	let endIndex = depLine.search(regex);
 	return depLine.substring(0,endIndex) ;
 }
