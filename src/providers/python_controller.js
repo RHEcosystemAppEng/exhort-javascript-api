@@ -200,7 +200,11 @@ export default class Python_controller {
 
 				}
 			}
-			bringAllDependencies(dependencies,getDependencyName(dep),CachedEnvironmentDeps,includeTransitive)
+			let path = new Array()
+			let depName = getDependencyName(dep)
+			//array to track a path for each branch in the dependency tree
+			path.push(depName.toLowerCase())
+			bringAllDependencies(dependencies,depName,CachedEnvironmentDeps,includeTransitive,path)
 		})
 		dependencies.sort((dep1,dep2) =>{
 			const DEP1 = dep1.name.toLowerCase()
@@ -247,7 +251,7 @@ function getDependencyVersion(record) {
  * @return {string} the name of dependency
  */
 function getDependencyName(depLine) {
-	const regex = /[^\w\s-_]/g;
+	const regex = /[^\w\s-_.]/g;
 	let endIndex = depLine.search(regex);
 	return depLine.substring(0,endIndex) ;
 }
@@ -272,8 +276,9 @@ function getDepsList(record) {
  * @param dependencyName
  * @param cachedEnvironmentDeps
  * @param includeTransitive
+ * @param {[string]}path array representing the path of the current branch in dependency tree, starting with a root dependency - that is - a given dependency in requirements.txt
  */
-function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDeps, includeTransitive) {
+function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDeps, includeTransitive,path) {
 	if(dependencyName === null || dependencyName === undefined || dependencyName.trim() === "" ) {
 		return
 	}
@@ -292,8 +297,15 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 	let entry = { "name" : getDependencyNameShow(record) , "version" : version, "dependencies" : [] }
 	dependencies.push(entry)
 	directDeps.forEach( (dep) => {
-		if(includeTransitive) {
-			bringAllDependencies(targetDeps,dep,cachedEnvironmentDeps,includeTransitive)
+		let depArray = new Array()
+		// to avoid infinite loop, check if the dependency not already on current path, before going recursively resolving its dependencies.
+		if(!path.includes(dep.toLowerCase())) {
+			// send to recurrsion the path + the current dep
+			depArray.push(dep.toLowerCase())
+			if (includeTransitive) {
+				// send to recurrsion the array of all deps in path + the current dependency name which is not on the path.
+				bringAllDependencies(targetDeps, dep, cachedEnvironmentDeps, includeTransitive,path.concat(depArray))
+			}
 		}
 		// sort ra
 		targetDeps.sort((dep1,dep2) =>{
