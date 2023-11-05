@@ -40,7 +40,7 @@ echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" >> .npmrc
 
 <ul>
 <li>
-Use as ESM Module
+Use as ESM Module from an ESM module
 
 ```shell
 npm install @RHEcosystemAppEng/exhort-javascript-api
@@ -58,6 +58,38 @@ let stackAnalysisHtml = await exhort.stackAnalysis('/path/to/pom.xml', true)
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString())
+```
+</li>
+</ul>
+<ul>
+<li>
+Use as ESM Module from Common-JS module
+
+```shell
+npm install @RHEcosystemAppEng/exhort-javascript-api
+```
+
+```javascript
+async function loadExhort()
+{
+// dynamic import is the only way to import ESM module into commonJS module
+  const { default: exhort } = await import('@RHEcosystemAppEng/exhort-javascript-api');
+  return exhort
+}
+const runExhort = (manifestPath) => {
+  return new Promise(async ( resolve, reject) => {
+    try {
+      let stackAnalysisReport = await (await loadExhort()).stackAnalysis(manifestPath,false)
+      resolve(stackAnalysisReport)
+
+    } catch (error)
+    {
+      reject(error)
+    }
+  });
+};
+
+runExhort("./path/to/manifest").then(resp => console.log(JSON.stringify(resp,null,4)))
 ```
 </li>
 
