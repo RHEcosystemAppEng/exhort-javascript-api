@@ -313,13 +313,15 @@ function getDependencies(manifest) {
 		if (dep['#comment'] && dep['#comment'].includes('exhortignore')) { // #comment is an array or a string
 			ignore = true
 		}
-		ignored.push({
-			groupId: dep['groupId'],
-			artifactId: dep['artifactId'],
-			version: dep['version'] ? dep['version'].toString() : '*',
-			scope: '*',
-			ignore: ignore
-		})
+		if(dep['scope'] !== 'test') {
+			ignored.push({
+				groupId: dep['groupId'],
+				artifactId: dep['artifactId'],
+				version: dep['version'] ? dep['version'].toString() : '*',
+				scope: '*',
+				ignore: ignore
+			})
+		}
 	})
 	// return list of dependencies
 	return ignored
