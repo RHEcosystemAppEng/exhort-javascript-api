@@ -102,10 +102,10 @@ function setRhdaHeader(headerName,headers,opts) {
  * @returns {{}}
  */
 function getTokenHeaders(opts = {}) {
-	let supportedTokens = ['snyk']
+	let supportedTokens = ['snyk','oss-index']
 	let headers = {}
 	supportedTokens.forEach(vendor => {
-		let token = getCustom(`EXHORT_${vendor.toUpperCase()}_TOKEN`, null, opts);
+		let token = getCustom(`EXHORT_${vendor.replace("-","_").toUpperCase()}_TOKEN`, null, opts);
 		if (token) {
 			headers[`ex-${vendor}-token`] = token
 		}

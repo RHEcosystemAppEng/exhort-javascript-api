@@ -8,7 +8,7 @@ import PackageJson from '../package.json' assert {type: 'json'};
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
 
-export const exhortDevDefaultUrl = 'http://alpha-exhort.apps.sssc-cl01.appeng.rhecoeng.com';
+export const exhortDevDefaultUrl = 'https://exhort.stage.devshift.net';
 
 
 export const exhortDefaultUrl = "https://rhda.rhcloud.com";
