@@ -65,7 +65,7 @@ jobs:
           BUMP_PART: ${{ contains(github.event.pull_request.title,'major') && 'major' || 'check-minor' }}
         id: bump-decision
         run: |
-          if $BUMP_PART == "check-minor"; then
+          if [[ $BUMP_PART == 'check-minor' ]]; then
              echo "bump-part=${{ contains(github.event.pull_request.title,'minor') && 'minor' || 'patch' }}" >> "$GITHUB_OUTPUT"
           else
              echo "bump-part=major" >> "$GITHUB_OUTPUT"
