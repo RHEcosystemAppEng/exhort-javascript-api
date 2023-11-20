@@ -16,8 +16,10 @@ const packageManagersDict =
 		"pip" : "requirements.txt"
 	}
 
-function getParsedSummaryFromHtml(html) {
-	return JSON.parse(html.substring(html.indexOf("\"summary\"") + 10,html.indexOf("\"}]}") + 4));
+function getParsedKeyFromHtml(html, key,keyLength) {
+	let beginSummary = html.substring(html.indexOf(key))
+	let summary = beginSummary.substring(keyLength , beginSummary.indexOf("}") + 1);
+	return JSON.parse(summary);
 }
 
 suite('Integration Tests', () => {
@@ -46,18 +48,20 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
+			process.env["EXHORT_DEV_MODE"] = "true"
 			let manifestName = getManifestNamePerPm(packageManager)
 			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
 			let providedDataForStack = await index.stackAnalysis(pomPath)
-			console.log(JSON.stringify(providedDataForStack.summary,null , 4))
-			expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
+			console.log(JSON.stringify(providedDataForStack,null , 4))
+			let providers = ["snyk"]
+			//providedDataForStack.providers.snyk.sources.snyk
+			providers.forEach(provider => expect(providedDataForStack.providers[provider].sources[provider].summary.total).greaterThan(0))
 			// python transitive count for stack analysis is awaiting fix in exhort backend
 			if(packageManager !== "pip")
 			{
-				expect(providedDataForStack.summary.dependencies.transitive).greaterThan(0)
+				expect(providedDataForStack.scanned.transitive).greaterThan(0)
 			}
-			expect(providedDataForStack.summary.vulnerabilities.total).greaterThanOrEqual(0)
-			providedDataForStack.summary.providerStatuses.forEach(provider => expect(provider.status).equals(200))
+			providers.forEach(provider => expect(providedDataForStack.providers[provider].status.code).equals(200))
 		}).timeout(15000);
 
 		test(`Stack Analysis html for ${packageManager}`, async () => {
@@ -72,17 +76,20 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
-			let parsedSummaryFromHtml = getParsedSummaryFromHtml(html);
+			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
+			let parsedScannedFromHtml = getParsedKeyFromHtml(html, "\"scanned\"",10)
+			let parsedStatusFromHtml = getParsedKeyFromHtml(html, "\"status\"",9)
 			expect( typeof html).equals("string")
 			expect(html).include("html").include("svg")
-			expect(parsedSummaryFromHtml.dependencies.scanned).greaterThan(0)
+			expect(parsedScannedFromHtml.total).greaterThan(0)
 			// python transitive count for stack analysis is awaiting fix in exhort backend
 			if(packageManager !== "pip")
 			{
-				expect(parsedSummaryFromHtml.dependencies.transitive).greaterThan(0)
+				expect(parsedScannedFromHtml.transitive).greaterThan(0)
 			}
-			expect(parsedSummaryFromHtml.vulnerabilities.total).greaterThanOrEqual(0)
-			parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
+			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
+			expect(parsedStatusFromHtml.code).equals(200)
+			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
 		}).timeout(15000);
 
 		test(`Component Analysis for ${packageManager}`, async () => {
@@ -90,15 +97,16 @@ suite('Integration Tests', () => {
 			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
 			let analysisReport = await index.componentAnalysis(manifestName,fs.readFileSync(pomPath).toString())
 
-			expect(analysisReport.summary.dependencies.scanned).greaterThan(0)
-			expect(analysisReport.summary.dependencies.transitive).equal(0)
-			expect(analysisReport.summary.vulnerabilities.total).greaterThanOrEqual(0)
-			analysisReport.summary.providerStatuses.forEach(provider => expect(provider.status).equals(200))
+			expect(analysisReport.scanned.total).greaterThan(0)
+			expect(analysisReport.scanned.transitive).equal(0)
+			let providers = ["snyk"]
+			providers.forEach(provider => expect(analysisReport.providers[provider].sources[provider].summary.total).greaterThan(0))
+			providers.forEach(provider => expect(analysisReport.providers[provider].status.code).equals(200))
 		}).timeout(10000);
 
 
 	});
-});
+}).beforeAll(() => process.env["EXHORT_DEV_MODE"] = "true");
 
 // suite('Developer Test End to End', () => {
 // 	// let opts = {
@@ -118,8 +126,11 @@ suite('Integration Tests', () => {
 // 			MATCH_MANIFEST_VERSIONS: 'false'
 // 		}
 //
-// 		let pomPath = `/tmp/231023/requirements.txt`
-// 		let providedDataForStack = await index.stackAnalysis(pomPath,opts)
+// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
+// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
+// 		process.env["MATCH_MANIFEST_VERSIONS"] = "false"
+// 		let pomPath = `/tmp/251023/requirements.txt`
+// 		let providedDataForStack = await index.stackAnalysis(pomPath)
 // 		console.log(JSON.stringify(providedDataForStack.summary,null , 4))
 // 		expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
 // 	}).timeout(15000);

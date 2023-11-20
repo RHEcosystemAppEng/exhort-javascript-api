@@ -24,7 +24,7 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 	if (process.env["EXHORT_DEBUG"] === "true") {
 		console.log("Starting time of sending stack analysis request to exhort server= " + startTime)
 	}
-	let resp = await fetch(`${url}/api/v3/analysis`, {
+	let resp = await fetch(`${url}/api/v4/analysis`, {
 		method: 'POST',
 		headers: {
 			'Accept': html ? 'text/html' : 'application/json',
@@ -56,7 +56,7 @@ async function requestComponent(provider, data, url, opts = {}) {
 	if (process.env["EXHORT_DEBUG"] === "true") {
 		console.log("Starting time of sending component analysis request to exhort server= " + new Date())
 	}
-	let resp = await fetch(`${url}/api/v3/analysis`, {
+	let resp = await fetch(`${url}/api/v4/analysis`, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -78,7 +78,7 @@ async function requestComponent(provider, data, url, opts = {}) {
  * @return {Promise<number>} return the HTTP status Code of the response from the validate token request.
  */
 async function validateToken(url, opts = {}) {
-	let resp = await fetch(`${url}/api/v3/token`, {
+	let resp = await fetch(`${url}/api/v4/token`, {
 		method: 'GET',
 		headers: {
 			// 'Accept': 'text/plain',
