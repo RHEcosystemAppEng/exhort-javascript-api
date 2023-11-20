@@ -34,6 +34,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.DEPLOY_KEY }}
           fetch-depth: 0
+          ref: release-test
 
       - name: Install node 18
         uses: actions/setup-node@v3
