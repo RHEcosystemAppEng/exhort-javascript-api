@@ -59,7 +59,7 @@ jobs:
         id: fetch-tag
         if: ${{ contains(steps.last-release.outputs.full-tag , '-ea.') }}
         run: |
-          echo "oldest-tag=$(git for-each-ref --sort=creatordate --format '%(refname:lstrip=2)' refs/tags | grep ${{ steps.last-release.outputs.base-tag }}  | tr '\n' ' ' )" >> "$GITHUB_OUTPUT"
+          echo "oldest-tag=$(git for-each-ref --sort=creatordate --format '%(refname:lstrip=2)' refs/tags | grep ${{ steps.last-release.outputs.base-tag }} | head -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: determine semver component to bump
         env:
