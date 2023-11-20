@@ -49,18 +49,27 @@ jobs:
         id: last-release
         run: |
           echo "base-tag=$(git describe | awk -F '-' '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "full-tag=$(git describe)" >> "$GITHUB_OUTPUT"
 
 
       - name: get first tag in current development iteration according to base
         id: fetch-tag
+        if: ${{ contains(steps.last-release.outputs.full-tag , 'ea')
         run: |
           echo "oldest-tag=$(git for-each-ref --sort=creatordate --format '%(refname:lstrip=2)' refs/tags | grep ${{ steps.last-release.outputs.base-tag }} )" >> "$GITHUB_OUTPUT"
+
+      - name: determine semver component to bump
+        env:
+          BUMP_PART: ${{ contains(github.event.pull_request.title,'major') && 'major' || 'check-minor' }}
+        id: bump-decision
+        run: |
+          echo "bump-part=$(${{ env.BUMP_PART == 'check-minor' && '${{ contains(github.event.pull_request.title,'minor') && 'minor' || 'patch' }}' || 'major' }})" >> "$GITHUB_OUTPUT"
 
 
       - name: Update package with new version
         id: bump
         run: |
-          echo "version=$(npm version $bump-part --no-git-tag-version )" >> "$GITHUB_OUTPUT"
+          echo "version=$(npm version ${{ steps.bump-decision.outputs.bump-part }} --no-git-tag-version )" >> "$GITHUB_OUTPUT"
 
       - name: Install project modules
         run: npm ci
@@ -94,7 +103,7 @@ jobs:
             const repo_name = context.payload.repository.full_name
             const response = await github.request('POST /repos/' + repo_name + '/releases' + '/generate-notes', {
               tag_name: '${{ steps.bump.outputs.version }}',
-              previous_tag_name: '${{ steps.fetch-tag.outputs.oldest-tag }}'
+              previous_tag_name: '${{ steps.fetch-tag.outputs.oldest-tag != ''  && steps.fetch-tag.outputs.oldest-tag  || steps.last-release.outputs.base-tag }}'
             })
             return response.data.body
 
