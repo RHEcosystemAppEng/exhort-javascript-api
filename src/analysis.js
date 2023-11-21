@@ -109,6 +109,10 @@ function getTokenHeaders(opts = {}) {
 		if (token) {
 			headers[`ex-${vendor}-token`] = token
 		}
+		let user = getCustom(`EXHORT_${vendor.replace("-","_").toUpperCase()}_USER`, null, opts);
+		if (user) {
+			headers[`ex-${vendor}-user`] = user
+		}
 	})
 	setRhdaHeader(rhdaTokenHeader,headers, opts);
 	setRhdaHeader(rhdaSourceHeader,headers, opts);
