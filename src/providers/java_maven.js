@@ -286,6 +286,10 @@ function getRootFromPom(manifest) {
  */
 function toPurl(group,artifact,version)
 {
+	if(typeof version === "number")
+	{
+		version = version.toString()
+	}
 	return new PackageURL('maven',group,artifact,version,undefined,undefined);
 }
 
