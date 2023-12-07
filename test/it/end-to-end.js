@@ -76,9 +76,12 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
+			let reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\":") +9,html.indexOf("\"ossIssueTemplate\"") -1));
+
 			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
-			let parsedScannedFromHtml = getParsedKeyFromHtml(html, "\"scanned\"",10)
-			let parsedStatusFromHtml = getParsedKeyFromHtml(html, "\"status\"",9)
+			let parsedScannedFromHtml = reportParsedFromHtml.scanned
+			let parsedStatusFromHtmlSnyk = reportParsedFromHtml.providers["snyk"].status
+			let parsedStatusFromHtmlossIndex = reportParsedFromHtml.providers["oss-index"].status
 			expect( typeof html).equals("string")
 			expect(html).include("html").include("svg")
 			expect(parsedScannedFromHtml.total).greaterThan(0)
@@ -88,7 +91,8 @@ suite('Integration Tests', () => {
 				expect(parsedScannedFromHtml.transitive).greaterThan(0)
 			}
 			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
-			expect(parsedStatusFromHtml.code).equals(200)
+			expect(parsedStatusFromHtmlSnyk.code).equals(200)
+			expect(parsedStatusFromHtmlossIndex.code).equals(401)
 			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
 		}).timeout(15000);
 
@@ -108,7 +112,7 @@ suite('Integration Tests', () => {
 	});
 }).beforeAll(() => process.env["EXHORT_DEV_MODE"] = "true");
 
-// suite('Developer Test End to End', () => {
+// suite('Integration Tests - Developer Test End to End', () => {
 // 	// let opts = {
 // 	// 	EXHORT_DEV_MODE: "true",
 // 	// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
@@ -116,23 +120,30 @@ suite('Integration Tests', () => {
 // 	// }
 //
 // 	test(`Stack Analysis json`, async () => {
-// 		// process.env["EXHORT_DEBUG"]= "true"
-// 		// process.env["EXHORT_DEV_MODE"]= "false"
+// 		process.env["EXHORT_DEBUG"]= "true"
+// 		process.env["EXHORT_DEV_MODE"]= "true"
 // 		// process.env["EXHORT_GO_PATH"]= "/home/zgrinber/test-go/go/bin/go"
 // 		// process.env["RHDA_TOKEN"] = "34JKLDS-4234809-66666666666"
 // 		// process.env["RHDA_SOURCE"] = "Zvika Client"
 // 		// let result = await index.stackAnalysis("/tmp/rajan-0410/go.mod", false, opts);
 // 		let opts = {
-// 			MATCH_MANIFEST_VERSIONS: 'false'
+// 			MATCH_MANIFEST_VERSIONS: 'false',
+// 			EXHORT_DEV_MODE: 'true',
+// 			EXHORT_OSS_INDEX_TOKEN: '2bb579b7894f13f180f0ebb591be7c8febbcf699',
+// 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com'
 // 		}
 //
-// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
-// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
-// 		process.env["MATCH_MANIFEST_VERSIONS"] = "false"
-// 		let pomPath = `/tmp/251023/requirements.txt`
-// 		let providedDataForStack = await index.stackAnalysis(pomPath)
-// 		console.log(JSON.stringify(providedDataForStack.summary,null , 4))
-// 		expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
+// 		// process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
+// 		// process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
+// 		// process.env["MATCH_MANIFEST_VERSIONS"] = "false"
+// 		let pomPath = `/tmp/071223/pom.xml`
+// 		let providedDataForStack;
+// 		providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
+// 		// console.log(JSON.stringify(providedDataForStack,null , 4))
+// 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
+// 		// providedDataForStack = await index.componentAnalysis("go.mod",fs.readFileSync(pomPath).toString())
+// 		// console.log(JSON.stringify(providedDataForStack,null , 4))
+// 		// expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
 // 	}).timeout(15000);
 //
 //
