@@ -77,10 +77,10 @@ function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
 	parseDependencyTree(root, 0, lines.slice(1), sbom);
 	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 }
-
-const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
-const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
-const CONFLICT_REGEX = /.*- omitted for conflict with (\S+)\)/
+const DEP_REGEX = /(([-a-zA-Z0-9._]{2,})|[0-9])/g
+// const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
+// const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
+const CONFLICT_REGEX = /.*omitted for conflict with (\S+)\)/
 
 /**
  * Recursively populates the SBOM instance with the parsed graph
@@ -133,19 +133,23 @@ function getDepth(line) {
  * @private
  */
 function parseDep(line) {
-	let match = line.match(ROOT_REGEX);
-	if (!match) {
-		match = line.match(DEP_REGEX);
-	}
+
+	let match = line.match(DEP_REGEX);
 	if(!match) {
 		throw new Error(`Unable generate SBOM from dependency tree. Line: ${line} cannot be parsed into a PackageURL`);
 	}
-	let version = match[3];
+	let version
+	if(match.length >=5 && ['compile','provided','runtime'].includes(match[5])) {
+		version = `${match[4]}-${match[3]}`
+	}
+	else {
+		version = match[3]
+	}
 	let override = line.match(CONFLICT_REGEX);
 	if (override) {
 		version = override[1];
 	}
-	return toPurl(match[1], match[2], version);
+	return toPurl(match[0], match[1], version);
 }
 
 /**
