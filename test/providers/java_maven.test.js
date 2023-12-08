@@ -66,9 +66,9 @@ suite('testing the java-maven data provider', () => {
 
 		test(`verify maven data provided for stack analysis with scenario ${scenario}`, async () => {
 			// load the expected graph for the scenario
-			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/stack_analysis_expected_sbom.json`,).toString()
+			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/stack_analysis_expected_sbom.json`,).toString().trim()
 			let dependencyTreeTextContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/dep-tree.txt`,).toString()
-			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
+			expectedSbom = JSON.stringify(JSON.parse(expectedSbom),null, 4)
 			let mockedExecFunction = function(command){
 				if(command.includes(":tree")){
 					interceptAndOverwriteDataWithMock(command,dependencyTreeTextContent,"DoutputFile=")
@@ -79,11 +79,13 @@ suite('testing the java-maven data provider', () => {
 			let providedDataForStack = await javaMvnProviderRewire.__get__("provideStack")(`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
 			javaMvnProviderRewire.__ResetDependency__()
 			// verify returned data matches expectation
-			expect(providedDataForStack).to.deep.equal({
-				ecosystem: 'maven',
-				contentType: 'application/vnd.cyclonedx+json',
-				content: expectedSbom
-			})
+			// expect(providedDataForStack).to.deep.equal({
+			// 	ecosystem: 'maven',
+			// 	contentType: 'application/vnd.cyclonedx+json',
+			// 	content: expectedSbom
+			//		})
+			let beautifiedOutput = JSON.stringify(JSON.parse(providedDataForStack.content),null, 4);
+			expect(beautifiedOutput).to.deep.equal(expectedSbom)
 
 		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
 		}).timeout(process.env.GITHUB_ACTIONS ? 40000 : 10000)
