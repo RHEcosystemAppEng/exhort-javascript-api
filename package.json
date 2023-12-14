@@ -43,8 +43,9 @@
 		"precompile": "rm -rf dist",
 		"compile": "tsc -p tsconfig.json",
 		"pregen:backend": "rm -rf generated",
-		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/exhort/main/api-spec/v4/openapi.yaml -g typescript --global-property models --model-package backend -o generated",
-		"postgen:backend": "find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} +"
+		"gen:backend": "openapi-generator-cli generate -i https://raw.githubusercontent.com/RHEcosystemAppEng/exhort-api-spec/v1.0.3/api/v4/openapi.yaml -g typescript --global-property models --model-package backend -o generated",
+		"postgen:backend": "cp test/it/tsconfig.json generated/backend/tsconfig.json ; find generated/backend -type f -exec sed -i \"/^import { HttpFile } from '..\\/http\\/http'/d\" {} + ; npm run compileintegration ",
+		"compileintegration": "bash -c \"cd generated/backend ; tsc -p tsconfig.json ; cd ../..\""
 	},
 	"dependencies": {
 		"@babel/core": "^7.23.2",

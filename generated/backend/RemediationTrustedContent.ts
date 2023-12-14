@@ -15,21 +15,28 @@ export class RemediationTrustedContent {
     /**
     * PackageURL used to identify a dependency artifact
     */
-    'mavenPackage'?: string;
-    'productStatus'?: string;
+    'ref'?: string;
+    'status'?: string;
+    'justification'?: string;
 
     static readonly discriminator: string | undefined = undefined;
 
     static readonly attributeTypeMap: Array<{name: string, baseName: string, type: string, format: string}> = [
         {
-            "name": "mavenPackage",
-            "baseName": "mavenPackage",
+            "name": "ref",
+            "baseName": "ref",
             "type": "string",
             "format": ""
         },
         {
-            "name": "productStatus",
-            "baseName": "productStatus",
+            "name": "status",
+            "baseName": "status",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "justification",
+            "baseName": "justification",
             "type": "string",
             "format": ""
         }    ];

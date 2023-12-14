@@ -13,19 +13,26 @@ export class RemediationTrustedContent {
     /**
     * PackageURL used to identify a dependency artifact
     */
-    'mavenPackage';
-    'productStatus';
+    'ref';
+    'status';
+    'justification';
     static discriminator = undefined;
     static attributeTypeMap = [
         {
-            "name": "mavenPackage",
-            "baseName": "mavenPackage",
+            "name": "ref",
+            "baseName": "ref",
             "type": "string",
             "format": ""
         },
         {
-            "name": "productStatus",
-            "baseName": "productStatus",
+            "name": "status",
+            "baseName": "status",
+            "type": "string",
+            "format": ""
+        },
+        {
+            "name": "justification",
+            "baseName": "justification",
             "type": "string",
             "format": ""
         }
