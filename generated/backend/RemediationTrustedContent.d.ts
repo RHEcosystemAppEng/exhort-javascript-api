@@ -13,8 +13,9 @@ export declare class RemediationTrustedContent {
     /**
     * PackageURL used to identify a dependency artifact
     */
-    'mavenPackage'?: string;
-    'productStatus'?: string;
+    'ref'?: string;
+    'status'?: string;
+    'justification'?: string;
     static readonly discriminator: string | undefined;
     static readonly attributeTypeMap: Array<{
         name: string;
