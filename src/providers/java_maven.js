@@ -1,14 +1,14 @@
-import { XMLParser } from 'fast-xml-parser'
-import { execSync } from "node:child_process"
+import {XMLParser} from 'fast-xml-parser'
+import {execSync} from "node:child_process"
 import fs from 'node:fs'
-import { getCustomPath } from "../tools.js";
+import {getCustomPath} from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
-import  {EOL} from 'os'
+import {EOL} from 'os'
 
-export default { isSupported, provideComponent, provideStack }
+export default {isSupported, provideComponent, provideStack}
 
 /** @typedef {import('../provider').Provider} */
 
@@ -77,6 +77,7 @@ function createSbomFileFromTextFormat(dotGraphList, ignoredDeps) {
 	parseDependencyTree(root, 0, lines.slice(1), sbom);
 	return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 }
+
 const DEP_REGEX = /(([-a-zA-Z0-9._]{2,})|[0-9])/g
 // const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
 // const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
@@ -91,22 +92,27 @@ const CONFLICT_REGEX = /.*omitted for conflict with (\S+)\)/
  * @private
  */
 function parseDependencyTree(src, srcDepth, lines, sbom) {
-	if(lines.length === 0) {
+	if (lines.length === 0) {
 		return;
 	}
-	if((lines.length === 1 && lines[0].trim() === "")) {
+	if ((lines.length === 1 && lines[0].trim() === "")) {
 		return;
 	}
 	let index = 0;
 	let target = lines[index];
 	let targetDepth = getDepth(target);
-	while(targetDepth > srcDepth && index < lines.length) {
-		if(targetDepth === srcDepth + 1) {
+	while (targetDepth > srcDepth && index < lines.length) {
+		if (targetDepth === srcDepth + 1) {
 			let from = parseDep(src);
 			let to = parseDep(target);
-			sbom.addDependency(sbom.purlToComponent(from), to)
+			let matchedScope = target.match(/:compile|:provided|:runtime|:test|:system/g)
+			let matchedScopeSrc = src.match(/:compile|:provided|:runtime|:test|:system/g)
+			// only add dependency to sbom if it's not with test scope or if it's root
+			if ((matchedScope && matchedScope[0] !== ":test" && (matchedScopeSrc && matchedScopeSrc[0] !== ":test")) || (srcDepth == 0 && matchedScope && matchedScope[0] !== ":test")) {
+				sbom.addDependency(sbom.purlToComponent(from), to)
+			}
 		} else {
-			parseDependencyTree(lines[index-1], getDepth(lines[index-1]), lines.slice(index), sbom)
+			parseDependencyTree(lines[index - 1], getDepth(lines[index - 1]), lines.slice(index), sbom)
 		}
 		target = lines[++index];
 		targetDepth = getDepth(target);
@@ -120,7 +126,7 @@ function parseDependencyTree(src, srcDepth, lines, sbom) {
  * @private
  */
 function getDepth(line) {
-	if(line === undefined) {
+	if (line === undefined) {
 		return -1;
 	}
 	return ((line.indexOf('-') - 1) / 3) + 1;
@@ -135,14 +141,13 @@ function getDepth(line) {
 function parseDep(line) {
 
 	let match = line.match(DEP_REGEX);
-	if(!match) {
+	if (!match) {
 		throw new Error(`Unable generate SBOM from dependency tree. Line: ${line} cannot be parsed into a PackageURL`);
 	}
 	let version
-	if(match.length >=5 && ['compile','provided','runtime'].includes(match[5])) {
+	if (match.length >= 5 && ['compile', 'provided', 'runtime'].includes(match[5])) {
 		version = `${match[4]}-${match[3]}`
-	}
-	else {
+	} else {
 		version = match[3]
 	}
 	let override = line.match(CONFLICT_REGEX);
@@ -178,14 +183,14 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command (dot outputType is not available for verbose mode)
-	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -Dscope=compile -Dscope=runtime -DoutputFile=${tmpDepTree} -f ${manifest}`
+	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
 	getDependencies(manifest).forEach(dep => {
 		if (dep.ignore) {
 			depTreeCmd += ` -Dexcludes=${dep['groupId']}:${dep['artifactId']}:${dep['scope']}:${dep['version']}`
-			ignoredDeps.push(toPurl(dep.groupId,dep.artifactId,dep.version).toString())
+			ignoredDeps.push(toPurl(dep.groupId, dep.artifactId, dep.version).toString())
 		}
 	})
 	// execute dependency tree command
@@ -195,11 +200,11 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 		}
 	})
 	// read dependency tree from temp file
-	let content= fs.readFileSync(`${tmpDepTree}`)
-	if(process.env["EXHORT_DEBUG"] === "true") {
+	let content = fs.readFileSync(`${tmpDepTree}`)
+	if (process.env["EXHORT_DEBUG"] === "true") {
 		console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content.toString())
 	}
-	let sbom = createSbomFileFromTextFormat(content.toString(),ignoredDeps);
+	let sbom = createSbomFileFromTextFormat(content.toString(), ignoredDeps);
 	// delete temp file and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependency graph as string
@@ -242,20 +247,18 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
 	let sbom = new Sbom();
 	let rootDependency = getRootFromPom(tmpTargetPom);
-	let purlRoot = toPurl(rootDependency.groupId,rootDependency.artifactId,rootDependency.version)
+	let purlRoot = toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
 	sbom.addRoot(purlRoot)
 	let rootComponent = sbom.getRoot();
 	dependencies.forEach(dep => {
-		let currentPurl = toPurl(dep.groupId,dep.artifactId,dep.version)
-		sbom.addDependency(rootComponent,currentPurl)
+		let currentPurl = toPurl(dep.groupId, dep.artifactId, dep.version)
+		sbom.addDependency(rootComponent, currentPurl)
 	})
 	// delete temp files and directory
 	fs.rmSync(tmpDir, {recursive: true, force: true})
 	// return dependencies list
 	return sbom.getAsJsonString()
 }
-
-
 
 
 /**
@@ -288,13 +291,11 @@ function getRootFromPom(manifest) {
  * @param version
  * @return {PackageURL}
  */
-function toPurl(group,artifact,version)
-{
-	if(typeof version === "number")
-	{
+function toPurl(group, artifact, version) {
+	if (typeof version === "number") {
 		version = version.toString()
 	}
-	return new PackageURL('maven',group,artifact,version,undefined,undefined);
+	return new PackageURL('maven', group, artifact, version, undefined, undefined);
 }
 
 /**
@@ -321,7 +322,7 @@ function getDependencies(manifest) {
 		if (dep['#comment'] && dep['#comment'].includes('exhortignore')) { // #comment is an array or a string
 			ignore = true
 		}
-		if(dep['scope'] !== 'test') {
+		if (dep['scope'] !== 'test') {
 			ignored.push({
 				groupId: dep['groupId'],
 				artifactId: dep['artifactId'],
@@ -344,13 +345,9 @@ function getDependencies(manifest) {
  * @private
  */
 function dependencyIn(dep, deps) {
-	return deps.filter(d => dep.artifactId === d.artifactId &&
-		dep.groupId === d.groupId &&
-		dep.version === d.version &&
-		dep.scope === d.scope) .length > 0
+	return deps.filter(d => dep.artifactId === d.artifactId && dep.groupId === d.groupId && dep.version === d.version && dep.scope === d.scope).length > 0
 }
+
 function dependencyInExcludingVersion(dep, deps) {
-	return deps.filter(d => dep.artifactId === d.artifactId &&
-		dep.groupId === d.groupId &&
-		dep.scope === d.scope) .length > 0
+	return deps.filter(d => dep.artifactId === d.artifactId && dep.groupId === d.groupId && dep.scope === d.scope).length > 0
 }
