@@ -5,6 +5,22 @@ import {EOL} from "os";
 import {getCustom} from "../tools.js";
 
 
+function getPipFreezeOutput() {
+	return "EXHORT_PIP_FREEZE" in process.env && process.env["EXHORT_PIP_FREEZE"].trim() != ""  ? new Buffer(process.env["EXHORT_PIP_FREEZE"],'base64').toString('ascii') : execSync(`${this.pathToPipBin} freeze --all`, err => {
+		if (err) {
+			throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
+		}
+	}).toString();
+}
+
+function getPipShowOutput(depNames) {
+	return "EXHORT_PIP_SHOW" in process.env && process.env["EXHORT_PIP_SHOW"].trim() != ""  ? new Buffer(process.env["EXHORT_PIP_SHOW"],'base64').toString('ascii')  : execSync(`${this.pathToPipBin} show ${depNames}`, err => {
+		if (err) {
+			throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
+		}
+	}).toString();
+}
+
 /** @typedef {{name: string, version: string, dependencies: DependencyEntry[]}} DependencyEntry */
 
 
@@ -144,20 +160,12 @@ export default class Python_controller {
 	}
 	#getDependenciesImpl(includeTransitive) {
 		let dependencies = new Array()
-		let freezeOutput = execSync(`${this.pathToPipBin} freeze --all`, err =>{
-			if (err) {
-				throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
-			}
-		}).toString();
+		let freezeOutput = getPipFreezeOutput.call(this);
 		//debug
 		// freezeOutput = "alternative pip freeze output goes here for debugging"
 		let lines = freezeOutput.split(EOL)
 		let depNames = lines.map( line => getDependencyName(line)).join(" ")
-		let pipShowOutput = execSync(`${this.pathToPipBin} show ${depNames}`, err =>{
-			if (err) {
-				throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
-			}
-		}).toString();
+		let pipShowOutput = getPipShowOutput.call(this, depNames);
 		//debug
 		// pipShowOutput = "alternative pip show output goes here for debugging"
 		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
