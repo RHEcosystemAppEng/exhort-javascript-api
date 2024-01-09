@@ -34,6 +34,11 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 		body: provided.content
 	})
 	if (process.env["EXHORT_DEBUG"] === "true") {
+		let exRequestId = resp.headers.get("ex-request-id");
+		if(exRequestId)
+		{
+			console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
+		}
 		EndTime = new Date()
 		console.log("Ending time of sending stack analysis request to exhort server= " + EndTime)
 		let time = (EndTime - startTime) / 1000
