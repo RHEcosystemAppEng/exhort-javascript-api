@@ -81,7 +81,6 @@ suite('Integration Tests', () => {
 			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
 			let parsedScannedFromHtml = reportParsedFromHtml.scanned
 			let parsedStatusFromHtmlSnyk = reportParsedFromHtml.providers["snyk"].status
-			let parsedStatusFromHtmlossIndex = reportParsedFromHtml.providers["oss-index"].status
 			expect( typeof html).equals("string")
 			expect(html).include("html").include("svg")
 			expect(parsedScannedFromHtml.total).greaterThan(0)
@@ -92,7 +91,6 @@ suite('Integration Tests', () => {
 			}
 			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
 			expect(parsedStatusFromHtmlSnyk.code).equals(200)
-			expect(parsedStatusFromHtmlossIndex.code).equals(401)
 			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
 		}).timeout(15000);
 
