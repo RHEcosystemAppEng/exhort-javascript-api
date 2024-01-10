@@ -33,6 +33,13 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 		},
 		body: provided.content
 	})
+	let result
+	if(!html) {
+		result = await resp.json()
+	}
+	else {
+		result = await resp.text()
+	}
 	if (process.env["EXHORT_DEBUG"] === "true") {
 		let exRequestId = resp.headers.get("ex-request-id");
 		if(exRequestId)
@@ -40,11 +47,14 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 			console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
 		}
 		EndTime = new Date()
+		console.log("Response body received from exhort server : " + EOL + EOL)
+		console.log(console.log(JSON.stringify(result,null , 4)))
 		console.log("Ending time of sending stack analysis request to exhort server= " + EndTime)
 		let time = (EndTime - startTime) / 1000
 		console.log("Total Time in seconds: " + time)
+
 	}
-	return html ? resp.text() : resp.json()
+	return Promise.resolve(result)
 }
 
 /**
@@ -70,10 +80,21 @@ async function requestComponent(provider, data, url, opts = {}) {
 		},
 		body: provided.content
 	})
+	let result = await resp.json()
 	if (process.env["EXHORT_DEBUG"] === "true") {
+		let exRequestId = resp.headers.get("ex-request-id");
+		if(exRequestId)
+		{
+			console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
+		}
+		console.log("Response body received from exhort server : " + EOL + EOL)
+		console.log(JSON.stringify(result,null , 4))
 		console.log("Ending time of sending component analysis request to exhort server= " + new Date())
+
+
 	}
-	return resp.json()
+
+	return Promise.resolve(result)
 }
 
 /**
@@ -90,6 +111,11 @@ async function validateToken(url, opts = {}) {
 			...getTokenHeaders(opts),
 		}
 	})
+	let exRequestId = resp.headers.get("ex-request-id");
+	if(exRequestId)
+	{
+		console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
+	}
 	return resp.status
 }
 
