@@ -5,7 +5,7 @@ env:
   # 🖊️ EDIT to change the image build settings.
   IMAGE_NAME: exhort-javascript-api
   IMAGE_REGISTRY: quay.io/ecosystem-appeng
-  DOCKERFILE_PATH: ./docker-image/Dockerfiles/Dockerfile.alpha
+  DOCKERFILE_PATH: ./docker-image/Dockerfiles/Dockerfile
 
 on:
   workflow_dispatch:
