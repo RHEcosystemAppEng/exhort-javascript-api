@@ -8,7 +8,7 @@ USER root
 ARG PACKAGE_REGISTRY_ACCESS_TOKEN=''
 
 # install Java
-RUN curl -kL https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.tar.gz -o /tmp/java-package.tar.gz \
+RUN curl -kL https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz -o /tmp/java-package.tar.gz \
     && tar xvzf /tmp/java-package.tar.gz -C /usr/
 
 # install Maven package manager
@@ -23,7 +23,7 @@ RUN curl -kL https://go.dev/dl/go1.21.1.linux-amd64.tar.gz -o /tmp/golang-packag
 RUN python3 -m ensurepip --upgrade
 
 # install jq JSON formating tool
-RUN curl -kL https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -o /usr/bin/jq 
+RUN curl -kL https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64 -o /usr/bin/jq
 
 # install linux utils Package to enable UUID generation
 RUN yum install util-linux
@@ -39,17 +39,17 @@ RUN npm install --global @RHEcosystemAppEng/exhort-javascript-api
 COPY scripts/rhda.sh /
 
 # assign executable permissions to all installed binaries
-RUN chmod +x /usr/jdk-20.0.2/bin/java \
+RUN chmod +x /usr/jdk-21.0.1/bin/java \
     && chmod +x /usr/apache-maven-3.9.4/bin/mvn \
     && chmod +x /usr/go/bin/go \
     && chmod +x /usr/local/bin/pip3 \
     && chmod +x /usr/bin/jq \
     && chmod +x /usr/bin/uuidgen \
     && chmod +x /opt/app-root/src/.npm-global/bin/exhort-javascript-api \
-    && chmod +x /rhda.sh 
+    && chmod +x /rhda.sh
 
 # use default user
-USER default 
+USER default
 
 # second stage
 FROM registry.access.redhat.com/ubi9/nodejs-18-minimal
@@ -64,8 +64,8 @@ ENV RHDA_TOKEN=''
 ENV RHDA_SOURCE=''
 
 # Copy java executable from the builder stage
-COPY --from=builder /usr/jdk-20.0.2/ /usr/jdk-20.0.2/
-ENV JAVA_HOME=/usr/jdk-20.0.2
+COPY --from=builder /usr/jdk-21.0.1/ /usr/jdk-21.0.1/
+ENV JAVA_HOME=/usr/jdk-21.0.1
 
 # Copy maven executable from the builder stage
 COPY --from=builder /usr/apache-maven-3.9.4/ /usr/apache-maven-3.9.4/
