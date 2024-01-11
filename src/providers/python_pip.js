@@ -1,7 +1,7 @@
 
 import {execSync} from "node:child_process";
 import fs from 'node:fs'
-import {getCustom, getCustomPath} from "../tools.js";
+import {getCustom, getCustomPath,environmentVariableIsPopulated } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
@@ -170,6 +170,28 @@ function getPythonPipBinaries(binaries,opts) {
 }
 
 /**
+ *
+ * @param binaries
+ * @param opts
+ * @return {string}
+ * @private
+ */
+function handlePythonEnvironment(binaries, opts) {
+	let createVirtualPythonEnv
+	if (!environmentVariableIsPopulated("EXHORT_PIP_SHOW") && !environmentVariableIsPopulated("EXHORT_PIP_FREEZE")) {
+		getPythonPipBinaries(binaries, opts)
+		createVirtualPythonEnv = getCustom("EXHORT_PYTHON_VIRTUAL_ENV", "false", opts);
+	}
+	// bypass invoking python and pip, as we get all information needed to build the dependency tree from these Environment variables.
+	else {
+		binaries.pip = "pip"
+		binaries.python = "python"
+		createVirtualPythonEnv = "false"
+	}
+	return createVirtualPythonEnv
+}
+
+/**
  * Create sbom json string out of a manifest path for stack analysis.
  * @param {string} manifest - path for requirements.txt
  * @param {{}} [opts={}] - optional various options to pass along the application
@@ -178,8 +200,9 @@ function getPythonPipBinaries(binaries,opts) {
  */
 function createSbomStackAnalysis(manifest, opts = {}) {
 	let binaries = {}
-	getPythonPipBinaries(binaries,opts)
-	let createVirtualPythonEnv = getCustom("EXHORT_PYTHON_VIRTUAL_ENV","false",opts);
+	let createVirtualPythonEnv = handlePythonEnvironment(binaries, opts);
+
+
 	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,manifest,opts)
 	let dependencies = pythonController.getDependencies(true);
 	let sbom = new Sbom();
@@ -206,8 +229,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
  */
 function getSbomForComponentAnalysis(data, opts = {}) {
 	let binaries = {}
-	getPythonPipBinaries(binaries,opts)
-	let createVirtualPythonEnv = getCustom("EXHORT_PYTHON_VIRTUAL_ENV","false",opts);
+	let createVirtualPythonEnv = handlePythonEnvironment(binaries, opts);
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpRequirementsPath = path.join(tmpDir, 'requirements.txt')
 	fs.writeFileSync(tmpRequirementsPath, data)
