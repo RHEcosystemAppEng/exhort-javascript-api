@@ -57,3 +57,7 @@ export function getCustom(key, def = null, opts = {}) {
 export function getCustomPath(name, opts = {}) {
 	return getCustom(`EXHORT_${name.toUpperCase()}_PATH`, name, opts)
 }
+
+export function environmentVariableIsPopulated(envVariableName) {
+	return envVariableName in process.env && process.env[envVariableName].trim() !== "";
+}

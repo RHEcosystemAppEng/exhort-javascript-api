@@ -2,11 +2,11 @@ import {execSync} from "node:child_process";
 import fs from "node:fs";
 import path from 'node:path';
 import {EOL} from "os";
-import {getCustom} from "../tools.js";
+import {getCustom,environmentVariableIsPopulated} from "../tools.js";
 
 
 function getPipFreezeOutput() {
-	return "EXHORT_PIP_FREEZE" in process.env && process.env["EXHORT_PIP_FREEZE"].trim() != ""  ? new Buffer(process.env["EXHORT_PIP_FREEZE"],'base64').toString('ascii') : execSync(`${this.pathToPipBin} freeze --all`, err => {
+	return environmentVariableIsPopulated("EXHORT_PIP_FREEZE")  ? new Buffer(process.env["EXHORT_PIP_FREEZE"],'base64').toString('ascii') : execSync(`${this.pathToPipBin} freeze --all`, err => {
 		if (err) {
 			throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
 		}
@@ -14,7 +14,8 @@ function getPipFreezeOutput() {
 }
 
 function getPipShowOutput(depNames) {
-	return "EXHORT_PIP_SHOW" in process.env && process.env["EXHORT_PIP_SHOW"].trim() != ""  ? new Buffer(process.env["EXHORT_PIP_SHOW"],'base64').toString('ascii')  : execSync(`${this.pathToPipBin} show ${depNames}`, err => {
+
+	return environmentVariableIsPopulated("EXHORT_PIP_SHOW")  ? new Buffer(process.env["EXHORT_PIP_SHOW"],'base64').toString('ascii')  : execSync(`${this.pathToPipBin} show ${depNames}`, err => {
 		if (err) {
 			throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
 		}
