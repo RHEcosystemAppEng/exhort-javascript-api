@@ -417,3 +417,14 @@ A New setting is introduced - `EXHORT_PYTHON_INSTALL_BEST_EFFORTS` (as both env 
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/exhort-javascript-api?color=green&label=latest
 [1]: https://img.shields.io/github/v/release/RHEcosystemAppEng/exhort-javascript-api?color=yellow&include_prereleases&label=early-access
+
+### Known Issues
+
+- For pip requirements.txt - It's been observed that for python versions 3.11.x, there might be slowness for invoking the analysis.
+  Task to mitigate this issue /to make it less problematic is a WIP.
+
+
+- For maven pom.xml, it has been noticed that using java 17 might cause stack analysis to hang forever.
+  This is caused by maven [`dependency` Plugin](https://maven.apache.org/plugins/maven-dependency-plugin/) bug when running with JDK/JRE' JVM version 17.
+
+  To overcome this, you can use any other java version (14,20,21, etc..). ( best way is to install JDK/JRE version different from 17 , and set the location of the installation in environment variable `JAVA_HOME` so maven will use it.)
