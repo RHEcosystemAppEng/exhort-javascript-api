@@ -52,10 +52,10 @@ function provideStack(manifest, opts = {}) {
  * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Provided}
  */
-function provideComponent(data, opts = {}) {
+function provideComponent(data, opts = {},path = '') {
 	return {
 		ecosystem,
-		content: getSbomForComponentAnalysis(data, opts),
+		content: getSbomForComponentAnalysis(data, opts,path),
 		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
@@ -218,7 +218,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
  * @returns {[Dependency]} the Dot Graph content
  * @private
  */
-function getSbomForComponentAnalysis(data, opts = {}) {
+function getSbomForComponentAnalysis(data, opts = {}, manifestPath) {
 	// get custom maven path
 	let mvn = getCustomPath('mvn', opts)
 	// verify maven is accessible
@@ -228,25 +228,38 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 		}
 	})
 	// create temp files for pom and effective pom
-	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
-	let tmpEffectivePom = path.join(tmpDir, 'effective-pom.xml')
-	let tmpTargetPom = path.join(tmpDir, 'target-pom.xml')
-	// write target pom content to temp file
-	fs.writeFileSync(tmpTargetPom, data)
+	let tmpDir
+	let tmpEffectivePom
+	let targetPom
+
+	if (manifestPath.trim() === '') {
+		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
+		tmpEffectivePom = path.join(tmpDir, 'effective-pom.xml')
+		targetPom = path.join(tmpDir, 'target-pom.xml')
+		// write target pom content to temp file
+		fs.writeFileSync(targetPom, data)
+	}
+	else
+	{
+		tmpEffectivePom = path.join(path.dirname(manifestPath), 'effective-pom.xml')
+		targetPom = manifestPath
+	}
+
+
 	// create effective pom and save to temp file
-	execSync(`${mvn} -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${tmpTargetPom}`, err => {
+	execSync(`${mvn} -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${targetPom}`, err => {
 		if (err) {
 			throw new Error('failed creating maven effective pom')
 		}
 	})
 	// iterate over all dependencies in original pom and collect all ignored ones
-	let ignored = getDependencies(tmpTargetPom).filter(d => d.ignore)
+	let ignored = getDependencies(targetPom).filter(d => d.ignore)
 	// iterate over all dependencies and create a package for every non-ignored one
 	/** @type [Dependency] */
 	let dependencies = getDependencies(tmpEffectivePom)
 		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
 	let sbom = new Sbom();
-	let rootDependency = getRootFromPom(tmpTargetPom);
+	let rootDependency = getRootFromPom(targetPom);
 	let purlRoot = toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
 	sbom.addRoot(purlRoot)
 	let rootComponent = sbom.getRoot();
@@ -254,8 +267,14 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 		let currentPurl = toPurl(dep.groupId, dep.artifactId, dep.version)
 		sbom.addDependency(rootComponent, currentPurl)
 	})
-	// delete temp files and directory
-	fs.rmSync(tmpDir, {recursive: true, force: true})
+	if (manifestPath.trim() === '') {
+		// delete temp files and directory
+		fs.rmSync(tmpDir, {recursive: true, force: true})
+	}
+	else {
+		fs.rmSync(path.join(path.dirname(manifestPath), 'effective-pom.xml'))
+	}
+
 	// return dependencies list
 	return sbom.getAsJsonString()
 }
@@ -317,7 +336,22 @@ function getDependencies(manifest) {
 	// parse manifest pom.xml to json
 	let pomJson = parser.parse(buf.toString())
 	// iterate over all dependencies and chery pick dependencies with a exhortignore comment
-	pomJson['project']['dependencies']['dependency'].forEach(dep => {
+	let pomXml;
+	// project without modules
+	if(pomJson['project'])
+	{
+		if(pomJson['project']['dependencies'] !== undefined ) {
+			pomXml = pomJson['project']['dependencies']['dependency']
+		}
+		else
+			pomXml = []
+	}
+	// project with modules
+	else {
+		pomXml = pomJson['projects']['project'].filter(project => project.dependencies !== undefined).flatMap(project => project.dependencies.dependency)
+	}
+
+	pomXml.forEach(dep => {
 		let ignore = false
 		if (dep['#comment'] && dep['#comment'].includes('exhortignore')) { // #comment is an array or a string
 			ignore = true
