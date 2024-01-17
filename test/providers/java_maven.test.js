@@ -120,41 +120,41 @@ suite('testing the java-maven data provider', () => {
 }).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-08-07T00:00:00.000Z'))).afterAll(()=> {clock.restore()});
 
 suite('testing the java-maven data provider with modules', () => {
-[
-	"pom_with_one_module",
-	"pom_with_multiple_modules"
+	[
+		"pom_with_one_module",
+		"pom_with_multiple_modules"
 
-].forEach(testCase => {
-	let scenario = testCase.replaceAll('_', ' ')
-	test(`verify maven data provided for component analysis using path for scenario ${scenario}`, async () => {
-		// load the expected list for the scenario
-		let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/component_analysis_expected_sbom.json`,).toString().trim()
-		// read target manifest file
-		expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
-		let effectivePomContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/effectivePom.xml`,).toString()
-		let manifestContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/pom.xml`).toString()
-		let mockedExecFunction = function(command){
-			if(command.includes(":effective-pom")){
-				interceptAndOverwriteDataWithMock(command, effectivePomContent,"Doutput=");
+	].forEach(testCase => {
+		let scenario = testCase.replaceAll('_', ' ')
+		test(`verify maven data provided for component analysis using path for scenario ${scenario}`, async () => {
+			// load the expected list for the scenario
+			let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/component_analysis_expected_sbom.json`,).toString().trim()
+			// read target manifest file
+			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
+			let effectivePomContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/effectivePom.xml`,).toString()
+			let manifestContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/pom.xml`).toString()
+			let mockedExecFunction = function(command){
+				if(command.includes(":effective-pom")){
+					interceptAndOverwriteDataWithMock(command, effectivePomContent,"Doutput=");
+				}
 			}
-		}
-		javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
-		// invoke sut component analysis for scenario manifest
-		let provideDataForComponent = await javaMvnProviderRewire.__get__("provideComponent")(manifestContent,{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
-		// verify returned data matches expectation
-		expect(provideDataForComponent).to.deep.equal({
-			ecosystem: 'maven',
-			contentType: 'application/vnd.cyclonedx+json',
-			content: expectedSbom
-		})
-		javaMvnProviderRewire.__ResetDependency__()
-		// expect(beautifiedOutput).to.deep.equal(expectedSbom)
+			javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
+			// invoke sut component analysis for scenario manifest
+			let provideDataForComponent = await javaMvnProviderRewire.__get__("provideComponent")(manifestContent,{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
+			// verify returned data matches expectation
+			expect(provideDataForComponent).to.deep.equal({
+				ecosystem: 'maven',
+				contentType: 'application/vnd.cyclonedx+json',
+				content: expectedSbom
+			})
+			javaMvnProviderRewire.__ResetDependency__()
+			// expect(beautifiedOutput).to.deep.equal(expectedSbom)
 
-		// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
-	}).timeout(process.env.GITHUB_ACTIONS ? 40000 : 10000)
+			// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
+		}).timeout(process.env.GITHUB_ACTIONS ? 40000 : 10000)
 
 
-	// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
+		// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
 
-})
+	})
 }).beforeAll(() => clock = sinon.useFakeTimers(new Date('2023-08-07T00:00:00.000Z'))).afterAll(()=> {clock.restore()});
