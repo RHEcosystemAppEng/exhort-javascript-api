@@ -92,10 +92,10 @@ async function stackAnalysis(manifest, html = false, opts = {}) {
  * @returns {Promise<AnalysisReport>}
  * @throws {Error} if no matching provider, failed to get create content, or backend request failed
  */
-async function componentAnalysis(manifestType, data, opts = {}) {
+async function componentAnalysis(manifestType, data, opts = {}, path = '') {
 	url = selectExhortBackend(opts)
 	let provider = match(manifestType, availableProviders) // throws error if no matching provider
-	return await analysis.requestComponent(provider, data, url, opts) // throws error request sending failed
+	return await analysis.requestComponent(provider, data, url, opts,path) // throws error request sending failed
 }
 
 async function validateToken(opts = {}) {

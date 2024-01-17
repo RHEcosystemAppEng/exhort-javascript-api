@@ -60,13 +60,13 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
 /**
  * Send a component analysis request and get the report as 'application/json'.
  * @param {import('./provider').Provider} provider - the provided data for constructing the request
- * @param {string} data - the content of the manifest
+ * @param {string} data - the content or the path of the manifest
  * @param {string} url - the backend url to send the request to
  * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Promise<import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
-async function requestComponent(provider, data, url, opts = {}) {
-	let provided = provider.provideComponent(data, opts) // throws error if content providing failed
+async function requestComponent(provider, data, url, opts = {}, path = '') {
+	let provided = provider.provideComponent(data, opts,path) // throws error if content providing failed
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "component-analysis"
 	if (process.env["EXHORT_DEBUG"] === "true") {
 		console.log("Starting time of sending component analysis request to exhort server= " + new Date())
@@ -119,7 +119,13 @@ async function validateToken(url, opts = {}) {
 	return resp.status
 }
 
-
+/**
+ *
+ * @param {string} headerName - the header name to populate in request
+ * @param headers
+ * @param {{}} [opts={}] - optional various options to pass along the application
+ * @private
+ */
 function setRhdaHeader(headerName,headers,opts) {
 	let rhdaHeaderValue = getCustom(headerName.toUpperCase().replaceAll("-", "_"), null, opts);
 	if (rhdaHeaderValue) {

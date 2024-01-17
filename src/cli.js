@@ -13,7 +13,7 @@ const component = {
 		{
 			desc: 'manifest name and type',
 			type: 'string',
-			choices: ['pom.xml']
+			choices: ['pom.xml','package.json', 'go.mo', 'requirements.txt']
 		}
 	).positional(
 		'manifest-content',

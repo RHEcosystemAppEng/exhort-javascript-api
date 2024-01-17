@@ -1,0 +1,46 @@
+{
+	"bomFormat": "CycloneDX",
+	"specVersion": "1.4",
+	"version": 1,
+	"metadata": {
+		"timestamp": "2023-08-07T00:00:00.000Z",
+		"component": {
+			"group": "org.zgrinber.tracing",
+			"name": "tracing-parent",
+			"version": "1",
+			"purl": "pkg:maven/org.zgrinber.tracing/tracing-parent@1",
+			"type": "application",
+			"bom-ref": "pkg:maven/org.zgrinber.tracing/tracing-parent@1"
+		}
+	},
+	"components": [
+		{
+			"group": "org.zgrinber.tracing",
+			"name": "tracing-parent",
+			"version": "1",
+			"purl": "pkg:maven/org.zgrinber.tracing/tracing-parent@1",
+			"type": "application",
+			"bom-ref": "pkg:maven/org.zgrinber.tracing/tracing-parent@1"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-databind",
+			"version": "2.15.2",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2"
+		}
+	],
+	"dependencies": [
+		{
+			"ref": "pkg:maven/org.zgrinber.tracing/tracing-parent@1",
+			"dependsOn": [
+				"pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2"
+			]
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.15.2",
+			"dependsOn": []
+		}
+	]
+}

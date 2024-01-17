@@ -1,0 +1,319 @@
+{
+	"bomFormat": "CycloneDX",
+	"specVersion": "1.4",
+	"version": 1,
+	"metadata": {
+		"timestamp": "2023-08-07T00:00:00.000Z",
+		"component": {
+			"group": "org.example",
+			"name": "root-example",
+			"version": "1.0-SNAPSHOT",
+			"purl": "pkg:maven/org.example/root-example@1.0-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/org.example/root-example@1.0-SNAPSHOT"
+		}
+	},
+	"components": [
+		{
+			"group": "org.example",
+			"name": "root-example",
+			"version": "1.0-SNAPSHOT",
+			"purl": "pkg:maven/org.example/root-example@1.0-SNAPSHOT",
+			"type": "application",
+			"bom-ref": "pkg:maven/org.example/root-example@1.0-SNAPSHOT"
+		},
+		{
+			"group": "commons-io",
+			"name": "commons-io",
+			"version": "2.15.1",
+			"purl": "pkg:maven/commons-io/commons-io@2.15.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/commons-io/commons-io@2.15.1"
+		},
+		{
+			"group": "org.slf4j",
+			"name": "slf4j-api",
+			"version": "2.0.11",
+			"purl": "pkg:maven/org.slf4j/slf4j-api@2.0.11",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.slf4j/slf4j-api@2.0.11"
+		},
+		{
+			"group": "com.google.guava",
+			"name": "guava",
+			"version": "33.0.0-jre",
+			"purl": "pkg:maven/com.google.guava/guava@33.0.0-jre",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.google.guava/guava@33.0.0-jre"
+		},
+		{
+			"group": "org.apache.kafka",
+			"name": "kafka-clients",
+			"version": "3.6.1",
+			"purl": "pkg:maven/org.apache.kafka/kafka-clients@3.6.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.kafka/kafka-clients@3.6.1"
+		},
+		{
+			"group": "org.apache.httpcomponents",
+			"name": "httpclient",
+			"version": "4.5.14",
+			"purl": "pkg:maven/org.apache.httpcomponents/httpclient@4.5.14",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.apache.httpcomponents/httpclient@4.5.14"
+		},
+		{
+			"group": "jakarta.xml.bind",
+			"name": "jakarta.xml.bind-api",
+			"version": "4.0.1",
+			"purl": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.1"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-databind",
+			"version": "2.16.1",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.1"
+		},
+		{
+			"group": "javax.servlet",
+			"name": "javax.servlet-api",
+			"version": "4.0.1",
+			"purl": "pkg:maven/javax.servlet/javax.servlet-api@4.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/javax.servlet/javax.servlet-api@4.0.1"
+		},
+		{
+			"group": "jakarta.inject",
+			"name": "jakarta.inject-api",
+			"version": "2.0.1",
+			"purl": "pkg:maven/jakarta.inject/jakarta.inject-api@2.0.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/jakarta.inject/jakarta.inject-api@2.0.1"
+		},
+		{
+			"group": "com.google.code.gson",
+			"name": "gson",
+			"version": "2.9.1",
+			"purl": "pkg:maven/com.google.code.gson/gson@2.9.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.google.code.gson/gson@2.9.1"
+		},
+		{
+			"group": "mysql",
+			"name": "mysql-connector-java",
+			"version": "8.0.33",
+			"purl": "pkg:maven/mysql/mysql-connector-java@8.0.33",
+			"type": "library",
+			"bom-ref": "pkg:maven/mysql/mysql-connector-java@8.0.33"
+		},
+		{
+			"group": "org.postgresql",
+			"name": "postgresql",
+			"version": "42.7.1",
+			"purl": "pkg:maven/org.postgresql/postgresql@42.7.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.postgresql/postgresql@42.7.1"
+		},
+		{
+			"group": "org.aspectj",
+			"name": "aspectjrt",
+			"version": "1.9.21",
+			"purl": "pkg:maven/org.aspectj/aspectjrt@1.9.21",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.aspectj/aspectjrt@1.9.21"
+		},
+		{
+			"group": "com.google.inject",
+			"name": "guice",
+			"version": "7.0.0",
+			"purl": "pkg:maven/com.google.inject/guice@7.0.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.google.inject/guice@7.0.0"
+		},
+		{
+			"group": "org.mapstruct",
+			"name": "mapstruct",
+			"version": "1.5.5.Final",
+			"purl": "pkg:maven/org.mapstruct/mapstruct@1.5.5.Final",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.mapstruct/mapstruct@1.5.5.Final"
+		},
+		{
+			"group": "com.fasterxml.jackson.core",
+			"name": "jackson-databind",
+			"version": "2.16.0",
+			"purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.0"
+		},
+		{
+			"group": "com.google.code.findbugs",
+			"name": "jsr305",
+			"version": "3.0.2",
+			"purl": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2"
+		},
+		{
+			"group": "com.github.spotbugs",
+			"name": "spotbugs-annotations",
+			"version": "4.8.3",
+			"purl": "pkg:maven/com.github.spotbugs/spotbugs-annotations@4.8.3",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.github.spotbugs/spotbugs-annotations@4.8.3"
+		},
+		{
+			"group": "javax.enterprise",
+			"name": "cdi-api",
+			"version": "2",
+			"purl": "pkg:maven/javax.enterprise/cdi-api@2",
+			"type": "library",
+			"bom-ref": "pkg:maven/javax.enterprise/cdi-api@2"
+		},
+		{
+			"group": "commons-configuration",
+			"name": "commons-configuration",
+			"version": "1.1",
+			"purl": "pkg:maven/commons-configuration/commons-configuration@1.1",
+			"type": "library",
+			"bom-ref": "pkg:maven/commons-configuration/commons-configuration@1.1"
+		},
+		{
+			"group": "com.squareup.okhttp3",
+			"name": "okhttp",
+			"version": "4.12.0",
+			"purl": "pkg:maven/com.squareup.okhttp3/okhttp@4.12.0",
+			"type": "library",
+			"bom-ref": "pkg:maven/com.squareup.okhttp3/okhttp@4.12.0"
+		},
+		{
+			"group": "org.projectlombok",
+			"name": "lombok",
+			"version": "1.18.30",
+			"purl": "pkg:maven/org.projectlombok/lombok@1.18.30",
+			"type": "library",
+			"bom-ref": "pkg:maven/org.projectlombok/lombok@1.18.30"
+		}
+	],
+	"dependencies": [
+		{
+			"ref": "pkg:maven/org.example/root-example@1.0-SNAPSHOT",
+			"dependsOn": [
+				"pkg:maven/commons-io/commons-io@2.15.1",
+				"pkg:maven/org.slf4j/slf4j-api@2.0.11",
+				"pkg:maven/com.google.guava/guava@33.0.0-jre",
+				"pkg:maven/org.apache.kafka/kafka-clients@3.6.1",
+				"pkg:maven/org.apache.httpcomponents/httpclient@4.5.14",
+				"pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.1",
+				"pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.1",
+				"pkg:maven/javax.servlet/javax.servlet-api@4.0.1",
+				"pkg:maven/jakarta.inject/jakarta.inject-api@2.0.1",
+				"pkg:maven/com.google.code.gson/gson@2.9.1",
+				"pkg:maven/mysql/mysql-connector-java@8.0.33",
+				"pkg:maven/org.postgresql/postgresql@42.7.1",
+				"pkg:maven/org.aspectj/aspectjrt@1.9.21",
+				"pkg:maven/com.google.inject/guice@7.0.0",
+				"pkg:maven/org.mapstruct/mapstruct@1.5.5.Final",
+				"pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.0",
+				"pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+				"pkg:maven/com.github.spotbugs/spotbugs-annotations@4.8.3",
+				"pkg:maven/javax.enterprise/cdi-api@2",
+				"pkg:maven/commons-configuration/commons-configuration@1.1",
+				"pkg:maven/com.squareup.okhttp3/okhttp@4.12.0",
+				"pkg:maven/org.projectlombok/lombok@1.18.30"
+			]
+		},
+		{
+			"ref": "pkg:maven/commons-io/commons-io@2.15.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.slf4j/slf4j-api@2.0.11",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.google.guava/guava@33.0.0-jre",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.kafka/kafka-clients@3.6.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.apache.httpcomponents/httpclient@4.5.14",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/jakarta.xml.bind/jakarta.xml.bind-api@4.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/javax.servlet/javax.servlet-api@4.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/jakarta.inject/jakarta.inject-api@2.0.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.google.code.gson/gson@2.9.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/mysql/mysql-connector-java@8.0.33",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.postgresql/postgresql@42.7.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.aspectj/aspectjrt@1.9.21",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.google.inject/guice@7.0.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.mapstruct/mapstruct@1.5.5.Final",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.github.spotbugs/spotbugs-annotations@4.8.3",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/javax.enterprise/cdi-api@2",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/commons-configuration/commons-configuration@1.1",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/com.squareup.okhttp3/okhttp@4.12.0",
+			"dependsOn": []
+		},
+		{
+			"ref": "pkg:maven/org.projectlombok/lombok@1.18.30",
+			"dependsOn": []
+		}
+	]
+}
