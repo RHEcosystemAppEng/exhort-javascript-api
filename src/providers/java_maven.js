@@ -1,7 +1,7 @@
 import {XMLParser} from 'fast-xml-parser'
 import {execSync} from "node:child_process"
 import fs from 'node:fs'
-import {getCustomPath} from "../tools.js";
+import {getCustomPath,handleSpacesInPath} from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
@@ -174,7 +174,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 		}
 	})
 	// clean maven target
-	execSync(`${mvn} -q clean -f ${manifest}`, err => {
+	execSync(`${mvn} -q clean -f ${handleSpacesInPath(manifest)}`, err => {
 		if (err) {
 			throw new Error('failed cleaning maven target')
 		}
@@ -183,7 +183,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 	let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 	// build initial command (dot outputType is not available for verbose mode)
-	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${manifest}`
+	let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${tmpDepTree} -f ${handleSpacesInPath(manifest)}`
 	// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 	// version and scope are marked as '*' if not specified (we do not use scope yet)
 	let ignoredDeps = new Array()
@@ -247,7 +247,7 @@ function getSbomForComponentAnalysis(data, opts = {}, manifestPath) {
 
 
 	// create effective pom and save to temp file
-	execSync(`${mvn} -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${targetPom}`, err => {
+	execSync(`${mvn} -q help:effective-pom -Doutput=${tmpEffectivePom} -f ${handleSpacesInPath(targetPom)}`, err => {
 		if (err) {
 			throw new Error('failed creating maven effective pom')
 		}

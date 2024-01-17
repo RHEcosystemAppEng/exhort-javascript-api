@@ -1,5 +1,5 @@
 import {EOL} from "os";
-
+import os from 'os';
 
 export const RegexNotToBeLogged = /EXHORT_.*_TOKEN|ex-.*-token/
 /**
@@ -60,4 +60,38 @@ export function getCustomPath(name, opts = {}) {
 
 export function environmentVariableIsPopulated(envVariableName) {
 	return envVariableName in process.env && process.env[envVariableName].trim() !== "";
+}
+
+/**
+ *
+ * @param {string} path - path to be checked if contains spaces
+ * @return {string} a path with all spaces escaped or manipulated so it will be able to be part
+ *                  of commands that will be invoked without errors in os' shell.
+ */
+export function handleSpacesInPath(path) {
+	let transformedPath = path
+	// if operating system is windows
+	if (os.platform() === "win32") {
+		if(hasSpaces(path)) {
+           transformedPath = `\"${path}\"`
+		}
+	}
+	// linux, darwin..
+	else {
+		if(hasSpaces(path)) {
+			transformedPath = path.replaceAll(" ", "\\ ")
+		}
+	}
+  return transformedPath
+}
+
+/**
+ *
+ * @param {string} path the path to check if contains spaces
+ * @return {boolean} returns true if path contains spaces
+ * @private
+ */
+function hasSpaces(path) {
+	return path.trim().includes(" ")
+
 }

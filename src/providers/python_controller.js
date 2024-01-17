@@ -2,7 +2,7 @@ import {execSync} from "node:child_process";
 import fs from "node:fs";
 import path from 'node:path';
 import {EOL} from "os";
-import {getCustom,environmentVariableIsPopulated} from "../tools.js";
+import {getCustom,environmentVariableIsPopulated, handleSpacesInPath} from "../tools.js";
 
 
 function getPipFreezeOutput() {
@@ -104,7 +104,7 @@ export default class Python_controller {
 			let installBestEfforts = getCustom("EXHORT_PYTHON_INSTALL_BEST_EFFORTS","false",this.options);
 			if(installBestEfforts === "false")
 			{
-				execSync(`${this.pathToPipBin} install -r ${this.pathToRequirements}`, err =>{
+				execSync(`${this.pathToPipBin} install -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
 					if (err) {
 						throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
 					}
@@ -152,7 +152,7 @@ export default class Python_controller {
 	{
 		if(!this.realEnvironment)
 		{
-			execSync(`${this.pathToPipBin} uninstall -y -r ${this.pathToRequirements}`, err =>{
+			execSync(`${this.pathToPipBin} uninstall -y -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
 				if (err) {
 					throw new Error('fail uninstalling requirements.txt in created virtual python environment --> ' + err.message)
 				}
