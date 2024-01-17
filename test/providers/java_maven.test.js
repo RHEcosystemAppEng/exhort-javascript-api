@@ -132,7 +132,6 @@ suite('testing the java-maven data provider with modules', () => {
 			// read target manifest file
 			expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 			let effectivePomContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/effectivePom.xml`,).toString()
-			let manifestContent = fs.readFileSync(`test/providers/tst_manifests/maven/${testCase}/pom.xml`).toString()
 			let mockedExecFunction = function(command){
 				if(command.includes(":effective-pom")){
 					interceptAndOverwriteDataWithMock(command, effectivePomContent,"Doutput=");
@@ -140,7 +139,7 @@ suite('testing the java-maven data provider with modules', () => {
 			}
 			javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
 			// invoke sut component analysis for scenario manifest
-			let provideDataForComponent = await javaMvnProviderRewire.__get__("provideComponent")(manifestContent,{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
+			let provideDataForComponent = await javaMvnProviderRewire.__get__("provideComponent")("",{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
 			// verify returned data matches expectation
 			expect(provideDataForComponent).to.deep.equal({
 				ecosystem: 'maven',
