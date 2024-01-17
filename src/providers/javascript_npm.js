@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process"
 import fs from 'node:fs'
 import os from "node:os";
-import { getCustomPath } from "../tools.js";
+import { getCustomPath, handleSpacesInPath } from "../tools.js";
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
@@ -23,7 +23,7 @@ export var npmInteractions = {
 		})
 	},
 	createPackageLock: function createPackageLock(npm, manifestDir) {
-		execSync(`${npm} i --package-lock-only --prefix ${manifestDir}`, err => {
+		execSync(`${npm} i --package-lock-only --prefix ${handleSpacesInPath(manifestDir)}`, err => {
 			if (err) {
 				throw new Error('failed to create npmOutput list')
 			}
@@ -118,7 +118,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let manifestDir = path.dirname(manifest)
 	npmInteractions.createPackageLock(npm, manifestDir);
 	let allFilter = includeTransitive? " --all" : ""
-	let npmListing = getNpmListing(npm, allFilter, manifestDir)
+	let npmListing = getNpmListing(npm, allFilter, handleSpacesInPath(manifestDir))
 	let npmOutput = npmInteractions.listing(npmListing);
 	let depsObject = JSON.parse(npmOutput);
 	let rootName = depsObject["name"]
