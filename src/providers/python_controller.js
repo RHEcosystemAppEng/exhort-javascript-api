@@ -2,7 +2,7 @@ import {execSync} from "node:child_process";
 import fs from "node:fs";
 import path from 'node:path';
 import {EOL} from "os";
-import {getCustom,environmentVariableIsPopulated, handleSpacesInPath} from "../tools.js";
+import {environmentVariableIsPopulated,getCustom, handleSpacesInPath} from "../tools.js";
 
 
 function getPipFreezeOutput() {

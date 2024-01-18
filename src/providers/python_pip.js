@@ -1,7 +1,7 @@
 
 import {execSync} from "node:child_process";
 import fs from 'node:fs'
-import {getCustom, getCustomPath,environmentVariableIsPopulated } from "../tools.js";
+import {environmentVariableIsPopulated, getCustom,getCustomPath } from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
