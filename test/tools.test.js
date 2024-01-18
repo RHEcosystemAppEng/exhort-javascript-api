@@ -2,8 +2,6 @@ import { getCustom, getCustomPath} from "../src/tools.js"
 import esmock from 'esmock'
 import { afterEach } from 'mocha'
 import { expect } from 'chai'
-import sinon from 'sinon'
-
 
 
 /**
@@ -13,10 +11,10 @@ import sinon from 'sinon'
  */
 async function mockToolsPartial(operatingSystem) {
 	return await esmock('../src/tools.js', {
-			os: {
-				platform: () => operatingSystem
-			}
+		os: {
+			platform: () => operatingSystem
 		}
+	}
 	)
 }
 
@@ -71,7 +69,7 @@ suite('testing the various tools and utility functions', () => {
 		test('Windows Path with spaces', async () => {
 			const tools = await mockToolsPartial("win32")
 
-            let path = "c:\\users\\john doe\\pom.xml"
+			let path = "c:\\users\\john doe\\pom.xml"
 			let expectedPath = "\"c:\\users\\john doe\\pom.xml\""
 			let actualPath = tools.handleSpacesInPath(path)
 			expect(actualPath).to.equal(expectedPath)
@@ -87,7 +85,7 @@ suite('testing the various tools and utility functions', () => {
 
 		test('Linux Path with spaces', async () => {
 			const tools = await mockToolsPartial("linux")
-            let path = "/usr/john doe/pom.xml"
+			let path = "/usr/john doe/pom.xml"
 			let expectedPath = "/usr/john\\ doe/pom.xml"
 			let actualPath = tools.handleSpacesInPath(path)
 			expect(actualPath).to.equal(expectedPath)

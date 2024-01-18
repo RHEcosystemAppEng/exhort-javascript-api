@@ -343,8 +343,9 @@ function getDependencies(manifest) {
 		if(pomJson['project']['dependencies'] !== undefined ) {
 			pomXml = pomJson['project']['dependencies']['dependency']
 		}
-		else
+		else {
 			pomXml = []
+		}
 	}
 	// project with modules
 	else {

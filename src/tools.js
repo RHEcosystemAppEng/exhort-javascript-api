@@ -73,7 +73,7 @@ export function handleSpacesInPath(path) {
 	// if operating system is windows
 	if (os.platform() === "win32") {
 		if(hasSpaces(path)) {
-           transformedPath = `\"${path}\"`
+			transformedPath = `"${path}"`
 		}
 	}
 	// linux, darwin..
@@ -82,7 +82,7 @@ export function handleSpacesInPath(path) {
 			transformedPath = path.replaceAll(" ", "\\ ")
 		}
 	}
-  return transformedPath
+	return transformedPath
 }
 
 /**
