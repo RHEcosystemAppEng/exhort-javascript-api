@@ -28,15 +28,20 @@ match() {
         cleanup 1
     fi
     echo "- PASSED"
+    echo
 }
 
 matchConstant() {
-	if [[ "$1" != "$2" ]]; then
+    TEST_MESSAGE="$3"
+    sleep 1
+    echo $TEST_MESSAGE
+    if [[ "$1" != "$2" ]]; then
         echo "- FAILED"
-        echo "expected = $1, actual= $2"
-        cleanup 1
+       echo "expected = $1, actual= $2"
+       cleanup 1
     fi
     echo "- PASSED"
+    echo
 }
 
 ##########################################
@@ -66,40 +71,23 @@ if ! mvn --version > /dev/null 2>&1; then
 fi
 echo "- SUCCESSFUL"
 
-##########################################
-###### Mock Server Conditional Start ######
-##########################################
-# unless required to use real backend, set custom url (from config) and start mock server
-# note that based on the config file, the server will be automatically stopped after 5 minutes
-if [ "$EXHORT_ITS_USE_REAL_API" != "true" ]; then
-	echo "STARTING Mock HTTP Server"
-	export EXHORT_BACKEND_URL=http://localhost:9432
-	eval "node server/mock_server.js server/mock_server_config.json &"
-	PID="$!"
-	# shellcheck disable=SC2181
-	if [ "$?" -ne 0 ]; then
-		echo "- FAILED Starting up the Mock Server"
-		cleanup 1
-	fi
-	echo "- SUCCESSFUL"
-fi
 
 ##########################################
-###### JavaScript Integration Tests ######
+###### Preparing CLI Tests ######
 ##########################################
-echo "PREPARING JavaScript integration/component tests environment"
-rm -rf testers/javascript/node_modules
-rm -f testers/javascript/package-lock.json
-if ! npm --prefix ./testers/javascript install --silent; then
-	echo "- FAILED Installing modules for JS environment"
+echo "PREPARING JavaScript CLI tests environment"
+rm -rf testers/cli/node_modules
+rm -f testers/cli/package-lock.json
+if !  npm --prefix testers/cli install  --silent ; then
+	echo "- FAILED Installing exhort-javascript-api environment for testing"
 	cleanup $?
 fi
 echo "- SUCCESSFUL"
 mkdir -p ./responses
 #### JAVA MAVEN
-echo "RUNNING JavaScript integration test for Stack Analysis report in Html for Java Maven"
+echo "RUNNING JavaScript CLI integration test for Stack Analysis report in Html for Java Maven"
 
-node --no-warnings testers/javascript/index.js stack scenarios/maven/pom.xml true &> ./responses/stack.html
+testers/cli/node_modules/.bin/exhort-javascript-api  stack scenarios/maven/pom.xml --html &> ./responses/stack.html
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -111,9 +99,10 @@ if [[ -z "${RESPONSE_CONTENT}"  ]]; then
             cleanup 1
 fi
 echo "- PASSED"
+echo
 
-echo "RUNNING JavaScript integration test for Stack Analysis report in Json for Java Maven"
-node --no-warnings testers/javascript/index.js stack scenarios/maven/pom.xml false &> ./responses/stack.json
+echo "RUNNING JavaScript CLI integration test for Stack Analysis report in Json for Java Maven"
+testers/cli/node_modules/.bin/exhort-javascript-api stack scenarios/maven/pom.xml  > ./responses/stack.json
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -124,12 +113,14 @@ if [ "$?" -ne 0 ]; then
 	echo "- FAILED , response is not a valid json"
 			cleanup $RC
 fi
+StatusCodeTC=$(jq '.providers["trusted-content"].status.code' ./responses/stack.json)
+matchConstant "200" "$StatusCodeTC" "Check that Response code from Trusted Content is OK ( Http Status = 200)..."
 
-StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./responses/stack.json | jq .status)
-matchConstant "200" "$StatusCode"
+StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
+matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
 
-echo "RUNNING JavaScript integration test for Component Analysis report for Java Maven"
-eval "node --no-warnings testers/javascript/index.js component pom.xml '$(<scenarios/maven/pom.xml)'"  &> ./responses/component.json
+echo "RUNNING JavaScript CLI integration test for Component Analysis report for Java Maven"
+eval "testers/cli/node_modules/.bin/exhort-javascript-api component pom.xml '$(<scenarios/maven/pom.xml)'"  > ./responses/component.json
 
 if [ "$?" -ne 0 ]; then
 	echo "- FAILED , return $RC from invocation"
@@ -140,15 +131,19 @@ if [ "$?" -ne 0 ]; then
 	echo "- FAILED , response is not a valid json, got $RC from parsing the file"
 			cleanup $RC
 fi
-StatusCode=$(jq '.summary.providerStatuses[] | select(.provider== "snyk") ' ./responses/component.json | jq .status)
-matchConstant "200" "$StatusCode"
 
-echo "RUNNING JavaScript integration test for Validate Token Function With wrong token, expecting getting 401 http status code "
-answerAboutToken=$(node --no-warnings testers/javascript/index.js validateToken veryBadToken)
-matchConstant "401" "$answerAboutToken"
+StatusCodeTC=$(jq '.providers["trusted-content"].status.code' ./responses/stack.json)
+matchConstant "200" "$StatusCodeTC" "Check that Response code from Trusted Content is OK ( Http Status = 200)..."
+StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
+matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
 
-echo "RUNNING JavaScript integration test for Validate Token Function With no token at all, Expecting getting 400 http status code"
-answerAboutToken=$(node --no-warnings testers/javascript/index.js validateToken )
-matchConstant "400" "$answerAboutToken"
+echo "RUNNING JavaScript CLI integration test for Validate Token Function With wrong token, expecting getting 401 http status code "
+answerAboutToken=$(testers/cli/node_modules/.bin/exhort-javascript-api validate-token snyk --value=veryBadTokenValue)
+matchConstant "401" "$answerAboutToken" "Checking That dummy Token is Invalid , Expecting Response Status of Authentication Failure( Http Status = 401)..."
+
+echo "RUNNING JavaScript CLI  integration test for Validate Token Function With no token at all, Expecting getting 400 http status code"
+answerAboutToken=$(testers/cli/node_modules/.bin/exhort-javascript-api validate-token snyk )
+matchConstant "400" "$answerAboutToken" "Checking That Token is missing , Expecting Response Status of Bad Request( Http Status = 400)..."
+echo "==>SUCCESS!!"
 
 cleanup 0

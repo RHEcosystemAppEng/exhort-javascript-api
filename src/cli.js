@@ -14,6 +14,7 @@ const component = {
 			desc: 'manifest name and type',
 			type: 'string',
 			choices: ['pom.xml','package.json', 'go.mo', 'requirements.txt']
+
 		}
 	).positional(
 		'manifest-content',
@@ -27,6 +28,34 @@ const component = {
 		let manifestContent = args['manifest-content']
 		let res = await exhort.componentAnalysis(manifestName, manifestContent)
 		console.log(JSON.stringify(res, null, 2))
+	}
+}
+const validateToken = {
+	command: 'validate-token <token-provider> [--token-value thevalue]',
+	desc: 'Validates input token if authentic and authorized',
+	builder: yargs => yargs.positional(
+		'token-provider',
+		{
+			desc: 'the token provider',
+			type: 'string',
+			choices: ['snyk','oss-index'],
+		}
+	).options({
+		tokenValue: {
+			alias: 'value',
+			desc: 'the actual token value to be checked',
+			type: 'string',
+		}
+	}),
+	handler: async args => {
+		let tokenProvider = args['token-provider'].toUpperCase()
+		let opts={}
+		if(args['tokenValue'] !== undefined && args['tokenValue'].trim() !=="" ) {
+			let tokenValue = args['tokenValue'].trim()
+			opts[`EXHORT_${tokenProvider}_TOKEN`] = tokenValue
+		}
+		let res = await exhort.validateToken(opts)
+		console.log(res)
 	}
 }
 
@@ -70,9 +99,10 @@ const stack = {
 
 // parse and invoke the command
 yargs(hideBin(process.argv))
-	.usage('Usage: $0 {component|stack}')
+	.usage('Usage: $0 {component|stack|validate-token}')
 	.command(stack)
 	.command(component)
+	.command(validateToken)
 	.version(false)
 	.demandCommand(1)
 	.parse()

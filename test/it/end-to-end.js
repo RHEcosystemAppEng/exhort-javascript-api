@@ -134,12 +134,13 @@ suite('Integration Tests', () => {
 // 		// process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
 // 		// process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
 // 		// process.env["MATCH_MANIFEST_VERSIONS"] = "false"
-// 		let pomPath = `/tmp/070124/requirements.txt`
+// 		let pomPath = `./test/providers/tst_manifests/maven/pom_with_multiple_modules/module3/pom.xml`
+// 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
-// 		providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
+// 		// providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
 // 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
-// 		// providedDataForStack = await index.componentAnalysis("pom.xml",fs.readFileSync(pomPath).toString())
+// 		providedDataForStack = await index.componentAnalysis("pom.xml",undefined,opts,pomPath)
 // 		console.log(JSON.stringify(providedDataForStack,null , 4))
 // 		// expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
 // 	}).timeout(15000);
