@@ -1,6 +1,24 @@
-import { getCustom, getCustomPath } from "../src/tools.js"
+import { getCustom, getCustomPath} from "../src/tools.js"
+import esmock from 'esmock'
 import { afterEach } from 'mocha'
 import { expect } from 'chai'
+import sinon from 'sinon'
+
+
+
+/**
+ *
+ * @param {string}operatingSystem
+ * @return {Promise<*>}
+ */
+async function mockToolsPartial(operatingSystem) {
+	return await esmock('../src/tools.js', {
+			os: {
+				platform: () => operatingSystem
+			}
+		}
+	)
+}
 
 suite('testing the various tools and utility functions', () => {
 	suite('test the getCustom utility function', () => {
@@ -47,4 +65,43 @@ suite('testing the various tools and utility functions', () => {
 		})
 
 	})
+
+	suite('test the handleSpacesInPath utility function', () => {
+
+		test('Windows Path with spaces', async () => {
+			const tools = await mockToolsPartial("win32")
+
+            let path = "c:\\users\\john doe\\pom.xml"
+			let expectedPath = "\"c:\\users\\john doe\\pom.xml\""
+			let actualPath = tools.handleSpacesInPath(path)
+			expect(actualPath).to.equal(expectedPath)
+		})
+
+		test('Windows Path with no spaces', async () => {
+			const tools = await mockToolsPartial("win32")
+			let path = "c:\\users\\john\\pom.xml"
+			let expectedPath = "c:\\users\\john\\pom.xml"
+			let actualPath = tools.handleSpacesInPath(path)
+			expect(actualPath).to.equal(expectedPath)
+		})
+
+		test('Linux Path with spaces', async () => {
+			const tools = await mockToolsPartial("linux")
+            let path = "/usr/john doe/pom.xml"
+			let expectedPath = "/usr/john\\ doe/pom.xml"
+			let actualPath = tools.handleSpacesInPath(path)
+			expect(actualPath).to.equal(expectedPath)
+		})
+
+		test('Linux Path with no spaces', async () => {
+			const tools = await mockToolsPartial("linux")
+			let path = "/usr/john/pom.xml"
+			let expectedPath = "/usr/john/pom.xml"
+			let actualPath = tools.handleSpacesInPath(path)
+			expect(actualPath).to.equal(expectedPath)
+		})
+
+	})
+
+
 })
