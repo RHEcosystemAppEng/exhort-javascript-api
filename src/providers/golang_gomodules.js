@@ -296,8 +296,8 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	}
 	let mainModule = toPurl(root, "@", undefined)
 	sbom.addRoot(mainModule)
-    let exhortGoMvsLogicEnabled = getCustom("EXHORT_GO_MVS_LOGIC_ENABLED","false",opts)
-    if(includeTransitive && exhortGoMvsLogicEnabled === "true")
+	let exhortGoMvsLogicEnabled = getCustom("EXHORT_GO_MVS_LOGIC_ENABLED","false",opts)
+	if(includeTransitive && exhortGoMvsLogicEnabled === "true")
 	{
 		rows = getFinalPackagesVersionsForModule(rows,manifest,goBin)
 	}
@@ -383,11 +383,12 @@ function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
 	execSync(`${goBin} mod download`, options)
 	let finalVersionsForAllModules = execSync(`${goBin} list -m all`, options).toString()
 	let finalVersionModules = new Map()
-	finalVersionsForAllModules.split(EOL).filter(string => string.trim()!== "").filter(string => string.trim().split(" ").length === 2)
-										 .forEach((dependency) => {
-											 let dep = dependency.split(" ")
-											 finalVersionModules[dep[0]] = dep[1]
-										 })
+	finalVersionsForAllModules.split(EOL).filter(string => string.trim()!== "")
+		.filter(string => string.trim().split(" ").length === 2)
+		.forEach((dependency) => {
+			let dep = dependency.split(" ")
+			finalVersionModules[dep[0]] = dep[1]
+		})
 	let finalVersionModulesArray = new Array()
 	rows.filter(string => string.trim()!== "").forEach( module => {
 		let child = getChildVertexFromEdge(module)
@@ -406,7 +407,7 @@ function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
 		}
 	})
 
-    return finalVersionModulesArray
+	return finalVersionModulesArray
 }
 
 /**
