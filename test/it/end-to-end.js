@@ -76,7 +76,7 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
-			let reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\":") +9,html.indexOf("\"ossIssueTemplate\"") -1));
+			let reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\":") +9,html.indexOf("}}}}}") + 5))
 
 			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
 			let parsedScannedFromHtml = reportParsedFromHtml.scanned
