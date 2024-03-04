@@ -296,8 +296,11 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	}
 	let mainModule = toPurl(root, "@", undefined)
 	sbom.addRoot(mainModule)
-
-
+	let exhortGoMvsLogicEnabled = getCustom("EXHORT_GO_MVS_LOGIC_ENABLED","false",opts)
+	if(includeTransitive && exhortGoMvsLogicEnabled === "true")
+	{
+		rows = getFinalPackagesVersionsForModule(rows,manifest,goBin)
+	}
 	if (includeTransitive) {
 		let sourceComponent
 		let currentParent = ""
@@ -367,3 +370,62 @@ function toPurl(dependency, delimiter, qualifiers) {
 	return pkg
 }
 
+/** This function gets rows from go mod graph , and go.mod graph, and selecting for all
+ * packages the has more than one minor the final versions as selected by golang MVS algorithm.
+ * @param {[string]}rows all the rows from go modules dependency tree
+ * @param {string} manifestPath the path of the go.mod file
+ * @param {string} path to go binary
+ * @return {[string]} rows that contains final versions.
+ */
+function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
+	let manifestDir = path.dirname(manifestPath)
+	let options = {cwd: manifestDir}
+	execSync(`${goBin} mod download`, options)
+	let finalVersionsForAllModules = execSync(`${goBin} list -m all`, options).toString()
+	let finalVersionModules = new Map()
+	finalVersionsForAllModules.split(EOL).filter(string => string.trim()!== "")
+		.filter(string => string.trim().split(" ").length === 2)
+		.forEach((dependency) => {
+			let dep = dependency.split(" ")
+			finalVersionModules[dep[0]] = dep[1]
+		})
+	let finalVersionModulesArray = new Array()
+	rows.filter(string => string.trim()!== "").forEach( module => {
+		let child = getChildVertexFromEdge(module)
+		let parent = getParentVertexFromEdge(module)
+		let parentName = getPackageName(parent)
+		let childName = getPackageName(child)
+		let parentFinalVersion = finalVersionModules[parentName]
+		let childFinalVersion =  finalVersionModules[childName]
+		// if this condition will be uncommented, there will be several differences between sbom and go list -m all listing...
+		// let parentOriginalVersion = getVersionOfPackage(parent)
+		// if( parentOriginalVersion !== undefined && parentOriginalVersion === parentFinalVersion) {
+		if (parentName !== parent) {
+			finalVersionModulesArray.push(`${parentName}@${parentFinalVersion} ${childName}@${childFinalVersion}`)
+		} else {
+			finalVersionModulesArray.push(`${parentName} ${childName}@${childFinalVersion}`)
+		}
+		// }
+	})
+
+	return finalVersionModulesArray
+}
+
+/**
+ *
+ * @param {string} fullPackage - full package with its name and version
+ * @return -{string} package name only
+ * @private
+ */
+function getPackageName(fullPackage) {
+	return fullPackage.split("@")[0]
+}
+
+// /**
+//  *
+//  * @param {string} fullPackage - full package with its name and version-
+//  * @return {string} package version only
+//  */
+// function getVersionOfPackage(fullPackage) {
+// 	return fullPackage.split("@")[1]
+// }
