@@ -397,14 +397,15 @@ function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
 		let childName = getPackageName(child)
 		let parentFinalVersion = finalVersionModules[parentName]
 		let childFinalVersion =  finalVersionModules[childName]
-		let parentOriginalVersion = getVersionOfPackage(parent)
-		if( parentOriginalVersion !== undefined && parentOriginalVersion === parentFinalVersion) {
-			if (parentName !== parent) {
-				finalVersionModulesArray.push(`${parentName}@${parentFinalVersion} ${childName}@${childFinalVersion}`)
-			} else {
-				finalVersionModulesArray.push(`${parentName} ${childName}@${childFinalVersion}`)
-			}
+		// if this condition will be uncommented, there will be several differences between sbom and go list -m all listing...
+		// let parentOriginalVersion = getVersionOfPackage(parent)
+		// if( parentOriginalVersion !== undefined && parentOriginalVersion === parentFinalVersion) {
+		if (parentName !== parent) {
+			finalVersionModulesArray.push(`${parentName}@${parentFinalVersion} ${childName}@${childFinalVersion}`)
+		} else {
+			finalVersionModulesArray.push(`${parentName} ${childName}@${childFinalVersion}`)
 		}
+		// }
 	})
 
 	return finalVersionModulesArray
@@ -420,11 +421,11 @@ function getPackageName(fullPackage) {
 	return fullPackage.split("@")[0]
 }
 
-/**
- *
- * @param {string} fullPackage - full package with its name and version-
- * @return {string} package version only
- */
-function getVersionOfPackage(fullPackage) {
-	return fullPackage.split("@")[1]
-}
+// /**
+//  *
+//  * @param {string} fullPackage - full package with its name and version-
+//  * @return {string} package version only
+//  */
+// function getVersionOfPackage(fullPackage) {
+// 	return fullPackage.split("@")[1]
+// }

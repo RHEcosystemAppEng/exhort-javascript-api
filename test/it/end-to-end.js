@@ -128,20 +128,20 @@ suite('Integration Tests', () => {
 // 			MATCH_MANIFEST_VERSIONS: 'false',
 // 			EXHORT_DEV_MODE: 'true',
 // 			// EXHORT_OSS_INDEX_TOKEN: '2bb579b7894f13f180f0ebb591be7c8febbcf699',
-// 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com'
+// 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com',
+// 			EXHORT_GO_MVS_LOGIC_ENABLED: 'true'
 // 		}
 //
 // 		// process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
 // 		// process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
 // 		// process.env["MATCH_MANIFEST_VERSIONS"] = "false"
-// 		let pomPath = `./test/providers/tst_manifests/maven/pom_with_multiple_modules/module3/pom.xml`
+// 		let pomPath = `/home/zgrinber/git/exhort-javascript-api/test/providers/tst_manifests/golang/go_mod_no_ignore/go.mod`
 // 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
-// 		// providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
+// 		providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
 // 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
-// 		providedDataForStack = await index.componentAnalysis("pom.xml",undefined,opts,pomPath)
-// 		console.log(JSON.stringify(providedDataForStack,null , 4))
+//
 // 		// expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
 // 	}).timeout(15000);
 //
