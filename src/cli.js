@@ -3,6 +3,7 @@
 import exhort from './index.js'
 import { hideBin } from 'yargs/helpers'
 import yargs from 'yargs'
+import * as path from "path";
 
 // command for component analysis take manifest type and content
 const component = {
@@ -116,10 +117,11 @@ const stack = {
 
 // parse and invoke the command
 yargs(hideBin(process.argv))
-	.usage('Usage: $0 {component|stack|validate-token}')
+	.usage(`Usage: ${process.argv[0].includes("node") ?  path.parse(process.argv[1]).base : path.parse(process.argv[0]).base} {component|stack|validate-token}`)
 	.command(stack)
 	.command(component)
 	.command(validateToken)
+	.scriptName('')
 	.version(false)
 	.demandCommand(1)
 	.parse()

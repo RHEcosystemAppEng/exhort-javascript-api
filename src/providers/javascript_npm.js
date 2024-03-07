@@ -45,6 +45,7 @@ export default { isSupported, provideComponent, provideStack, npmInteractions }
  * @private
  */
 const ecosystem = 'npm'
+const defaultVersion = 'v0.0.0'
 
 /**
  * @param {string} manifestName - the subject manifest name-type
@@ -123,6 +124,9 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let depsObject = JSON.parse(npmOutput);
 	let rootName = depsObject["name"]
 	let rootVersion = depsObject["version"]
+	if(!rootVersion) {
+		rootVersion = defaultVersion
+	}
 	let mainComponent = toPurl(rootName,rootVersion);
 
 	let sbom = new Sbom();
