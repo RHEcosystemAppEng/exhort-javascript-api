@@ -88,9 +88,26 @@ const stack = {
 		let manifest = args['/path/to/manifest']
 		let html = args['html']
 		let summary = args['summary']
+		let theProvidersSummary = new Map();
+		let theProvidersObject ={}
 		let res = await exhort.stackAnalysis(manifest, html)
+		if(summary)
+		{
+			for (let provider in res.providers ) {
+				if (res.providers[provider].sources !== undefined) {
+					for(let source in res.providers[provider].sources ) {
+						if(res.providers[provider].sources[source].summary) {
+							theProvidersSummary.set(source,res.providers[provider].sources[source].summary)
+						}
+					}
+				}
+			}
+			for (let [provider, providerSummary] of theProvidersSummary) {
+				theProvidersObject[provider]=providerSummary
+			}
+		}
 		console.log(html ? res : JSON.stringify(
-			!html && summary ? res['summary'] : res,
+			!html && summary ? theProvidersObject : res,
 			null,
 			2
 		))
