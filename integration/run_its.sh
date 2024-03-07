@@ -101,6 +101,28 @@ fi
 echo "- PASSED"
 echo
 
+echo 'RUNNING JavaScript CLI integration test for Stack Analysis report summary of snyk provider for Java Maven'
+
+testers/cli/node_modules/.bin/exhort-javascript-api stack scenarios/maven/pom.xml --summary > ./responses/stack-summary.json
+
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , return $RC from invocation"
+			cleanup $RC
+fi
+
+RESPONSE_CONTENT=$(jq . ./responses/stack-summary.json)
+if [ "$?" -ne 0 ]; then
+	echo "- FAILED , response is not a valid json"
+			cleanup $RC
+fi
+echo
+echo $RESPONSE_CONTENT
+echo "- PASSED"
+echo
+
+
+
+
 echo "RUNNING JavaScript CLI integration test for Stack Analysis report in Json for Java Maven"
 testers/cli/node_modules/.bin/exhort-javascript-api stack scenarios/maven/pom.xml  > ./responses/stack.json
 
