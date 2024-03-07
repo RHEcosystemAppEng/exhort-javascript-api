@@ -14,7 +14,6 @@ on:
       - closed
     branches:
       - 'main'
-
     paths:
       - "generated/**"
       - "src/**"
@@ -23,11 +22,16 @@ on:
       - "tsconfig.json"
       - ".github/workflows/stage.yml"
 
+  push:
+    branches:
+      - 'main'
+
+
 jobs:
   stage:
     runs-on: ubuntu-latest
 #    Branches that starts with `release/` shouldn't trigger this workflow, as these are triggering the release workflow.
-    if: github.repository_owner == 'RHEcosystemAppEng' && !startsWith(github.head_ref, 'release/')
+    if: (github.repository_owner == 'RHEcosystemAppEng' && !startsWith(github.head_ref, 'release/')) || (github.repository_owner == 'RHEcosystemAppEng' && github.ref_name == 'main' && contains(github.event.commits[0].message, 'special staging'))
     environment: staging
     name: Stage the project
     steps:
