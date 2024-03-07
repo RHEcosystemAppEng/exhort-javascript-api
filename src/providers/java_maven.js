@@ -259,7 +259,7 @@ function getSbomForComponentAnalysis(data, opts = {}, manifestPath) {
 	let dependencies = getDependencies(tmpEffectivePom)
 		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
 	let sbom = new Sbom();
-	let rootDependency = getRootFromPom(targetPom);
+	let rootDependency = getRootFromPom(tmpEffectivePom);
 	let purlRoot = toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
 	sbom.addRoot(purlRoot)
 	let rootComponent = sbom.getRoot();
