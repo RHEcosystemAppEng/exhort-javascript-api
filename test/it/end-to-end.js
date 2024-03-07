@@ -135,10 +135,11 @@ suite('Integration Tests', () => {
 // 		// process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
 // 		// process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
 // 		// process.env["MATCH_MANIFEST_VERSIONS"] = "false"
-// 		let pomPath = `/home/zgrinber/git/exhort-javascript-api/test/providers/tst_manifests/golang/go_mod_no_ignore/go.mod`
+// 		// let pomPath = `/tmp/070324/package.json`
+// 		let pomPath = `/tmp/artifact-without-version-or-group/sbom-json-traversor/pom.xml`
 // 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
-// 		providedDataForStack = await index.stackAnalysis(pomPath, false,opts);
+// 		providedDataForStack = await index.componentAnalysis("pom.xml", fs.readFileSync(pomPath),{} ,pomPath);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
 // 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
 //

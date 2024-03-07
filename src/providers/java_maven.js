@@ -259,7 +259,7 @@ function getSbomForComponentAnalysis(data, opts = {}, manifestPath) {
 	let dependencies = getDependencies(tmpEffectivePom)
 		.filter(d => !(dependencyIn(d, ignored)) && !(dependencyInExcludingVersion(d, ignored)))
 	let sbom = new Sbom();
-	let rootDependency = getRootFromPom(tmpEffectivePom);
+	let rootDependency = getRootFromPom(tmpEffectivePom,targetPom);
 	let purlRoot = toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
 	sbom.addRoot(purlRoot)
 	let rootComponent = sbom.getRoot();
@@ -282,16 +282,31 @@ function getSbomForComponentAnalysis(data, opts = {}, manifestPath) {
 
 /**
  *
- * @param pom.xml manifest path
+ * @param effectivePomManifest effective pom manifest path
+ * @param originalManifest pom.xml manifest path
  * @return {Dependency} returns the root dependency for the pom
  * @private
  */
-function getRootFromPom(manifest) {
+function getRootFromPom(effectivePomManifest) {
 
 	let parser = new XMLParser()
-	let buf = fs.readFileSync(manifest)
-	let pomStruct = parser.parse(buf.toString())
-	let pomRoot = pomStruct['project'];
+	let buf = fs.readFileSync(effectivePomManifest)
+	let effectivePomStruct = parser.parse(buf.toString())
+	let pomRoot
+	if(effectivePomStruct['project']) {
+		pomRoot = effectivePomStruct['project']
+	}
+	// if there is no project root tag, then it's a multi module/submodules aggregator parent POM
+	else
+	{
+		for (let proj of effectivePomStruct['projects']['project']) {
+			// need to choose the aggregate POM and not one of the modules.
+			if(proj.packaging && proj.packaging === 'pom'  ) {
+				pomRoot = proj
+			}
+		}
+
+	}
 	/** @type Dependency */
 	let rootDependency = {
 		groupId: pomRoot['groupId'],
