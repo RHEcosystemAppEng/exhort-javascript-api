@@ -110,4 +110,5 @@ COPY --from=builder /opt/app-root/src/.npm-global/ /opt/app-root/src/.npm-global
 # Copy RHDA executable script from the builder stage
 COPY --from=builder /rhda.sh /rhda.sh
 
+#Original UID in base image
 USER 1001
