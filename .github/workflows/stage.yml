@@ -21,6 +21,7 @@ on:
       - "package.json"
       - "tsconfig.json"
       - ".github/workflows/stage.yml"
+      - "docker-image/**"
 
   push:
     branches:
