@@ -1,3 +1,5 @@
+ARG JAVA_MINOR_PATCH_VERSION=0.2
+
 # first stage
 FROM registry.access.redhat.com/ubi9/nodejs-18 as builder
 
@@ -6,6 +8,8 @@ USER root
 
 # assign token for reading packages from github package registry
 ARG PACKAGE_REGISTRY_ACCESS_TOKEN=''
+
+ARG JAVA_MINOR_PATCH_VERSION
 
 # install Java
 RUN curl -kL https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz -o /tmp/java-package.tar.gz \
@@ -31,15 +35,15 @@ RUN yum install util-linux
 # copy the .npmrc file
 COPY configs/.npmrc .
 # replace placeholder with the actual environment variable
-RUN sed -i "s/__PACKAGE_REGISTRY_ACCESS_TOKEN__/${PACKAGE_REGISTRY_ACCESS_TOKEN}/g" ./.npmrc
 # install Exhort javascript API
 RUN npm install --global @RHEcosystemAppEng/exhort-javascript-api
 
 # add RHDA script
 COPY scripts/rhda.sh /
 
+ENV JDK_VERSION=jdk-21.${JAVA_MINOR_PATCH_VERSION}
 # assign executable permissions to all installed binaries
-RUN chmod +x /usr/jdk-21.0.1/bin/java \
+RUN chmod +x /usr/${JDK_VERSION} \
     && chmod +x /usr/apache-maven-3.9.4/bin/mvn \
     && chmod +x /usr/go/bin/go \
     && chmod +x /usr/local/bin/pip3 \
@@ -56,6 +60,8 @@ FROM registry.access.redhat.com/ubi9/nodejs-18-minimal
 
 LABEL org.opencontainers.image.source https://github.com/RHEcosystemAppEng/exhort-javascript-api
 
+ARG JAVA_MINOR_PATCH_VERSION
+
 # assign token for exhort authentication with Snyk provider
 ENV EXHORT_SNYK_TOKEN=''
 # assign rhda token for rhda user authentication with exhort
@@ -63,9 +69,12 @@ ENV RHDA_TOKEN=''
 # assign rhda source for exhort tracking purposes
 ENV RHDA_SOURCE=''
 
+ENV JDK_VERSION=jdk-21.${JAVA_MINOR_PATCH_VERSION}
+
+USER root
 # Copy java executable from the builder stage
-COPY --from=builder /usr/jdk-21.0.1/ /usr/jdk-21.0.1/
-ENV JAVA_HOME=/usr/jdk-21.0.1
+COPY --from=builder /usr/$JDK_VERSION/ /usr/$JDK_VERSION/
+ENV JAVA_HOME=/usr/$JDK_VERSION
 
 # Copy maven executable from the builder stage
 COPY --from=builder /usr/apache-maven-3.9.4/ /usr/apache-maven-3.9.4/
@@ -100,3 +109,5 @@ COPY --from=builder /opt/app-root/src/.npm-global/ /opt/app-root/src/.npm-global
 
 # Copy RHDA executable script from the builder stage
 COPY --from=builder /rhda.sh /rhda.sh
+
+USER 1001
