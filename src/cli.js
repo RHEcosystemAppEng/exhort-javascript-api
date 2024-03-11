@@ -14,7 +14,7 @@ const component = {
 		{
 			desc: 'manifest name and type',
 			type: 'string',
-			choices: ['pom.xml','package.json', 'go.mo', 'requirements.txt']
+			choices: ['pom.xml','package.json', 'go.mod', 'requirements.txt']
 
 		}
 	).positional(
@@ -124,4 +124,5 @@ yargs(hideBin(process.argv))
 	.scriptName('')
 	.version(false)
 	.demandCommand(1)
+	.wrap(null)
 	.parse()
