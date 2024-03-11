@@ -414,8 +414,8 @@ system property/environment variable - `EXHORT_GO_MVS_LOGIC_ENABLED=true`(Defaul
 
 ####  Python Support
 
-By default Python support assumes that the package is installed using the pip/pip3 binary on the system PATH, of in the customized
-Binaries passed to environment variables. If the package is not installed , then an error will be thrown.
+By default, For python support, the api assumes that the package is installed using the pip/pip3 binary on the system PATH, or using the customized
+Binaries passed to environment variables. In any case, If the package is not installed , then an error will be thrown.
 
 There is an experimental feature of installing the requirements.txt on a virtual env(only python3 or later is supported for this feature) - in this case,
 it's important to pass in a path to python3 binary as `EXHORT_PYTHON3_PATH` or instead make sure that python3 is on the system path.
