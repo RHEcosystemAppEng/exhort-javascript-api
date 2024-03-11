@@ -35,6 +35,7 @@ RUN yum install util-linux
 # copy the .npmrc file
 COPY configs/.npmrc .
 # replace placeholder with the actual environment variable
+RUN sed -i "s/__PACKAGE_REGISTRY_ACCESS_TOKEN__/${PACKAGE_REGISTRY_ACCESS_TOKEN}/g" ./.npmrc
 # install Exhort javascript API
 RUN npm install --global @RHEcosystemAppEng/exhort-javascript-api
 
