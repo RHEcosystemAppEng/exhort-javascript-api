@@ -12,8 +12,7 @@ on:
   pull_request:
     types:
       - closed
-    branches:
-      - 'main'
+
     paths:
       - "generated/**"
       - "src/**"
@@ -26,14 +25,13 @@ on:
   push:
     branches:
       - 'main'
-      - 'feature/stage-release-from-forks'
 
 
 jobs:
   stage:
     runs-on: ubuntu-latest
 #    Branches that starts with `release/` shouldn't trigger this workflow, as these are triggering the release workflow.
-    if: (github.repository_owner == 'RHEcosystemAppEng' &&  github.event_name == 'pull_request' &&  !startsWith(github.head_ref, 'release/')) || (github.repository_owner == 'RHEcosystemAppEng' && github.ref_name == 'main' && github.event_name == 'push' && contains(github.event.commits[0].message, 'special staging') || (github.ref_name == 'feature/stage-release-from-forks' && github.event_name == 'push'))
+    if: (github.repository_owner == 'RHEcosystemAppEng' &&  github.event_name == 'pull_request' &&  !startsWith(github.head_ref, 'release/')) || (github.repository_owner == 'RHEcosystemAppEng' && github.ref_name == 'main' && github.event_name == 'push' && contains(github.event.commits[0].message, 'special staging'))
     environment: staging
     name: Stage the project
     steps:
@@ -68,9 +66,9 @@ jobs:
       - name: Create .npmrc
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_MAVEN_TOKEN }}
-        if: github.repository_owner != 'RHEcosystemAppEng'
+        if: !contains(github.event.pull_request.head.repo.full_name , 'RHEcosystemAppEng')
         run: |
-            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
             echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" > ~/.npmrc
 
       - name: Publish package
