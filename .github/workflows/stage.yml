@@ -9,10 +9,13 @@ env:
 
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
     types:
       - closed
       
+    branches:
+      - main
+
     branches:
       - main
 
@@ -60,14 +63,6 @@ jobs:
 
       - name: Compile project
         run: npm run compile
-
-      - name: Create .npmrc
-        if: ${{ !contains(github.event.pull_request.head.repo.full_name , 'RHEcosystemAppEng') }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_MAVEN_TOKEN }}
-        run: |
-            echo "//npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN" > ~/.npmrc
-            echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" > ~/.npmrc
 
       - name: Publish package
         env:
