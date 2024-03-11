@@ -70,7 +70,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_MAVEN_TOKEN }}
         if: github.repository_owner != 'RHEcosystemAppEng'
         run: |
-            echo "//npm.pkg.github.com/:_authToken=${{NODE_AUTH_TOKEN}}" > ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
             echo "@RHEcosystemAppEng:registry=https://npm.pkg.github.com" > ~/.npmrc
 
       - name: Publish package
