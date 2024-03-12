@@ -170,7 +170,7 @@ export default class Python_controller {
 		let pipDepTreeJsonArrayOutput
 		if(usePipDepTree !== "true") {
 			freezeOutput = getPipFreezeOutput.call(this);
-			 lines = freezeOutput.split(EOL)
+			lines = freezeOutput.split(EOL)
 			depNames = lines.map( line => getDependencyName(line)).join(" ")
 		}
 		else {
@@ -337,10 +337,10 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 	let depName
 	let version;
 	let directDeps
-    if(usePipDepTree !== "true") {
+	if(usePipDepTree !== "true") {
 		depName = getDependencyNameShow(record)
 		version = getDependencyVersion(record);
-	    directDeps = getDepsList(record)
+		directDeps = getDepsList(record)
 	}
 	else {
 		depName = record.name
@@ -393,19 +393,17 @@ function getDependencyTreeJsonFromPipDepTree(pipPath,pythonPath) {
 	} catch (e) {
 		throw new Error(`Couldn't install pipdeptree utility, reason: ${e.getMessage}`)
 	}
-	finally {
-		try {
-			if(pythonPath.startsWith("python")) {
-				dependencyTree = execSync(`pipdeptree  --json`).toString()
-			}
-			else {
-				dependencyTree = execSync(`pipdeptree  --json --python  ${pythonPath} `).toString()
-			}
-		} catch (e) {
-			throw new Error(`couldn't produce dependency tree using pipdeptree tool, stop analysis, message -> ${e.getMessage}`)
+
+	try {
+		if(pythonPath.startsWith("python")) {
+			dependencyTree = execSync(`pipdeptree  --json`).toString()
 		}
-
-
+		else {
+			dependencyTree = execSync(`pipdeptree  --json --python  ${pythonPath} `).toString()
+		}
+	} catch (e) {
+		throw new Error(`couldn't produce dependency tree using pipdeptree tool, stop analysis, message -> ${e.getMessage}`)
 	}
+
 	return JSON.parse(dependencyTree)
 }
