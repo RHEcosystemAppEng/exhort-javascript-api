@@ -13,7 +13,7 @@ export default { isSupported, provideComponent, provideStack }
 
 const dummyVersionNotation = "dummy*=#?";
 
-/** @typedef {{name: string, , version: string, dependencies: DependencyEntry[]}} DependencyEntry */
+/** @typedef {{name: string, version: string, dependencies: DependencyEntry[]}} DependencyEntry */
 
 /**
  * @type {string} ecosystem for python-pip is 'pip'

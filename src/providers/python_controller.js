@@ -161,24 +161,54 @@ export default class Python_controller {
 	}
 	#getDependenciesImpl(includeTransitive) {
 		let dependencies = new Array()
-		let freezeOutput = getPipFreezeOutput.call(this);
-		//debug
-		// freezeOutput = "alternative pip freeze output goes here for debugging"
-		let lines = freezeOutput.split(EOL)
-		let depNames = lines.map( line => getDependencyName(line)).join(" ")
-		let pipShowOutput = getPipShowOutput.call(this, depNames);
+		let usePipDepTree = getCustom("EXHORT_PIP_USE_DEP_TREE","false",this.options);
+		let freezeOutput
+		let lines
+		let depNames
+		let pipShowOutput
+		let allPipShowDeps
+		let pipDepTreeJsonArrayOutput
+		if(usePipDepTree !== "true") {
+			freezeOutput = getPipFreezeOutput.call(this);
+			 lines = freezeOutput.split(EOL)
+			depNames = lines.map( line => getDependencyName(line)).join(" ")
+		}
+		else {
+			pipDepTreeJsonArrayOutput = getDependencyTreeJsonFromPipDepTree(this.pathToPipBin,this.pathToPythonBin)
+		}
+
+
+		if(usePipDepTree !== "true") {
+			pipShowOutput = getPipShowOutput.call(this, depNames);
+			allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
+		}
 		//debug
 		// pipShowOutput = "alternative pip show output goes here for debugging"
-		let allPipShowDeps = pipShowOutput.split( EOL +"---" + EOL);
+
 		let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","true",this.options);
 		let linesOfRequirements = fs.readFileSync(this.pathToRequirements).toString().split(EOL).filter( (line) => !line.startsWith("#")).map(line => line.trim())
 		let CachedEnvironmentDeps = {}
-		allPipShowDeps.forEach( (record) => {
-			let dependencyName = getDependencyNameShow(record).toLowerCase()
-			CachedEnvironmentDeps[dependencyName] = record
-			CachedEnvironmentDeps[dependencyName.replace("-","_")] = record
-			CachedEnvironmentDeps[dependencyName.replace("_","-")] = record
-		})
+		if(usePipDepTree !== "true") {
+			allPipShowDeps.forEach((record) => {
+				let dependencyName = getDependencyNameShow(record).toLowerCase()
+				CachedEnvironmentDeps[dependencyName] = record
+				CachedEnvironmentDeps[dependencyName.replace("-", "_")] = record
+				CachedEnvironmentDeps[dependencyName.replace("_", "-")] = record
+			})
+		}
+		else {
+			pipDepTreeJsonArrayOutput.forEach( depTreeEntry => {
+				let packageName = depTreeEntry["package"]["package_name"].toLowerCase()
+				let pipDepTreeEntryForCache = {
+					name: packageName,
+					version: depTreeEntry["package"]["installed_version"],
+					dependencies: depTreeEntry["dependencies"].map(dep => dep["package_name"])
+				};
+				CachedEnvironmentDeps[packageName] = pipDepTreeEntryForCache
+				CachedEnvironmentDeps[packageName.replace("-", "_")] = pipDepTreeEntryForCache
+				CachedEnvironmentDeps[packageName.replace("_", "-")] = pipDepTreeEntryForCache
+			})
+		}
 		linesOfRequirements.forEach( (dep) => {
 			// if matchManifestVersions setting is turned on , then
 			if(matchManifestVersions === "true")
@@ -199,7 +229,12 @@ export default class Python_controller {
 					dependencyName = getDependencyName(dep)
 					// only compare between declared version in manifest to installed version , if the package is installed.
 					if(CachedEnvironmentDeps[dependencyName.toLowerCase()] !== undefined) {
-						installedVersion = getDependencyVersion(CachedEnvironmentDeps[dependencyName.toLowerCase()])
+						if(usePipDepTree !== "true") {
+							installedVersion = getDependencyVersion(CachedEnvironmentDeps[dependencyName.toLowerCase()])
+						}
+						else {
+							installedVersion = CachedEnvironmentDeps[dependencyName.toLowerCase()].version
+						}
 					}
 					if(installedVersion) {
 						if (manifestVersion.trim() !== installedVersion.trim()) {
@@ -213,7 +248,7 @@ export default class Python_controller {
 			let depName = getDependencyName(dep)
 			//array to track a path for each branch in the dependency tree
 			path.push(depName.toLowerCase())
-			bringAllDependencies(dependencies,depName,CachedEnvironmentDeps,includeTransitive,path)
+			bringAllDependencies(dependencies,depName,CachedEnvironmentDeps,includeTransitive,path,usePipDepTree)
 		})
 		dependencies.sort((dep1,dep2) =>{
 			const DEP1 = dep1.name.toLowerCase()
@@ -285,9 +320,10 @@ function getDepsList(record) {
  * @param dependencyName
  * @param cachedEnvironmentDeps
  * @param includeTransitive
+ * @param usePipDepTree
  * @param {[string]}path array representing the path of the current branch in dependency tree, starting with a root dependency - that is - a given dependency in requirements.txt
  */
-function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDeps, includeTransitive,path) {
+function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDeps, includeTransitive, path, usePipDepTree) {
 	if(dependencyName === null || dependencyName === undefined || dependencyName.trim() === "" ) {
 		return
 	}
@@ -298,12 +334,22 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 		                         environment variable EXHORT_PYTHON_VIRTUAL_ENV=true to automatically installs
 		                          it on virtual environment ( will slow down the analysis) `)
 	}
-
-	let version = getDependencyVersion(record)
-	let directDeps = getDepsList(record)
+	let depName
+	let version;
+	let directDeps
+    if(usePipDepTree !== "true") {
+		depName = getDependencyNameShow(record)
+		version = getDependencyVersion(record);
+	    directDeps = getDepsList(record)
+	}
+	else {
+		depName = record.name
+		version = record.version
+		directDeps = record.dependencies
+	}
 	let targetDeps = new Array()
 
-	let entry = { "name" : getDependencyNameShow(record) , "version" : version, "dependencies" : [] }
+	let entry = { "name" : depName , "version" : version, "dependencies" : [] }
 	dependencies.push(entry)
 	directDeps.forEach( (dep) => {
 		let depArray = new Array()
@@ -313,7 +359,7 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 			depArray.push(dep.toLowerCase())
 			if (includeTransitive) {
 				// send to recurrsion the array of all deps in path + the current dependency name which is not on the path.
-				bringAllDependencies(targetDeps, dep, cachedEnvironmentDeps, includeTransitive,path.concat(depArray))
+				bringAllDependencies(targetDeps, dep, cachedEnvironmentDeps, includeTransitive, path.concat(depArray), usePipDepTree)
 			}
 		}
 		// sort ra
@@ -331,4 +377,35 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 
 		entry["dependencies"] = targetDeps
 	})
+}
+
+/**
+ * This function install tiny pipdeptree tool using pip ( if it's not already installed on python environment), and use it to fetch the dependency tree in json format.
+ * @param {string }pipPath - the filesystem path location of pip binary
+ * @param {string }pythonPath - the filesystem path location of python binary
+ * @return {Object[] } json array containing objects with the packages and their dependencies from pipdeptree utility
+ * @private
+ */
+function getDependencyTreeJsonFromPipDepTree(pipPath,pythonPath) {
+	let dependencyTree
+	try {
+		execSync(`${pipPath} install pipdeptree`)
+	} catch (e) {
+		throw new Error(`Couldn't install pipdeptree utility, reason: ${e.getMessage}`)
+	}
+	finally {
+		try {
+			if(pythonPath.startsWith("python")) {
+				dependencyTree = execSync(`pipdeptree  --json`).toString()
+			}
+			else {
+				dependencyTree = execSync(`pipdeptree  --json --python  ${pythonPath} `).toString()
+			}
+		} catch (e) {
+			throw new Error(`couldn't produce dependency tree using pipdeptree tool, stop analysis, message -> ${e.getMessage}`)
+		}
+
+
+	}
+	return JSON.parse(dependencyTree)
 }
