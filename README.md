@@ -412,7 +412,7 @@ system property/environment variable - `EXHORT_GO_MVS_LOGIC_ENABLED=true`(Defaul
 
 
 
-####  Python Support
+#### Python Support
 
 By default, For python support, the api assumes that the package is installed using the pip/pip3 binary on the system PATH, or using the customized
 Binaries passed to environment variables. In any case, If the package is not installed , then an error will be thrown.
@@ -426,10 +426,15 @@ Since Python pip packages are very sensitive/picky regarding python version chan
 tries to install all packages in requirements.txt onto created virtual environment while **disregarding** versions declared for packages in requirements.txt
 This increasing the chances and the probability a lot that the automatic installation will succeed.
 
-##### Usage
+###### Usage
 A New setting is introduced - `EXHORT_PYTHON_INSTALL_BEST_EFFORTS` (as both env variable/key in `options` object)
 1. `EXHORT_PYTHON_INSTALL_BEST_EFFORTS`="false" - install requirements.txt while respecting declared versions for all packages.
 2. `EXHORT_PYTHON_INSTALL_BEST_EFFORTS`="true" - install all packages from requirements.txt, not respecting the declared version, but trying to install a version tailored for the used python version, when using this setting,you must set setting `MATCH_MANIFEST_VERSIONS`="false"
+
+###### Using `pipdeptree`
+By Default, The API algorithm will use native commands of PIP installer as data source to build the dependency tree.
+It's also possible, to use lightweight Python PIP utility [pipdeptree](https://pypi.org/project/pipdeptree/) as data source instead, in order to activate this,
+Need to set environment variable/option - `EXHORT_PIP_USE_DEP_TREE` to true.
 
 <!-- Badge links -->
 [0]: https://img.shields.io/github/v/release/RHEcosystemAppEng/exhort-javascript-api?color=green&label=latest
@@ -438,7 +443,7 @@ A New setting is introduced - `EXHORT_PYTHON_INSTALL_BEST_EFFORTS` (as both env 
 ### Known Issues
 
 - For pip requirements.txt - It's been observed that for python versions 3.11.x, there might be slowness for invoking the analysis.
-  Task to mitigate this issue /to make it less problematic is a WIP.
+  If you encounter a performance issue with version >= 3.11.x, kindly try to set environment variable/option `EXHORT_PIP_USE_DEP_TREE`=true, before calling the analysis.
 
 
 - For maven pom.xml, it has been noticed that using java 17 might cause stack analysis to hang forever.
