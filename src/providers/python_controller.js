@@ -330,8 +330,8 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 	let record = cachedEnvironmentDeps[dependencyName.toLowerCase()]
 	if(record === null || record  === undefined) {
 		throw new Error(`Package name=>${dependencyName} is not installed on your python environment,
-		                         either install it ( better to install requirements.txt altogether) or turn on
-		                         environment variable EXHORT_PYTHON_VIRTUAL_ENV=true to automatically installs
+		                         either install it ( better to install requirements.txt altogether) or set
+		                         setting EXHORT_PYTHON_VIRTUAL_ENV=true to automatically installs
 		                          it on virtual environment ( will slow down the analysis) `)
 	}
 	let depName
