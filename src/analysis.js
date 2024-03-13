@@ -111,10 +111,11 @@ async function validateToken(url, opts = {}) {
 			...getTokenHeaders(opts),
 		}
 	})
-	let exRequestId = resp.headers.get("ex-request-id");
-	if(exRequestId)
-	{
-		console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
+	if (process.env["EXHORT_DEBUG"] === "true") {
+		let exRequestId = resp.headers.get("ex-request-id");
+		if (exRequestId) {
+			console.log("Unique Identifier associated with this request - ex-request-id=" + exRequestId)
+		}
 	}
 	return resp.status
 }
