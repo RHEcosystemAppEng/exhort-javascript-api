@@ -69,12 +69,20 @@ function provideStack(manifest, opts = {}) {
 	}
 }
 
-function getComponent(data, opts) {
-	let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
-	let tmpPackageJson = path.join(tmpDir, 'package.json')
-	fs.writeFileSync(tmpPackageJson, data)
-	let sbom = getSBOM(tmpPackageJson,opts,false);
-	fs.rmSync(tmpDir, {recursive: true, force: true})
+function getComponent(data, opts,manifestPath) {
+	let sbom
+	if(manifestPath.trim() === '') {
+		let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
+		let tmpPackageJson = path.join(tmpDir, 'package.json')
+		fs.writeFileSync(tmpPackageJson, data)
+		sbom = getSBOM(tmpPackageJson,opts,false);
+		fs.rmSync(tmpDir, {recursive: true, force: true})
+	}
+	else {
+		sbom = getSBOM(manifestPath,opts,false);
+	}
+
+
 	return sbom
 
 }
@@ -85,10 +93,10 @@ function getComponent(data, opts) {
  * @param {{}} [opts={}] - optional various options to pass along the application
  * @returns {Provided}
  */
-function provideComponent(data, opts = {}) {
+function provideComponent(data, opts = {}, path = '') {
 	return {
 		ecosystem,
-		content: getComponent(data,opts),
+		content: getComponent(data,opts,path),
 		contentType: 'application/vnd.cyclonedx+json'
 	}
 }
