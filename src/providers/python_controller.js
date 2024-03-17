@@ -297,7 +297,18 @@ function getDependencyVersion(record) {
 function getDependencyName(depLine) {
 	const regex = /[^\w\s-_.]/g;
 	let endIndex = depLine.search(regex);
-	return depLine.substring(0,endIndex) ;
+	let result =  depLine.substring(0,endIndex);
+	// In case package in requirements text only contain package name without version
+	if(result.trim() === "") {
+		const regex = /[\w\s-_.]+/g;
+		if(depLine.match(regex)) {
+			result = depLine.match(regex)[0]
+		}
+		else {
+			result = depLine
+		}
+	}
+	return result
 }
 
 /**
