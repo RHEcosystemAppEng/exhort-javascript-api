@@ -423,8 +423,8 @@ in such case, You can use that feature by setting environment variable `EXHORT_P
 
 ##### "Best Efforts Installation"
 Since Python pip packages are very sensitive/picky regarding python version changes( every small range of versions is only tailored for a certain python version), I'm introducing this feature, that
-tries to install all packages in requirements.txt onto created virtual environment while **disregarding** versions declared for packages in requirements.txt
-This increasing the chances and the probability a lot that the automatic installation will succeed.
+tries to install all packages in requirements.txt onto created virtual environment while **disregarding** versions declared for packages in requirements.txt.
+This increasing the chances and the probability that the automatic installation will succeed.
 
 ###### Usage
 A New setting is introduced - `EXHORT_PYTHON_INSTALL_BEST_EFFORTS` (as both env variable/key in `options` object)
