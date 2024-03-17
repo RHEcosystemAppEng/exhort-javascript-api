@@ -111,12 +111,12 @@ suite('Integration Tests', () => {
 }).beforeAll(() => process.env["EXHORT_DEV_MODE"] = "true");
 
 // suite('Integration Tests - Developer Test End to End', () => {
-// 	// let opts = {
-// 	// 	EXHORT_DEV_MODE: "true",
-// 	// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
-// 	//
-// 	// }
+// let opts = {
+// 	EXHORT_DEV_MODE: "true",
+// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
 //
+// }
+
 // 	test(`Stack Analysis json`, async () => {
 // 		process.env["EXHORT_DEBUG"]= "true"
 // 		process.env["EXHORT_DEV_MODE"]= "true"
@@ -131,15 +131,15 @@ suite('Integration Tests', () => {
 // 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com',
 // 			EXHORT_GO_MVS_LOGIC_ENABLED: 'true'
 // 		}
-//
-// 		// process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
-// 		// process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
-// 		// process.env["MATCH_MANIFEST_VERSIONS"] = "false"
+// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
+// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
+// 		process.env["MATCH_MANIFEST_VERSIONS"] = "false"
 // 		// let pomPath = `/tmp/070324/package.json`
-// 		let pomPath = `/tmp/artifact-without-version-or-group/sbom-json-traversor/pom.xml`
+// 		let pomPath = `/tmp/170324/requirements.txt`
 // 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
-// 		providedDataForStack = await index.componentAnalysis("pom.xml", fs.readFileSync(pomPath),{} ,pomPath);
+// 		// providedDataForStack = await index.componentAnalysis("requirements.txt", fs.readFileSync(pomPath).toString(),{},pomPath);
+// 		providedDataForStack = await index.stackAnalysis(pomPath);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
 // 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
 //
