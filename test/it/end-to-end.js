@@ -25,7 +25,6 @@ function getParsedKeyFromHtml(html, key,keyLength) {
 suite('Integration Tests', () => {
 	// let opts = {
 	// 	EXHORT_DEV_MODE: "true",
-	// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
 	//
 	// }
 	["maven",
@@ -53,8 +52,7 @@ suite('Integration Tests', () => {
 			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
 			let providedDataForStack = await index.stackAnalysis(pomPath)
 			console.log(JSON.stringify(providedDataForStack,null , 4))
-			let providers = ["snyk"]
-			//providedDataForStack.providers.snyk.sources.snyk
+			let providers = ["osv-nvd"]
 			providers.forEach(provider => expect(providedDataForStack.providers[provider].sources[provider].summary.total).greaterThan(0))
 			// python transitive count for stack analysis is awaiting fix in exhort backend
 			if(packageManager !== "pip")
@@ -80,7 +78,7 @@ suite('Integration Tests', () => {
 
 			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
 			let parsedScannedFromHtml = reportParsedFromHtml.scanned
-			let parsedStatusFromHtmlSnyk = reportParsedFromHtml.providers["snyk"].status
+			let parsedStatusFromHtmlOsvNvd = reportParsedFromHtml.providers["osv-nvd"].status
 			expect( typeof html).equals("string")
 			expect(html).include("html").include("svg")
 			expect(parsedScannedFromHtml.total).greaterThan(0)
@@ -90,7 +88,7 @@ suite('Integration Tests', () => {
 				expect(parsedScannedFromHtml.transitive).greaterThan(0)
 			}
 			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
-			expect(parsedStatusFromHtmlSnyk.code).equals(200)
+			expect(parsedStatusFromHtmlOsvNvd.code).equals(200)
 			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
 		}).timeout(15000);
 
@@ -101,7 +99,7 @@ suite('Integration Tests', () => {
 
 			expect(analysisReport.scanned.total).greaterThan(0)
 			expect(analysisReport.scanned.transitive).equal(0)
-			let providers = ["snyk"]
+			let providers = ["osv-nvd"]
 			providers.forEach(provider => expect(analysisReport.providers[provider].sources[provider].summary.total).greaterThan(0))
 			providers.forEach(provider => expect(analysisReport.providers[provider].status.code).equals(200))
 		}).timeout(10000);
@@ -113,7 +111,6 @@ suite('Integration Tests', () => {
 // suite('Integration Tests - Developer Test End to End', () => {
 // let opts = {
 // 	EXHORT_DEV_MODE: "true",
-// 	EXHORT_SNYK_TOKEN: "ee64316c-a4ba-4ca0-a785-18cb05ed3f25"
 //
 // }
 
