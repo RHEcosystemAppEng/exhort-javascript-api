@@ -15,5 +15,25 @@ Both Docker and Podman are container runtimes that can be used to build and run 
 
 Ecosystem                     | Version                                                            | IMAGE                                           | TAG               | 
 ------------------------------| ------------------------------------------------------------------ | ----------------------------------------------- |-------------------|
-Maven & NPM                   | mvn 3.9.4, <br>npm 9.5.0                                           |  quay.io/ecosystem-appeng/exhort-javascript-api | 0.7.0-alpha       |
-Maven, NPM, Golang & Python   | mvn 3.9.4, <br>npm 9.5.0, <br>go 1.21.1, <br>python3 3.9.16, <br>pip3 21.2.3                                                                                                  |  quay.io/ecosystem-appeng/exhort-javascript-api | 0.7.3-alpha       |
+Maven, NPM, Golang   | mvn 3.9.6, <br>npm 10.2.4, <br>go 1.21.5, <br>python \<any\>                                                                                                  |  quay.io/ecosystem-appeng/exhort-javascript-api | 0.1.1-ea.26      |
+
+
+## Usage Notes
+
+To perform RHDA analysis on a **Python** ecosystem, the data from both `pip freeze --all` and `pip show` commands should be generated for all packages listed in the requirements.txt manifest. This data should be encoded in base64 and passed through the `EXHORT_PIP_FREEZE` and `EXHORT_PIP_SHOW` environment variables, respectively.
+Code example:
+``` shell
+# Install requirements.txt
+pip3 install -r requirements.txt
+
+# Generate pip freeze --all data 
+pip3 freeze --all > pip_freeze.txt
+
+# Generate pip show data 
+SHOW_LIST=$(awk -F '==' '{print $1}' < pip_freeze.txt)
+pip3 show $(echo "$SHOW_LIST") > pip_show.txt
+
+# Encode data using base64 and export to environment variables
+export EXHORT_PIP_FREEZE=$(cat pip_freeze.txt | base64 -w 0)
+export EXHORT_PIP_SHOW=$(cat pip_show.txt | base64 -w 0)
+```

@@ -50,9 +50,9 @@ LABEL org.opencontainers.image.source https://github.com/RHEcosystemAppEng/exhor
 
 # assign rhda source for exhort tracking purposes
 ENV RHDA_SOURCE=''
-# contains pip feeze --all data, base64 encrypted 
+# contains pip feeze --all data, base64 encoded 
 ENV EXHORT_PIP_FREEZE=''
-# contains pip show data for all packages, base64 encrypted 
+# contains pip show data for all packages, base64 encoded 
 ENV EXHORT_PIP_SHOW=''
 # indicate whether to use the Minimal version selection (MVS) algorithm to select a set of module versions to use when building Go packages.
 ENV EXHORT_GO_MVS_LOGIC_ENABLED='false'
