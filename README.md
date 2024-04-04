@@ -276,7 +276,6 @@ import exhort from '@RHEcosystemAppEng/exhort-javascript-api'
 import fs from 'node:fs'
 
 let options = {
-  'EXHORT_SNYK_TOKEN': 'my-secret-snyk-token',
   'EXHORT_MVN_PATH': '/path/to/my/mvn',
   'EXHORT_NPM_PATH': '/path/to/npm',
   'EXHORT_GO_PATH': '/path/to/go',
@@ -299,23 +298,6 @@ let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toStrin
 ```
  **_Environment variables takes precedence._**
 </p>
-
-<h4>Customizing Tokens</h4>
-<p>
-For including extra vulnerability data and resolutions, otherwise only available only to vendor registered users. You
-can use the following keys for setting various vendor tokens.
-</p>
-
-<table>
-<tr>
-<th>Vendor</th>
-<th>Token Key</th>
-</tr>
-<tr>
-<td><a href="https://app.snyk.io/redhat/snyk-token">Snyk</a></td>
-<td>EXHORT_SNYK_TOKEN</td>
-</tr>
-</table>
 
 <h4>Customizing Executables</h4>
 <p>
