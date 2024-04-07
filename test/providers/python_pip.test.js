@@ -10,7 +10,7 @@ import {getCustomPath } from "../../src/tools.js"
 let clock
 
 async function sharedComponentAnalysisTestFlow(testCase,usePipDepTreeUtility) {
-	// load the expected list for the scenario
+	// load the expected list for tsharedComponentAnalysisTestFlowhe scenario
 	let expectedSbom = fs.readFileSync(`test/providers/tst_manifests/pip/${testCase}/expected_component_sbom.json`,).toString().trim()
 	expectedSbom = JSON.stringify(JSON.parse(expectedSbom))
 	// read target manifest file

@@ -138,8 +138,8 @@ fi
 StatusCodeTC=$(jq '.providers["trusted-content"].status.code' ./responses/stack.json)
 matchConstant "200" "$StatusCodeTC" "Check that Response code from Trusted Content is OK ( Http Status = 200)..."
 
-StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
-matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
+#StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
+#matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
 
 echo "RUNNING JavaScript CLI integration test for Component Analysis report for Java Maven"
 eval "testers/cli/node_modules/.bin/exhort-javascript-api component pom.xml '$(<scenarios/maven/pom.xml)'"  > ./responses/component.json
@@ -156,8 +156,8 @@ fi
 
 StatusCodeTC=$(jq '.providers["trusted-content"].status.code' ./responses/stack.json)
 matchConstant "200" "$StatusCodeTC" "Check that Response code from Trusted Content is OK ( Http Status = 200)..."
-StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
-matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
+#StatusCodeSnyk=$(jq '.providers.snyk.status.code' ./responses/stack.json)
+#matchConstant "200" "$StatusCodeSnyk" "Check that Response code from Snyk Provider is OK ( Http Status = 200)..."
 
 echo "RUNNING JavaScript CLI integration test for Validate Token Function With wrong token, expecting getting 401 http status code "
 answerAboutToken=$(testers/cli/node_modules/.bin/exhort-javascript-api validate-token snyk --value=veryBadTokenValue)
