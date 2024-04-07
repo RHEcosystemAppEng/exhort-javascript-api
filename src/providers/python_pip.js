@@ -191,6 +191,10 @@ function handlePythonEnvironment(binaries, opts) {
 	return createVirtualPythonEnv
 }
 
+const DEFAULT_PIP_ROOT_COMPONENT_NAME = "default-pip-root";
+
+const DEFAULT_PIP_ROOT_COMPONENT_VERSION = "0.0.0";
+
 /**
  * Create sbom json string out of a manifest path for stack analysis.
  * @param {string} manifest - path for requirements.txt
@@ -206,14 +210,14 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,manifest,opts)
 	let dependencies = pythonController.getDependencies(true);
 	let sbom = new Sbom();
-	sbom.addRoot(toPurl("root",undefined))
+	sbom.addRoot(toPurl(DEFAULT_PIP_ROOT_COMPONENT_NAME,DEFAULT_PIP_ROOT_COMPONENT_VERSION))
 	dependencies.forEach(dep => {
 		addAllDependencies(sbom.getRoot(),dep,sbom)
 	})
 	let requirementTxtContent = fs.readFileSync(manifest).toString();
 	handleIgnoredDependencies(requirementTxtContent,sbom,opts)
 	// In python there is no root component, then we must remove the dummy root we added, so the sbom json will be accepted by exhort backend
-	sbom.removeRootComponent()
+	// sbom.removeRootComponent()
 	return sbom.getAsJsonString()
 
 
@@ -236,14 +240,14 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 	let pythonController = new Python_controller(createVirtualPythonEnv === "false",binaries.pip,binaries.python,tmpRequirementsPath,opts)
 	let dependencies = pythonController.getDependencies(false);
 	let sbom = new Sbom();
-	sbom.addRoot(toPurl("root",undefined))
+	sbom.addRoot(toPurl(DEFAULT_PIP_ROOT_COMPONENT_NAME,DEFAULT_PIP_ROOT_COMPONENT_VERSION))
 	dependencies.forEach(dep => {
 		sbom.addDependency(sbom.getRoot(),toPurl(dep.name, dep.version))
 	})
 	fs.rmSync(tmpDir, { recursive: true, force: true });
 	handleIgnoredDependencies(data,sbom,opts)
 	// In python there is no root component, then we must remove the dummy root we added, so the sbom json will be accepted by exhort backend
-	sbom.removeRootComponent()
+	// sbom.removeRootComponent()
 	return sbom.getAsJsonString()
 }
 

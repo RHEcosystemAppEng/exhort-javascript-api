@@ -93,7 +93,7 @@
 			"src/providers/java_maven.js",
 			"src/providers/javascript_npm.js"
 		],
-		"lines": 83,
+		"lines": 82,
 		"reporter": [
 			"html",
 			"json",

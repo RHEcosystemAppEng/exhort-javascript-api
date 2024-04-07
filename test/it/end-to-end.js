@@ -113,10 +113,11 @@ suite('Integration Tests', () => {
 // 	EXHORT_DEV_MODE: "true",
 //
 // }
-
+//
 // 	test(`Stack Analysis json`, async () => {
 // 		process.env["EXHORT_DEBUG"]= "true"
-// 		process.env["EXHORT_DEV_MODE"]= "true"
+// 		process.env["EXHORT_DEV_MODE"]= "false"
+// 		process.env["MATCH_MANIFEST_VERSIONS"]= "false"
 // 		// process.env["EXHORT_GO_PATH"]= "/home/zgrinber/test-go/go/bin/go"
 // 		// process.env["RHDA_TOKEN"] = "34JKLDS-4234809-66666666666"
 // 		// process.env["RHDA_SOURCE"] = "Zvika Client"
@@ -128,20 +129,20 @@ suite('Integration Tests', () => {
 // 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com',
 // 			EXHORT_GO_MVS_LOGIC_ENABLED: 'true'
 // 		}
-// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
-// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
+// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "fasle"
+// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "false"
 // 		process.env["MATCH_MANIFEST_VERSIONS"] = "false"
 // 		// let pomPath = `/tmp/070324/package.json`
-// 		let pomPath = `/tmp/170324/requirements.txt`
+// 		let pomPath = `/tmp/requirements.txt`
 // 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
 // 		// providedDataForStack = await index.componentAnalysis("requirements.txt", fs.readFileSync(pomPath).toString(),{},pomPath);
-// 		providedDataForStack = await index.stackAnalysis(pomPath);
+// 		providedDataForStack = await index.stackAnalysis(pomPath,true);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
-// 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
+// 		fs.writeFileSync(`/tmp/report.html`,providedDataForStack)
 //
 // 		// expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
-// 	}).timeout(15000);
+// 	}).timeout(30000);
 //
 //
 //
