@@ -1,4 +1,3 @@
-import javaMvnProvider from './providers/java_maven.js'
 import javascriptNpmProvider from './providers/javascript_npm.js'
 import golangGomodulesProvider from './providers/golang_gomodules.js'
 import pythonPipProvider from './providers/python_pip.js'

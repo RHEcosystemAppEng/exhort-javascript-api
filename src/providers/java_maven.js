@@ -7,7 +7,9 @@ import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
 import {EOL} from 'os'
+import * as base_java from "./base_java.js";
 import Base_java from "./base_java.js";
+
 
 
 /** @typedef {import('../provider').Provider} */
@@ -47,10 +49,6 @@ export default class Java_maven extends Base_java {
 		}
 	}
 
-	testMeNow() {
-       return { hello: "there" }
-	}
-
 	/**
 	 * Provide content and content type for maven-maven component analysis.
 	 * @param {string} data - content of pom.xml for component report
@@ -60,7 +58,7 @@ export default class Java_maven extends Base_java {
 
 	provideComponent(data, opts = {}, path = '') {
 		return {
-			ecosystem: Base_java.ecosystem,
+			ecosystem: base_java.ecosystem,
 			content: this.#getSbomForComponentAnalysis(data, opts, path),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -77,17 +75,9 @@ export default class Java_maven extends Base_java {
 		// get custom maven path
 		let mvn = getCustomPath('mvn', opts)
 		// verify maven is accessible
-		execSync(`${mvn} --version`, err => {
-			if (err) {
-				throw new Error('mvn is not accessible')
-			}
-		})
+		this._invokeCommand(`${mvn} --version`,'mvn is not accessible')
 		// clean maven target
-		execSync(`${mvn} -q clean -f ${handleSpacesInPath(manifest)}`, err => {
-			if (err) {
-				throw new Error('failed cleaning maven target')
-			}
-		})
+		this._invokeCommand(`${mvn} -q clean -f ${handleSpacesInPath(manifest)}`,'failed cleaning maven target')
 		// create dependency graph in a temp file
 		let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 		let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
@@ -103,11 +93,7 @@ export default class Java_maven extends Base_java {
 			}
 		})
 		// execute dependency tree command
-		execSync(depTreeCmd, err => {
-			if (err) {
-				throw new Error('failed creating maven dependency tree')
-			}
-		})
+		this._invokeCommand(depTreeCmd,"failed creating maven dependency tree");
 		// read dependency tree from temp file
 		let content = fs.readFileSync(`${tmpDepTree}`)
 		if (process.env["EXHORT_DEBUG"] === "true") {
@@ -119,6 +105,7 @@ export default class Java_maven extends Base_java {
 		// return dependency graph as string
 		return sbom
 	}
+
 
 	/**
 	 *
@@ -148,11 +135,7 @@ export default class Java_maven extends Base_java {
 		// get custom maven path
 		let mvn = getCustomPath('mvn', opts)
 		// verify maven is accessible
-		execSync(`${mvn} --version`, err => {
-			if (err) {
-				throw new Error('mvn is not accessible')
-			}
-		})
+		this._invokeCommand(`${mvn} --version`,'mvn is not accessible')
 		// create temp files for pom and effective pom
 		let tmpDir
 		let tmpEffectivePom
@@ -170,24 +153,20 @@ export default class Java_maven extends Base_java {
 		}
 
 		// create effective pom and save to temp file
-		execSync(`${mvn} -q help:effective-pom -Doutput=${handleSpacesInPath(tmpEffectivePom)} -f ${handleSpacesInPath(targetPom)}`, err => {
-			if (err) {
-				throw new Error('failed creating maven effective pom')
-			}
-		})
+		this._invokeCommand(`${mvn} -q help:effective-pom -Doutput=${handleSpacesInPath(tmpEffectivePom)} -f ${handleSpacesInPath(targetPom)}`,'failed creating maven effective pom')
 		// iterate over all dependencies in original pom and collect all ignored ones
-		let ignored = this.getDependencies(targetPom).filter(d => d.ignore)
+		let ignored = this.#getDependencies(targetPom).filter(d => d.ignore)
 		// iterate over all dependencies and create a package for every non-ignored one
 		/** @type [Dependency] */
-		let dependencies = getDependencies(tmpEffectivePom)
+		let dependencies = this.#getDependencies(tmpEffectivePom)
 			.filter(d => !(this.#dependencyIn(d, ignored)) && !(this.#dependencyInExcludingVersion(d, ignored)))
 		let sbom = new Sbom();
 		let rootDependency = this.#getRootFromPom(tmpEffectivePom, targetPom);
-		let purlRoot = toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
+		let purlRoot = this.toPurl(rootDependency.groupId, rootDependency.artifactId, rootDependency.version)
 		sbom.addRoot(purlRoot)
 		let rootComponent = sbom.getRoot();
 		dependencies.forEach(dep => {
-			let currentPurl = toPurl(dep.groupId, dep.artifactId, dep.version)
+			let currentPurl = this.toPurl(dep.groupId, dep.artifactId, dep.version)
 			sbom.addDependency(rootComponent, currentPurl)
 		})
 		if (manifestPath.trim() === '') {
