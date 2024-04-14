@@ -21,21 +21,14 @@ import {EOL} from 'os'
  * @type {string} ecosystem for java maven packages.
  * @private
  */
-const ecosystem = 'maven'
+export const ecosystem = 'maven'
 export default class Base_Java {
 	constructor() {
 	}
 
-static get ecosystem() {
-	return ecosystem;
-}
-
-
 
 
 DEP_REGEX = /(([-a-zA-Z0-9._]{2,})|[0-9])/g
-// const DEP_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+):[-a-zA-Z]+)/
-// const ROOT_REGEX = /(?:([-a-zA-Z0-9._]+):([-a-zA-Z0-9._]+):[-a-zA-Z0-9._]+:([-a-zA-Z0-9._]+))/
 CONFLICT_REGEX = /.*omitted for conflict with (\S+)\)/
 
 /**

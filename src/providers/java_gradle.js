@@ -6,7 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {EOL} from 'os'
-import Base_java from "./base_java.js";
+import Base_java, {ecosystem} from "./base_java.js";
 import TOML from 'fast-toml'
 
 
@@ -55,7 +55,7 @@ export default class Java_gradle extends Base_java {
 
 	provideStack(manifest, opts = {}) {
 		return {
-			ecosystem: Base_java.ecosystem,
+			ecosystem: ecosystem,
 			content: this.#createSbomStackAnalysis(manifest, opts),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -74,7 +74,7 @@ export default class Java_gradle extends Base_java {
 
 	provideComponent(data, opts = {}, path = '') {
 		return {
-			ecosystem: Base_java.ecosystem,
+			ecosystem: ecosystem,
 			content: this.#getSbomForComponentAnalysis(opts, path),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -108,11 +108,12 @@ export default class Java_gradle extends Base_java {
 	#extractProperties(manifestPath, opts) {
 		let properties = {}
 		let propertiesContent = this.#getProperties(manifestPath, opts)
-		let regExpMatchArray = propertiesContent.match(/([^:]+):\s+(.+)/);
+		let regExpMatchArray = propertiesContent.match(/([^:]+):\s+(.+)/g);
 		for (let i = 0; i < regExpMatchArray.length - 1; i++) {
-			properties[regExpMatchArray[i]] = regExpMatchArray[i + 1]
+			let parts = regExpMatchArray[i].split(":");
+			properties[parts[0].trim()] = parts[1].trim()
 		}
-		let regExpMatchArray1 = propertiesContent.match("^Root project '(.+)'");
+		let regExpMatchArray1 = propertiesContent.match(/Root project '(.+)'/);
 		if (regExpMatchArray1[0]) {
 			properties[ROOT_PROJECT_KEY_NAME] = regExpMatchArray1[0]
 		}
@@ -133,7 +134,7 @@ export default class Java_gradle extends Base_java {
 		} catch (e) {
 			throw new Error(`Couldn't get properties of build.gradle file`)
 		}
-		return properties
+		return properties.toString()
 	}
 
 	/**
@@ -157,7 +158,7 @@ export default class Java_gradle extends Base_java {
 
 			}
 		}
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifest)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifestPath)
 		return sbom
 
 	}
@@ -174,7 +175,7 @@ export default class Java_gradle extends Base_java {
 		let commandResult
 		gradle = getCustomPath("gradle")
 		try {
-			commandResult = execSync(`${gradle} dependencies`)
+			commandResult = execSync(`${gradle} dependencies`, {cwd:  path.dirname(manifest)})
 		} catch (e) {
 			throw new Error(`Couldn't run gradle dependencies command`)
 		}
@@ -206,17 +207,17 @@ export default class Java_gradle extends Base_java {
 	 */
 	#buildSbomFileFromTextFormat(content, properties, configName, manifestPath) {
 		let sbom = new Sbom();
-		let root = `${properties.group}:${properties[ROOT_PROJECT_KEY_NAME]}:jar:${properties.version}`
+		let root = `${properties.group}:${properties[ROOT_PROJECT_KEY_NAME].match(/Root project '(.+)'/)[1]}:jar:${properties.version}`
 		let rootPurl = this.parseDep(root)
 		sbom.addRoot(rootPurl)
 		let lines = this.#extractLines(content, configName)
 		// transform gradle dependency tree to the form of maven dependency tree to use common sbom build algorithm in Base_java parent */
 		let arrayForSbom = lines.map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
-			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/, ":$1:$3"))
-			.map(dependency => dependency.replaceAll(/(.*):(.*):(.*)$/, "$1:$2:jar:$3"))
-			.map(dependency => dependency.replaceAll(/(n)$/), "")
-			.map(dependency => dependency.replaceAll(/$/), ":compile");
-		this.parseDependencyTree(root, 0, arrayForSbom, sbom)
+			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/g, ":$1:$3"))
+			.map(dependency => dependency.replaceAll(/(.*):(.*):(.*)$/g, "$1:$2:jar:$3"))
+			.map(dependency => dependency.replaceAll(/(n)$/g), "")
+			.map(dependency => `${dependency}:compile`);
+		this.parseDependencyTree(root, 0, arrayForSbom.slice(1), sbom)
 		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
 		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 	}
@@ -234,15 +235,15 @@ export default class Java_gradle extends Base_java {
 		let resultList = new Array()
 		let startFound = false
 		for (const dependency in dependenciesList) {
-			if (dependency.startsWith(startMarker)) {
+			if (dependenciesList[dependency].startsWith(startMarker)) {
 				startFound = true
 			}
 
 			if (startFound && dependency.trim() !== "") {
-				resultList.push(dependency)
+				resultList.push(dependenciesList[dependency])
 			}
 
-			if (startFound && dependency.trim() === "") {
+			if (startFound && dependenciesList[dependency].trim() === "") {
 				break
 			}
 
