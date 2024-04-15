@@ -21,7 +21,8 @@ import {EOL} from 'os'
  * @type {string} ecosystem for java maven packages.
  * @private
  */
-export const ecosystem = 'maven'
+export const ecosystem_maven = 'maven'
+export const ecosystem_gradle = 'gradle'
 export default class Base_Java {
 	constructor() {
 	}
@@ -129,4 +130,20 @@ export default class Base_Java {
 			}
 		})
 	}
+
+		/** this method invokes command string in a process in a synchronous way.
+	 * @param cmdString - the command to be invoked
+	 * @param workingDir - the directory in which the command will be invoked
+	 * @return the output of the command
+	 * @protected
+	 */
+	_invokeCommandGetOutput(cmdString, workingDir) {
+		let opts = {}
+		if(workingDir) {
+			opts.cwd = workingDir
+		}
+		return execSync(cmdString, opts)
+	}
+
+
 }

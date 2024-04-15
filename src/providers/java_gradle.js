@@ -1,12 +1,9 @@
-import {XMLParser} from 'fast-xml-parser'
-import {execSync} from "node:child_process"
 import fs from 'node:fs'
-import {getCustomPath,handleSpacesInPath} from "../tools.js";
-import os from 'node:os'
+import {getCustomPath} from "../tools.js";
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {EOL} from 'os'
-import Base_java, {ecosystem} from "./base_java.js";
+import Base_java, {ecosystem_gradle} from "./base_java.js";
 import TOML from 'fast-toml'
 
 
@@ -17,7 +14,8 @@ import TOML from 'fast-toml'
 const ROOT_PROJECT_KEY_NAME = "root-project";
 
 
-const EXHORT_IGNORE_NOTATION = "//exhortignore";
+const EXHORT_IGNORE_REGEX_LINE = /.*\s?exhortignore\s*$/g
+const EXHORT_IGNORE_REGEX = /\/\/\s?exhortignore/
 
 /**
  * Check if the dependency marked for exclusion has libs notation , so if it's true the rest of coordinates( GAV) should be fetched from TOML file.
@@ -25,13 +23,13 @@ const EXHORT_IGNORE_NOTATION = "//exhortignore";
  * @return {boolean} returns if the dependency type has library notation or not
  */
 function depHasLibsNotation(depToBeIgnored) {
-	let regex = /:/g
+	const regex = new RegExp(":", "g");
 	return (depToBeIgnored.trim().startsWith("library(") || depToBeIgnored.trim().includes("libs."))
-		    && depToBeIgnored.match(regex).length <= 1
+		&& (depToBeIgnored.match(regex) || []).length <= 1
 }
 
 function stripString(depPart) {
-	return depPart.replaceAll(/["']/,"")
+	return depPart.replaceAll(/["']/g,"")
 }
 
 export default class Java_gradle extends Base_java {
@@ -55,7 +53,7 @@ export default class Java_gradle extends Base_java {
 
 	provideStack(manifest, opts = {}) {
 		return {
-			ecosystem: ecosystem,
+			ecosystem: ecosystem_gradle,
 			content: this.#createSbomStackAnalysis(manifest, opts),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -74,7 +72,7 @@ export default class Java_gradle extends Base_java {
 
 	provideComponent(data, opts = {}, path = '') {
 		return {
-			ecosystem: ecosystem,
+			ecosystem: ecosystem_gradle,
 			content: this.#getSbomForComponentAnalysis(opts, path),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -88,7 +86,6 @@ export default class Java_gradle extends Base_java {
 	 * @private
 	 */
 	#createSbomStackAnalysis(manifest, opts = {}) {
-		let ignoredDeps = new Array()
 		let content = this.#getDependencies(manifest)
 		let properties = this.#extractProperties(manifest, opts)
 		// read dependency tree from temp file
@@ -130,7 +127,7 @@ export default class Java_gradle extends Base_java {
 		let gradle = getCustomPath("gradle", opts);
 		let properties
 		try {
-			properties = execSync(`${gradle} properties`, {cwd: path.dirname(manifestPath)})
+			properties = this._invokeCommandGetOutput(`${gradle} properties`, path.dirname(manifestPath))
 		} catch (e) {
 			throw new Error(`Couldn't get properties of build.gradle file`)
 		}
@@ -144,7 +141,6 @@ export default class Java_gradle extends Base_java {
 	 * @private
 	 */
 	#getSbomForComponentAnalysis(opts = {}, manifestPath) {
-		let ignoredDeps = new Array()
 		let content = this.#getDependencies(manifestPath)
 		let properties = this.#extractProperties(manifestPath, opts)
 		let configurationNames = new Array()
@@ -175,7 +171,7 @@ export default class Java_gradle extends Base_java {
 		let commandResult
 		gradle = getCustomPath("gradle")
 		try {
-			commandResult = execSync(`${gradle} dependencies`, {cwd:  path.dirname(manifest)})
+			commandResult = this._invokeCommandGetOutput(`${gradle} dependencies`,path.dirname(manifest))
 		} catch (e) {
 			throw new Error(`Couldn't run gradle dependencies command`)
 		}
@@ -260,9 +256,9 @@ export default class Java_gradle extends Base_java {
 	#getIgnoredDeps(manifestPath) {
 		let buildGradleLines = fs.readFileSync(manifestPath).toString().split(EOL)
 		let ignored =
-			buildGradleLines.filter(line => line && line.includes(EXHORT_IGNORE_NOTATION))
+			buildGradleLines.filter(line => line && line.match(EXHORT_IGNORE_REGEX_LINE))
 				.map(line => line.indexOf("/*") === -1 ? line : line.substring(0, line.indexOf("/*")))
-				.map(line => line.trim().substring(0, line.indexOf(EXHORT_IGNORE_NOTATION)))
+				.map(line => line.trim().substring(0, line.trim().search(EXHORT_IGNORE_REGEX)))
 
 		let depsToIgnore = new Array
 		ignored.forEach(depToBeIgnored => {
@@ -281,17 +277,17 @@ export default class Java_gradle extends Base_java {
 
 	#getDepFromLibsNotation(depToBeIgnored, manifestPath) {
 		// Extract everything after "libs."
-		let alias = depToBeIgnored.substring(depToBeIgnored.indexOf("libs.") + "libs.".length)
+		let alias = depToBeIgnored.substring(depToBeIgnored.indexOf("libs.") + "libs.".length).trim()
 		alias = alias.replace(".", "-")
 		// Read and parse the TOML file
         let pathOfToml = path.join(path.dirname(manifestPath),"gradle","libs.versions.toml");
 		const tomlString = fs.readFileSync(pathOfToml).toString()
 		let tomlObject = TOML.parse(tomlString)
-		let groupPlusArtifactObject = JSON.parse(tomlObject.libraries[alias].replace("=",":"))
+		let groupPlusArtifactObject = tomlObject.libraries[alias]
 		let parts = groupPlusArtifactObject.module.split(":");
 		let groupId = parts[0]
 		let artifactId = parts[1]
-		let versionRef = groupPlusArtifactObject["version.ref"]
+		let versionRef = groupPlusArtifactObject.version.ref
 		let version = tomlObject.versions[versionRef]
 		return groupId && artifactId && version ? this.toPurl(groupId,artifactId,version).toString() : undefined
 
@@ -307,16 +303,22 @@ export default class Java_gradle extends Base_java {
 		if (depToBeIgnored.includes("group:") && depToBeIgnored.includes("name:") && depToBeIgnored.includes("version:")) {
 			let matchedKeyValues = depToBeIgnored.match(/(group|name|version):\s*['"](.*?)['"]/g)
 			let coordinates = {}
-			for (let coordinatePair in matchedKeyValues) {
-				let keyValue = coordinatePair.split(":");
+			for (let coordinatePairIndex in matchedKeyValues) {
+				let keyValue = matchedKeyValues[coordinatePairIndex].split(":");
 				coordinates[keyValue[0].trim()] = stripString(keyValue[1].trim())
 			}
 			return this.toPurl(coordinates.group,coordinates.name,coordinates.version).toString()
 
 		// 	Dependency line is of form String Notation
 		} else {
-			let depParts = depToBeIgnored.split(":");
-			if(depParts.length() === 3) {
+			let depParts
+			if(depToBeIgnored.match(/^[a-z]+\s/)) {
+				depParts = depToBeIgnored.split(" ")[1].split(":");
+			}
+			else {
+				depParts = depToBeIgnored.split(":");
+			}
+			if(depParts.length === 3) {
 				let groupId = stripString(depParts[0])
 				let artifactId = stripString(depParts[1])
 				let version = stripString(depParts[2])

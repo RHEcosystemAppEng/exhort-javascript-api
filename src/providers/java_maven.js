@@ -8,7 +8,7 @@ import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
 import {EOL} from 'os'
 import * as base_java from "./base_java.js";
-import Base_java from "./base_java.js";
+import Base_java, {ecosystem_maven} from "./base_java.js";
 
 
 
@@ -43,7 +43,7 @@ export default class Java_maven extends Base_java {
 
 	provideStack(manifest, opts = {}) {
 		return {
-			ecosystem: Base_java.ecosystem,
+			ecosystem: ecosystem_maven,
 			content: this.#createSbomStackAnalysis(manifest, opts),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
@@ -58,7 +58,7 @@ export default class Java_maven extends Base_java {
 
 	provideComponent(data, opts = {}, path = '') {
 		return {
-			ecosystem: base_java.ecosystem,
+			ecosystem: ecosystem_maven,
 			content: this.#getSbomForComponentAnalysis(data, opts, path),
 			contentType: 'application/vnd.cyclonedx+json'
 		}
