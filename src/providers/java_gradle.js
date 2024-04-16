@@ -280,7 +280,7 @@ export default class Java_gradle extends Base_java {
 		let alias = depToBeIgnored.substring(depToBeIgnored.indexOf("libs.") + "libs.".length).trim()
 		alias = alias.replace(".", "-")
 		// Read and parse the TOML file
-        let pathOfToml = path.join(path.dirname(manifestPath),"gradle","libs.versions.toml");
+		let pathOfToml = path.join(path.dirname(manifestPath),"gradle","libs.versions.toml");
 		const tomlString = fs.readFileSync(pathOfToml).toString()
 		let tomlObject = TOML.parse(tomlString)
 		let groupPlusArtifactObject = tomlObject.libraries[alias]

@@ -1,13 +1,10 @@
 import {XMLParser} from 'fast-xml-parser'
-import {execSync} from "node:child_process"
 import fs from 'node:fs'
 import {getCustomPath,handleSpacesInPath} from "../tools.js";
 import os from 'node:os'
 import path from 'node:path'
 import Sbom from '../sbom.js'
-import {PackageURL} from 'packageurl-js'
 import {EOL} from 'os'
-import * as base_java from "./base_java.js";
 import Base_java, {ecosystem_maven} from "./base_java.js";
 
 
@@ -216,15 +213,6 @@ export default class Java_maven extends Base_java {
 		}
 		return rootDependency
 	}
-
-	/**
-	 * Returns a PackageUrl For maven dependencies
-	 * @param group
-	 * @param artifact
-	 * @param version
-	 * @return {PackageURL}
-	 */
-
 
 	/**
 	 * Get a list of dependencies with marking of dependencies commented with <!--exhortignore-->.

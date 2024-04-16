@@ -1,12 +1,5 @@
-import {XMLParser} from 'fast-xml-parser'
 import {execSync} from "node:child_process"
-import fs from 'node:fs'
-import {getCustomPath,handleSpacesInPath} from "../tools.js";
-import os from 'node:os'
-import path from 'node:path'
-import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
-import {EOL} from 'os'
 
 
 /** @typedef {import('../provider').Provider} */
@@ -131,7 +124,7 @@ export default class Base_Java {
 		})
 	}
 
-		/** this method invokes command string in a process in a synchronous way.
+	/** this method invokes command string in a process in a synchronous way.
 	 * @param cmdString - the command to be invoked
 	 * @param workingDir - the directory in which the command will be invoked
 	 * @return the output of the command
