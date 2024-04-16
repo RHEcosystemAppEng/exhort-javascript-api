@@ -74,9 +74,9 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
-			let reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\":") +9,html.indexOf("}}}}}") + 5))
-
-			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
+			let reportParsedFromHtml
+			reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\" :") +10,html.search(/([}](\s*)){5}/) + html.substring(html.search(/([}](\s*)){5}/)).indexOf(",")))
+			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",11)
 			let parsedScannedFromHtml = reportParsedFromHtml.scanned
 			let parsedStatusFromHtmlOsvNvd = reportParsedFromHtml.providers["osv-nvd"].status
 			expect( typeof html).equals("string")
