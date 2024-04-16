@@ -162,7 +162,7 @@ export default class Java_gradle extends Base_java {
 	/**
 	 * Get a list of dependencies from gradle dependencies command.
 	 * @param {string} manifest - path for build.gradle
-	 * @returns {string} an array of dependencies
+	 * @returns {string} Multi-line string contain all dependencies from gradle dependencies command
 	 * @private
 	 */
 

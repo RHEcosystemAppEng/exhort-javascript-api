@@ -13,7 +13,8 @@ const packageManagersDict =
 		"maven" : "pom.xml",
 		"npm" : "package.json",
 		"go" : "go.mod",
-		"pip" : "requirements.txt"
+		"pip" : "requirements.txt",
+		"gradle" : "build.gradle"
 	}
 
 function getParsedKeyFromHtml(html, key,keyLength) {
@@ -27,10 +28,12 @@ suite('Integration Tests', () => {
 	// 	EXHORT_DEV_MODE: "true",
 	//
 	// }
-	["maven",
+	["gradle",
+		"maven",
 		"npm",
 		"go",
 		"pip"
+
 	].forEach(packageManager => {
 		test(`Stack Analysis json for ${packageManager}`, async () => {
 			// process.env["EXHORT_DEBUG"]= "true"
@@ -94,8 +97,15 @@ suite('Integration Tests', () => {
 
 		test(`Component Analysis for ${packageManager}`, async () => {
 			let manifestName = getManifestNamePerPm(packageManager)
-			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
-			let analysisReport = await index.componentAnalysis(manifestName,fs.readFileSync(pomPath).toString())
+			let manifestPath = `test/it/test_manifests/${packageManager}/${manifestName}`
+			let analysisReport;
+			// gradle is the only package manager the supports only path for component analysis.
+			if(packageManager === 'gradle') {
+				analysisReport = await index.componentAnalysis(manifestName,"",{},manifestPath)
+			}
+			else {
+				analysisReport = await index.componentAnalysis(manifestName, fs.readFileSync(manifestPath).toString());
+			}
 
 			expect(analysisReport.scanned.total).greaterThan(0)
 			expect(analysisReport.scanned.transitive).equal(0)
