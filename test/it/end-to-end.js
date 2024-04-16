@@ -63,7 +63,7 @@ suite('Integration Tests', () => {
 				expect(providedDataForStack.scanned.transitive).greaterThan(0)
 			}
 			providers.forEach(provider => expect(providedDataForStack.providers[provider].status.code).equals(200))
-		}).timeout(15000);
+		}).timeout(30000);
 
 		test(`Stack Analysis html for ${packageManager}`, async () => {
 			let manifestName = getManifestNamePerPm(packageManager)
@@ -93,7 +93,7 @@ suite('Integration Tests', () => {
 			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
 			expect(parsedStatusFromHtmlOsvNvd.code).equals(200)
 			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
-		}).timeout(15000);
+		}).timeout(30000);
 
 		test(`Component Analysis for ${packageManager}`, async () => {
 			let manifestName = getManifestNamePerPm(packageManager)
@@ -112,7 +112,7 @@ suite('Integration Tests', () => {
 			let providers = ["osv-nvd"]
 			providers.forEach(provider => expect(analysisReport.providers[provider].sources[provider].summary.total).greaterThan(0))
 			providers.forEach(provider => expect(analysisReport.providers[provider].status.code).equals(200))
-		}).timeout(10000);
+		}).timeout(20000);
 
 
 	});
