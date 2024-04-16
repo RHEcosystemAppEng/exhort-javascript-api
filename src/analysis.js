@@ -9,7 +9,7 @@ const rhdaOperationTypeHeader = "rhda-operation-type"
 
 /**
  * Send a stack analysis request and get the report as 'text/html' or 'application/json'.
- * @param {import('./provider').Provider} provider - the provided data for constructing the request
+ * @param {import('./provider').Provider | import('./providers/base_java.js').default } provider - the provided data for constructing the request
  * @param {string} manifest - path for the manifest
  * @param {string} url - the backend url to send the request to
  * @param {boolean} [html=false] - true will return 'text/html', false will return 'application/json'

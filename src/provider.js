@@ -1,8 +1,9 @@
-import javaMvnProvider from './providers/java_maven.js'
 import javascriptNpmProvider from './providers/javascript_npm.js'
 import golangGomodulesProvider from './providers/golang_gomodules.js'
 import pythonPipProvider from './providers/python_pip.js'
 import path from 'node:path'
+import Java_maven from "./providers/java_maven.js";
+import Java_gradle from "./providers/java_gradle.js";
 
 /** @typedef {{ecosystem: string, contentType: string, content: string}} Provided */
 /** @typedef {{isSupported: function(string): boolean, provideComponent: function(string, {}): Provided, provideStack: function(string, {}): Provided}} Provider */
@@ -11,7 +12,7 @@ import path from 'node:path'
  * MUST include all providers here.
  * @type {[Provider]}
  */
-export const availableProviders = [javaMvnProvider,javascriptNpmProvider,golangGomodulesProvider,pythonPipProvider]
+export const availableProviders = [new Java_maven(),new Java_gradle(),javascriptNpmProvider,golangGomodulesProvider,pythonPipProvider]
 
 /**
  * Match a provider from a list or providers based on file type.

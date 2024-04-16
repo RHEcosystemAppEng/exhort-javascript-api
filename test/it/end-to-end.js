@@ -13,7 +13,8 @@ const packageManagersDict =
 		"maven" : "pom.xml",
 		"npm" : "package.json",
 		"go" : "go.mod",
-		"pip" : "requirements.txt"
+		"pip" : "requirements.txt",
+		"gradle" : "build.gradle"
 	}
 
 function getParsedKeyFromHtml(html, key,keyLength) {
@@ -27,10 +28,12 @@ suite('Integration Tests', () => {
 	// 	EXHORT_DEV_MODE: "true",
 	//
 	// }
-	["maven",
+	["gradle",
+		"maven",
 		"npm",
 		"go",
 		"pip"
+
 	].forEach(packageManager => {
 		test(`Stack Analysis json for ${packageManager}`, async () => {
 			// process.env["EXHORT_DEBUG"]= "true"
@@ -60,7 +63,7 @@ suite('Integration Tests', () => {
 				expect(providedDataForStack.scanned.transitive).greaterThan(0)
 			}
 			providers.forEach(provider => expect(providedDataForStack.providers[provider].status.code).equals(200))
-		}).timeout(15000);
+		}).timeout(60000);
 
 		test(`Stack Analysis html for ${packageManager}`, async () => {
 			let manifestName = getManifestNamePerPm(packageManager)
@@ -74,9 +77,9 @@ suite('Integration Tests', () => {
 			{
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
-			let reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\":") +9,html.indexOf("}}}}}") + 5))
-
-			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",10)
+			let reportParsedFromHtml
+			reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\" :") +10,html.search(/([}](\s*)){5}/) + html.substring(html.search(/([}](\s*)){5}/)).indexOf(",")))
+			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",11)
 			let parsedScannedFromHtml = reportParsedFromHtml.scanned
 			let parsedStatusFromHtmlOsvNvd = reportParsedFromHtml.providers["osv-nvd"].status
 			expect( typeof html).equals("string")
@@ -90,19 +93,26 @@ suite('Integration Tests', () => {
 			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
 			expect(parsedStatusFromHtmlOsvNvd.code).equals(200)
 			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
-		}).timeout(15000);
+		}).timeout(30000);
 
 		test(`Component Analysis for ${packageManager}`, async () => {
 			let manifestName = getManifestNamePerPm(packageManager)
-			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
-			let analysisReport = await index.componentAnalysis(manifestName,fs.readFileSync(pomPath).toString())
+			let manifestPath = `test/it/test_manifests/${packageManager}/${manifestName}`
+			let analysisReport;
+			// gradle is the only package manager the supports only path for component analysis.
+			if(packageManager === 'gradle') {
+				analysisReport = await index.componentAnalysis(manifestName,"",{},manifestPath)
+			}
+			else {
+				analysisReport = await index.componentAnalysis(manifestName, fs.readFileSync(manifestPath).toString());
+			}
 
 			expect(analysisReport.scanned.total).greaterThan(0)
 			expect(analysisReport.scanned.transitive).equal(0)
 			let providers = ["osv-nvd"]
 			providers.forEach(provider => expect(analysisReport.providers[provider].sources[provider].summary.total).greaterThan(0))
 			providers.forEach(provider => expect(analysisReport.providers[provider].status.code).equals(200))
-		}).timeout(10000);
+		}).timeout(20000);
 
 
 	});
@@ -116,8 +126,7 @@ suite('Integration Tests', () => {
 //
 // 	test(`Stack Analysis json`, async () => {
 // 		process.env["EXHORT_DEBUG"]= "true"
-// 		process.env["EXHORT_DEV_MODE"]= "false"
-// 		process.env["MATCH_MANIFEST_VERSIONS"]= "false"
+// 		process.env["EXHORT_DEV_MODE"]= "true"
 // 		// process.env["EXHORT_GO_PATH"]= "/home/zgrinber/test-go/go/bin/go"
 // 		// process.env["RHDA_TOKEN"] = "34JKLDS-4234809-66666666666"
 // 		// process.env["RHDA_SOURCE"] = "Zvika Client"
@@ -129,20 +138,20 @@ suite('Integration Tests', () => {
 // 			EXHORT_OSS_INDEX_USER: 'zgrinber@redhat.com',
 // 			EXHORT_GO_MVS_LOGIC_ENABLED: 'true'
 // 		}
-// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "fasle"
-// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "false"
+// 		process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = "true"
+// 		process.env["EXHORT_PYTHON_INSTALL_BEST_EFFORTS"] = "true"
 // 		process.env["MATCH_MANIFEST_VERSIONS"] = "false"
 // 		// let pomPath = `/tmp/070324/package.json`
-// 		let pomPath = `/tmp/requirements.txt`
+// 		let pomPath = `/tmp/170324/requirements.txt`
 // 		// let pomPath = `/home/zgrinber/git/tracing-demos-and-examples/tracing-parent/pom.xml`
 // 		let providedDataForStack;
 // 		// providedDataForStack = await index.componentAnalysis("requirements.txt", fs.readFileSync(pomPath).toString(),{},pomPath);
-// 		providedDataForStack = await index.stackAnalysis(pomPath,true);
+// 		providedDataForStack = await index.stackAnalysis(pomPath);
 // 		// console.log(JSON.stringify(providedDataForStack,null , 4))
-// 		fs.writeFileSync(`/tmp/report.html`,providedDataForStack)
+// 		// fs.writeFileSync(`/tmp/301123/report.html`,providedDataForStack)
 //
 // 		// expect(providedDataForStack.summary.dependencies.scanned).greaterThan(0)
-// 	}).timeout(30000);
+// 	}).timeout(15000);
 //
 //
 //

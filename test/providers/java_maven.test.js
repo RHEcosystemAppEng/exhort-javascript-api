@@ -1,12 +1,9 @@
 import { expect } from 'chai'
 import fs from 'fs'
 import sinon from "sinon";
-// import exhort from "../../dist/src/index.js"
-import javaMvnProvider from '../../src/providers/java_maven.js'
-import {rewireProvider} from "./test-utils.js";
-let clock
+import Java_maven from '../../src/providers/java_maven.js'
 
-let javaMvnProviderRewire = await rewireProvider("src/providers/java_maven")
+let clock
 
 /** this function is parsing the outputfile path from the given command, and write that file the providerContent supplied.
  *
@@ -30,9 +27,10 @@ suite('testing the java-maven data provider', () => {
 		{name: 'pom.xml', expected: true},
 		{name: 'some_other.file', expected: false}
 	].forEach(testCase => {
-		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () =>
+		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () => {
+			let javaMvnProvider = new Java_maven()
 			expect(javaMvnProvider.isSupported(testCase.name)).to.equal(testCase.expected)
-		)
+		})
 	});
 
 	[
@@ -74,10 +72,10 @@ suite('testing the java-maven data provider', () => {
 					interceptAndOverwriteDataWithMock(command,dependencyTreeTextContent,"DoutputFile=")
 				}
 			}
-			javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
+			let javaMvnProvider = new Java_maven()
+			Object.getPrototypeOf(Object.getPrototypeOf(javaMvnProvider))._invokeCommand = mockedExecFunction
 			// invoke sut stack analysis for scenario manifest
-			let providedDataForStack = await javaMvnProviderRewire.__get__("provideStack")(`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
-			javaMvnProviderRewire.__ResetDependency__()
+			let providedDataForStack =  javaMvnProvider.provideStack(`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
 			// verify returned data matches expectation
 			// expect(providedDataForStack).to.deep.equal({
 			// 	ecosystem: 'maven',
@@ -102,16 +100,16 @@ suite('testing the java-maven data provider', () => {
 					interceptAndOverwriteDataWithMock(command, effectivePomContent,"Doutput=");
 				}
 			}
-			javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
+			let javaMvnProvider = new Java_maven()
+			Object.getPrototypeOf(Object.getPrototypeOf(javaMvnProvider))._invokeCommand = mockedExecFunction
 			// invoke sut component analysis for scenario manifest
-			let providedDataForStack = await javaMvnProviderRewire.__get__("provideComponent")(manifestContent)
+			let providedDataForStack = javaMvnProvider.provideComponent(manifestContent)
 			// verify returned data matches expectation
 			expect(providedDataForStack).to.deep.equal({
 				ecosystem: 'maven',
 				contentType: 'application/vnd.cyclonedx+json',
 				content: expectedSbom
 			})
-			javaMvnProviderRewire.__ResetDependency__()
 			// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
 		}).timeout(process.env.GITHUB_ACTIONS ? 15000 : 5000)
 		// these test cases takes ~1400-2000 ms each pr >10000 in CI (for the first test-case)
@@ -137,16 +135,16 @@ suite('testing the java-maven data provider with modules', () => {
 					interceptAndOverwriteDataWithMock(command, effectivePomContent,"Doutput=");
 				}
 			}
-			javaMvnProviderRewire.__set__('execSync',mockedExecFunction)
+			let javaMvnProvider = new Java_maven()
+			Object.getPrototypeOf(Object.getPrototypeOf(javaMvnProvider))._invokeCommand = mockedExecFunction
 			// invoke sut component analysis for scenario manifest
-			let provideDataForComponent = await javaMvnProviderRewire.__get__("provideComponent")("",{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
+			let provideDataForComponent = await javaMvnProvider.provideComponent("",{},`test/providers/tst_manifests/maven/${testCase}/pom.xml`)
 			// verify returned data matches expectation
 			expect(provideDataForComponent).to.deep.equal({
 				ecosystem: 'maven',
 				contentType: 'application/vnd.cyclonedx+json',
 				content: expectedSbom
 			})
-			javaMvnProviderRewire.__ResetDependency__()
 			// expect(beautifiedOutput).to.deep.equal(expectedSbom)
 
 			// these test cases takes ~2500-2700 ms each pr >10000 in CI (for the first test-case)
