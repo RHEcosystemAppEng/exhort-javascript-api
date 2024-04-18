@@ -129,7 +129,7 @@ export default class Java_gradle extends Base_java {
 		try {
 			properties = this._invokeCommandGetOutput(`${gradle} properties`, path.dirname(manifestPath))
 		} catch (e) {
-			throw new Error(`Couldn't get properties of build.gradle file`)
+			throw new Error(`Couldn't get properties of build.gradle file , Error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
 		return properties.toString()
 	}
@@ -173,7 +173,7 @@ export default class Java_gradle extends Base_java {
 		try {
 			commandResult = this._invokeCommandGetOutput(`${gradle} dependencies`,path.dirname(manifest))
 		} catch (e) {
-			throw new Error(`Couldn't run gradle dependencies command`)
+			throw new Error(`Couldn't run gradle dependencies command, error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
 		return commandResult.toString()
 	}
