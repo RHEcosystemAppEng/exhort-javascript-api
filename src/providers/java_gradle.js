@@ -32,6 +32,17 @@ function stripString(depPart) {
 	return depPart.replaceAll(/["']/g,"")
 }
 
+/** this function checks whether a line from `gradle dependencies` output contains a version or not
+ *
+ * @param line the line from `gradle dependencies` output.
+ * @return {*|boolean}
+ */
+function containsVersion(line) {
+	let lineStriped = line.replace("(n)","").trim()
+	return (lineStriped.match(/\W*[a-z0-9.-]+:[a-z0-9.-]+:[0-9]+[.][0-9]+(.[0-9]+)?(.*)?.*/)
+		|| lineStriped.match(/.*version:\s?(')?[0-9]+[.][0-9]+(.[0-9]+)?(')?/)) && !lineStriped.includes("libs.")
+}
+
 export default class Java_gradle extends Base_java {
 
 	/**
@@ -210,10 +221,14 @@ export default class Java_gradle extends Base_java {
 		// transform gradle dependency tree to the form of maven dependency tree to use common sbom build algorithm in Base_java parent */
 		let arrayForSbom = lines.map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
 			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/g, ":$1:$3"))
+			.map(dependency => dependency.replaceAll(/:(.*)\W*->\W*(.*)$/g, ":$1:$2"))
 			.map(dependency => dependency.replaceAll(/(.*):(.*):(.*)$/g, "$1:$2:jar:$3"))
 			.map(dependency => dependency.replaceAll(/(n)$/g), "")
 			.map(dependency => `${dependency}:compile`);
-		this.parseDependencyTree(root, 0, arrayForSbom.slice(1), sbom)
+		if(!containsVersion(arrayForSbom[0])) {
+			arrayForSbom = arrayForSbom.slice(1)
+		}
+		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
 		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
 		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
 	}
@@ -236,7 +251,9 @@ export default class Java_gradle extends Base_java {
 			}
 
 			if (startFound && dependency.trim() !== "") {
-				resultList.push(dependenciesList[dependency])
+				if(startMarker === 'runtimeClasspath' || containsVersion(dependenciesList[dependency])) {
+					resultList.push(dependenciesList[dependency])
+				}
 			}
 
 			if (startFound && dependenciesList[dependency].trim() === "") {
