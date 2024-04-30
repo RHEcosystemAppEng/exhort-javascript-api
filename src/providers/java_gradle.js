@@ -43,6 +43,41 @@ function containsVersion(line) {
 		|| lineStriped.match(/.*version:\s?(')?[0-9]+[.][0-9]+(.[0-9]+)?(')?/)) && !lineStriped.includes("libs.")
 }
 
+/** this function gets an array {@link arrayForSbom} containing direct deps from build.gradle, and checks for each direct dependency , if there is more than one version for that package,
+ * that is, if there exists two different artifacts with the same group (namespace) + name ( artifact), but with different version.
+ * if so, it checks to see which one of the versions is the correct one ( determined by result of gradle dependencies command in {@link theContent}) , and then it
+ * just remove the other version.
+ * @param {string[]} arrayForSbom an array containing the direct dependencies from build.gradle
+ * @param {string} theContent multiline string that contains the output of gradle dependencies command.
+ */
+function removeDuplicateIfExists(arrayForSbom,theContent) {
+	return dependency => {
+		let content = theContent
+		/** @typedef {PackageUrl}
+		 */
+		let depUrl = this.parseDep(dependency)
+		let depVersion = depUrl.version.trim()
+		let indexOfDuplicate = arrayForSbom.map(dep => this.parseDep(dep))
+			.findIndex(dep => dep.namespace === depUrl.namespace && dep.name === depUrl.name && dep.version !== depVersion)
+		let selfIndex = arrayForSbom.map(dep => this.parseDep(dep))
+			.findIndex(dep => dep.namespace === depUrl.namespace && dep.name === depUrl.name && dep.version === depVersion)
+		if (selfIndex && selfIndex!== indexOfDuplicate && indexOfDuplicate > -1) {
+			let duplicateDepVersion = this.parseDep(arrayForSbom[indexOfDuplicate])
+			// content.match(/.*1.2.16\W?->\W?1.2.17.*/)
+			let regex = new RegExp(`.*${depVersion}\\W?->\\W?${duplicateDepVersion.version}.*`)
+			if(content.match(regex)) {
+				arrayForSbom.splice(selfIndex, 1)
+			}
+			else {
+				let regex2 = new RegExp(`.*${duplicateDepVersion.version}\\W?->\\W?${depVersion}.*`)
+				if(content.match(regex2)) {
+					arrayForSbom.splice(indexOfDuplicate, 1)
+				}
+			}
+		}
+	};
+}
+
 export default class Java_gradle extends Base_java {
 
 	/**
@@ -165,6 +200,7 @@ export default class Java_gradle extends Base_java {
 
 			}
 		}
+
 		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifestPath)
 		return sbom
 
@@ -227,6 +263,9 @@ export default class Java_gradle extends Base_java {
 			.map(dependency => `${dependency}:compile`);
 		if(!containsVersion(arrayForSbom[0])) {
 			arrayForSbom = arrayForSbom.slice(1)
+		}
+		if( ["api", "implementation", "compile"].includes(configName) ) {
+			arrayForSbom.forEach( removeDuplicateIfExists.call(this, arrayForSbom,content))
 		}
 		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
 		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
