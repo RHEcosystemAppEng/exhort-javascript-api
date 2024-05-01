@@ -56,7 +56,10 @@ function removeDuplicateIfExists(arrayForSbom,theContent) {
 		/** @typedef {PackageUrl}
 		 */
 		let depUrl = this.parseDep(dependency)
-		let depVersion = depUrl.version.trim()
+		let depVersion
+		if(depUrl.version) {
+			depVersion = depUrl.version.trim()
+		}
 		let indexOfDuplicate = arrayForSbom.map(dep => this.parseDep(dep))
 			.findIndex(dep => dep.namespace === depUrl.namespace && dep.name === depUrl.name && dep.version !== depVersion)
 		let selfIndex = arrayForSbom.map(dep => this.parseDep(dep))
@@ -255,13 +258,13 @@ export default class Java_gradle extends Base_java {
 		sbom.addRoot(rootPurl)
 		let lines = this.#extractLines(content, configName)
 		// transform gradle dependency tree to the form of maven dependency tree to use common sbom build algorithm in Base_java parent */
-		let arrayForSbom = lines.map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
+		let arrayForSbom = lines.filter(dep => dep.trim() !== "").map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
 			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/g, ":$1:$3"))
 			.map(dependency => dependency.replaceAll(/:(.*)\W*->\W*(.*)$/g, ":$1:$2"))
 			.map(dependency => dependency.replaceAll(/(.*):(.*):(.*)$/g, "$1:$2:jar:$3"))
 			.map(dependency => dependency.replaceAll(/(n)$/g), "")
 			.map(dependency => `${dependency}:compile`);
-		if(!containsVersion(arrayForSbom[0])) {
+		if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
 			arrayForSbom = arrayForSbom.slice(1)
 		}
 		if( ["api", "implementation", "compile"].includes(configName) ) {
@@ -290,7 +293,7 @@ export default class Java_gradle extends Base_java {
 			}
 
 			if (startFound && dependency.trim() !== "") {
-				if(startMarker === 'runtimeClasspath' || containsVersion(dependenciesList[dependency])) {
+				if(startMarker === 'runtimeClasspath' || containsVersion(dependenciesList[dependency]) ) {
 					resultList.push(dependenciesList[dependency])
 				}
 			}
