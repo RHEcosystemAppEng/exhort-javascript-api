@@ -60,7 +60,7 @@ let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString())
 
 // Get Component Analysis in JSON Format for gradle
-let caGradle = await index.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
+let caGradle = await exhort.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
 ```
 </li>
 </ul>
@@ -190,7 +190,7 @@ Excluding a package from any analysis can be achieved by marking the package for
   "name": "sample",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "js",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -323,7 +323,7 @@ let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString(), options)
 
 // Get component analysis in JSON format For gradle
-let caGradle = await index.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
+let caGradle = await exhort.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
 ```
  **_Environment variables takes precedence._**
 </p>
