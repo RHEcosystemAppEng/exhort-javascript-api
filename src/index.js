@@ -4,7 +4,7 @@ import {AnalysisReport} from '../generated/backend/AnalysisReport.js'
 import analysis from './analysis.js'
 import fs from 'node:fs'
 import {getCustom} from "./tools.js";
-import PackageJson from '../package.json' assert {type: 'json'};
+import PackageJson from '../package.json' with { type: 'json'};
 
 export default { AnalysisReport, componentAnalysis, stackAnalysis, validateToken }
 
