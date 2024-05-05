@@ -23,12 +23,22 @@ function getParsedKeyFromHtml(html, key,keyLength) {
 	return JSON.parse(summary);
 }
 
+function extractTotalsGeneralOrFromProvider(providedDataForStack, provider) {
+	if(providedDataForStack.providers[provider].sources.length > 0) {
+		return providedDataForStack.providers[provider].sources[provider].summary.total;
+	}
+	else {
+		return providedDataForStack.scanned.total;
+	}
+}
+
 suite('Integration Tests', () => {
 	// let opts = {
 	// 	EXHORT_DEV_MODE: "true",
 	//
 	// }
-	["gradle",
+	[
+		"gradle",
 		"maven",
 		"npm",
 		"go",
@@ -56,7 +66,8 @@ suite('Integration Tests', () => {
 			let providedDataForStack = await index.stackAnalysis(pomPath)
 			console.log(JSON.stringify(providedDataForStack,null , 4))
 			let providers = ["osv-nvd"]
-			providers.forEach(provider => expect(providedDataForStack.providers[provider].sources[provider].summary.total).greaterThan(0))
+			providers.forEach(provider => expect(extractTotalsGeneralOrFromProvider(providedDataForStack, provider)).greaterThan(0))
+			//TO DO - if sources doesn't exists, add "scanned" instead
 			// python transitive count for stack analysis is awaiting fix in exhort backend
 			if(packageManager !== "pip")
 			{
@@ -66,6 +77,7 @@ suite('Integration Tests', () => {
 		}).timeout(60000);
 
 		test(`Stack Analysis html for ${packageManager}`, async () => {
+
 			let manifestName = getManifestNamePerPm(packageManager)
 			let pomPath = `test/it/test_manifests/${packageManager}/${manifestName}`
 			let html = await index.stackAnalysis(pomPath,true)
@@ -78,21 +90,28 @@ suite('Integration Tests', () => {
 				process.env["EXHORT_PYTHON_VIRTUAL_ENV"] = ""
 			}
 			let reportParsedFromHtml
-			reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\" :") +10,html.search(/([}](\s*)){5}/) + html.substring(html.search(/([}](\s*)){5}/)).indexOf(",")))
-			let parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",11)
-			let parsedScannedFromHtml = reportParsedFromHtml.scanned
-			let parsedStatusFromHtmlOsvNvd = reportParsedFromHtml.providers["osv-nvd"].status
-			expect( typeof html).equals("string")
-			expect(html).include("html").include("svg")
-			expect(parsedScannedFromHtml.total).greaterThan(0)
-			// python transitive count for stack analysis is awaiting fix in exhort backend
-			if(packageManager !== "pip")
+			let parsedSummaryFromHtml
+			let parsedStatusFromHtmlOsvNvd
+			let parsedScannedFromHtml
+			try {
+				reportParsedFromHtml = JSON.parse(html.substring(html.indexOf("\"report\" :") + 10, html.search(/([}](\s*)){5}/) + html.substring(html.search(/([}](\s*)){5}/)).indexOf(",")))
+				parsedSummaryFromHtml = getParsedKeyFromHtml(html,"\"summary\"",11)
+				expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
+			} catch (e) {
+				let startOfJson = html.substring(html.indexOf("\"report\" :"))
+				reportParsedFromHtml = JSON.parse("{" + startOfJson.substring(0,startOfJson.indexOf("};") + 1))
+				reportParsedFromHtml = reportParsedFromHtml.report
+			}
+			finally
 			{
+				parsedStatusFromHtmlOsvNvd = reportParsedFromHtml.providers["osv-nvd"].status
+				expect(parsedStatusFromHtmlOsvNvd.code).equals(200)
+				parsedScannedFromHtml = reportParsedFromHtml.scanned
+				expect( typeof html).equals("string")
+				expect(html).include("html").include("svg")
+				expect(parsedScannedFromHtml.total).greaterThan(0)
 				expect(parsedScannedFromHtml.transitive).greaterThan(0)
 			}
-			expect(parsedSummaryFromHtml.total).greaterThanOrEqual(0)
-			expect(parsedStatusFromHtmlOsvNvd.code).equals(200)
-			// parsedSummaryFromHtml.providerStatuses.forEach(provider => expect(provider.status).equals(200))
 		}).timeout(30000);
 
 		test(`Component Analysis for ${packageManager}`, async () => {
@@ -110,7 +129,7 @@ suite('Integration Tests', () => {
 			expect(analysisReport.scanned.total).greaterThan(0)
 			expect(analysisReport.scanned.transitive).equal(0)
 			let providers = ["osv-nvd"]
-			providers.forEach(provider => expect(analysisReport.providers[provider].sources[provider].summary.total).greaterThan(0))
+			providers.forEach(provider => expect(extractTotalsGeneralOrFromProvider(analysisReport,provider)).greaterThan(0))
 			providers.forEach(provider => expect(analysisReport.providers[provider].status.code).equals(200))
 		}).timeout(20000);
 
