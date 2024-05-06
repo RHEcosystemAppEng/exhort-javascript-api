@@ -53,16 +53,6 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-      - name: get Python location
-        id: python-location
-        run: |
-          echo "python-bin-location=$(echo $pythonLocation)/bin" >> $GITHUB_OUTPUT
-
       - name: setup go
         uses: actions/setup-go@v5
         with:
@@ -94,6 +84,17 @@ jobs:
           base-ref: ${{ github.base_ref }}
           pr-ref: ${{ github.head_ref }}
           file-pattern-regex: "^src/.*|^test/.*"
+
+      - name: setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - name: get Python location
+        id: python-location
+        run: |
+          echo "python-bin-location=$(echo $pythonLocation)/bin" >> $GITHUB_OUTPUT
+
 
       - name: re-test Unit-Tests + Integration Tests
         env:
