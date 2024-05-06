@@ -101,7 +101,13 @@ function provideComponent(data, opts = {}, path = '') {
 	}
 }
 
-
+/**
+ *
+ * @param {string} npm the npm binary path
+ * @param {string }allFilter can be "-all" ( for stack analysis) or empty string ( for component analysis).
+ * @param {string} manifestDir path to manifest' directory.
+ * @return {string} returns a string containing the result output.
+ */
 function getNpmListing(npm, allFilter, manifestDir) {
 	return `${npm} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
 }
