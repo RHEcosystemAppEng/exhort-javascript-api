@@ -58,6 +58,9 @@ let stackAnalysisHtml = await exhort.stackAnalysis('/path/to/pom.xml', true)
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString())
+
+// Get Component Analysis in JSON Format for gradle
+let caGradle = await exhort.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
 ```
 </li>
 </ul>
@@ -156,6 +159,7 @@ $ exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 <li><a href="https://www.javascript.com//">JavaScript</a> - <a href="https://www.npmjs.com/">Npm</a></li>
 <li><a href="https://go.dev//">Golang</a> - <a href="https://go.dev/blog/using-go-modules/">Go Modules</a></li>
 <li><a href="https://go.dev//">Python</a> - <a href="https://pypi.org/project/pip/">pip Installer</a></li>
+<li><a href="https://gradle.org//">Gradle</a> - <a href="https://gradle.org/install//">Gradle Installation</a></li>
 </ul>
 
 <h3>Excluding Packages</h3>
@@ -186,7 +190,7 @@ Excluding a package from any analysis can be achieved by marking the package for
   "name": "sample",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "js",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -258,7 +262,28 @@ zipp==3.6.0
 
 ```
 
-All of the 4 above examples are valid for marking a package to be ignored
+<em>Gradle</em> users can add in build.gradle a comment with //exhortignore next to the package to be ignored:
+```build.gradle
+plugins {
+id 'java'
+}
+
+group = 'groupName'
+version = 'version'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "groupId:artifactId:version" // exhortignore
+}
+test {
+    useJUnitPlatform()
+}
+```
+
+All of the 5 above examples are valid for marking a package to be ignored
 </li>
 
 </ul>
@@ -283,18 +308,22 @@ let options = {
   'EXHORT_PYTHON3_PATH' : '/path/to/python3',
   'EXHORT_PIP3_PATH' : '/path/to/pip3',
   'EXHORT_PYTHON_PATH' : '/path/to/python',
-  'EXHORT_PIP_PATH' : '/path/to/pip'
+  'EXHORT_PIP_PATH' : '/path/to/pip',
+  'EXHORT_GRADLE_PATH' : '/path/to/gradle'
 
 }
 
-// Get stack analysis in JSON format
+// Get stack analysis in JSON format ( all package managers, pom.xml is as an example here)
 let stackAnalysis = await exhort.stackAnalysis('/path/to/pom.xml', false, options)
-// Get stack analysis in HTML format (string)
+// Get stack analysis in HTML format in string ( all package managers, pom.xml is as an example here)
 let stackAnalysisHtml = await exhort.stackAnalysis('/path/to/pom.xml', true, options)
 
 // Get component analysis in JSON format
 let buffer = fs.readFileSync('/path/to/pom.xml')
 let componentAnalysis = await exhort.componentAnalysis('pom.xml', buffer.toString(), options)
+
+// Get component analysis in JSON format For gradle
+let caGradle = await exhort.componentAnalysis("build.gradle","",{},"path/to/build.gradle")
 ```
  **_Environment variables takes precedence._**
 </p>
@@ -346,6 +375,11 @@ following keys for setting custom paths for the said executables.
 <td><a href="https://pypi.org/project/pip/">Python pip Package Installer</a></td>
 <td><em>pip</em></td>
 <td>EXHORT_PIP_PATH</td>
+</tr>
+<tr>
+<td><a href="https://gradle.org/">Gradle</a></td>
+<td><em>gradle</em></td>
+<td>EXHORT_GRADLE_PATH</td>
 </tr>
 </table>
 
