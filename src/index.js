@@ -1,3 +1,4 @@
+
 import path from "node:path";
 import {EOL} from "os";
 import { availableProviders, match } from './provider.js'
@@ -37,11 +38,17 @@ function logOptionsAndEnvironmentsVariables(alongsideText,valueToBePrinted) {
  * @private
  */
 function selectExhortBackend(opts= {}) {
+
+	let dirName
 // new ESM way in nodeJS ( since node version 22 ) to bring module directory.
-	let dirName = import.meta.dirname
-// old ESM way in nodeJS ( before node versions 22.00 to bring module directory.
+    dirName = import.meta.dirname
+// old ESM way in nodeJS ( before node versions 22.00 to bring module directory)
 	if (!dirName) {
-		dirName = url.fileURLToPath(new URL('.', import.meta.url));
+    	dirName = url.fileURLToPath(new URL('.', import.meta.url));
+	}
+
+	if (!dirName && __dirname !== undefined && __dirname !== null) {
+		dirName = __dirname;
 	}
 	let packageJson = JSON.parse(fs.readFileSync(path.join(dirName, "..","package.json" )).toString())
 	logOptionsAndEnvironmentsVariables("exhort-javascript-api analysis started, version: ",packageJson.version)
