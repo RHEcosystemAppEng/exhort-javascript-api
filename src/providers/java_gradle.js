@@ -81,6 +81,7 @@ function removeDuplicateIfExists(arrayForSbom,theContent) {
 	};
 }
 
+const componentAnalysisConfigs = ["api", "implementation", "compileOnly","runtimeOnly"];
 export default class Java_gradle extends Base_java {
 
 	/**
@@ -192,8 +193,8 @@ export default class Java_gradle extends Base_java {
 	#getSbomForComponentAnalysis(opts = {}, manifestPath) {
 		let content = this.#getDependencies(manifestPath)
 		let properties = this.#extractProperties(manifestPath, opts)
-		let configurationNames = new Array()
-		configurationNames.push("api", "implementation", "compileOnly","runtimeOnly")
+		let configurationNames = componentAnalysisConfigs
+
 		// let configName
 		// for (let config of configurationNames) {
 		// 	let directDeps = this.#extractLines(content, config);
@@ -271,7 +272,7 @@ export default class Java_gradle extends Base_java {
 		if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
 			arrayForSbom = arrayForSbom.slice(1)
 		}
-		if( ["api", "implementation", "compile"].includes(configNames) ) {
+		if( configNames === componentAnalysisConfigs ) {
 			arrayForSbom.forEach( removeDuplicateIfExists.call(this, arrayForSbom,content))
 		}
 		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
