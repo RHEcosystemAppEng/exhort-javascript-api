@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import {EOL} from "os";
 import {RegexNotToBeLogged, getCustom} from "./tools.js";
 
@@ -17,7 +19,10 @@ const rhdaOperationTypeHeader = "rhda-operation-type"
  * @returns {Promise<string|import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
 async function requestStack(provider, manifest, url, html = false, opts = {}) {
+	opts["source-manifest"] = Buffer.from(fs.readFileSync(manifest).toString()).toString('base64')
+	opts["manifest-type"] = path.parse(manifest).base
 	let provided = provider.provideStack(manifest, opts) // throws error if content providing failed
+	opts["source-manifest"]= ""
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "stack-analysis"
 	let startTime = new Date()
 	let EndTime
@@ -69,7 +74,9 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
  * @returns {Promise<import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
 async function requestComponent(provider, data, url, opts = {}, path = '') {
+	opts["source-manifest"]= Buffer.from(data).toString('base64')
 	let provided = provider.provideComponent(data, opts,path) // throws error if content providing failed
+	opts["source-manifest"]= ""
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "component-analysis"
 	if (process.env["EXHORT_DEBUG"] === "true") {
 		console.log("Starting time of sending component analysis request to exhort server= " + new Date())

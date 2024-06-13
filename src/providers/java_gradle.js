@@ -141,7 +141,7 @@ export default class Java_gradle extends Base_java {
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content)
 		}
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, "runtimeClasspath", manifest)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, "runtimeClasspath", manifest,opts)
 		return sbom
 	}
 
@@ -204,7 +204,7 @@ export default class Java_gradle extends Base_java {
 			}
 		}
 
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifestPath)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifestPath, opts)
 		return sbom
 
 	}
@@ -251,7 +251,7 @@ export default class Java_gradle extends Base_java {
 	 * @param configName {string} - the configuration name of dependencies to include in sbom.
 	 * @return {string} return sbom json string of the build.gradle manifest file
 	 */
-	#buildSbomFileFromTextFormat(content, properties, configName, manifestPath) {
+	#buildSbomFileFromTextFormat(content, properties, configName, manifestPath, opts = {}) {
 		let sbom = new Sbom();
 		let root = `${properties.group}:${properties[ROOT_PROJECT_KEY_NAME].match(/Root project '(.+)'/)[1]}:jar:${properties.version}`
 		let rootPurl = this.parseDep(root)
@@ -272,7 +272,7 @@ export default class Java_gradle extends Base_java {
 		}
 		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
 		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
-		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
+		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString(opts);
 	}
 
 	/**

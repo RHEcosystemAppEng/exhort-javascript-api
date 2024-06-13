@@ -96,7 +96,7 @@ export default class Java_maven extends Base_java {
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content.toString())
 		}
-		let sbom = this.createSbomFileFromTextFormat(content.toString(), ignoredDeps);
+		let sbom = this.createSbomFileFromTextFormat(content.toString(), ignoredDeps,opts);
 		// delete temp file and directory
 		fs.rmSync(tmpDir, {recursive: true, force: true})
 		// return dependency graph as string
@@ -110,7 +110,7 @@ export default class Java_maven extends Base_java {
 	 * @param {[String]} ignoredDeps List of ignored dependencies to be omitted from sbom
 	 * @return {String} formatted sbom Json String with all dependencies
 	 */
-	createSbomFileFromTextFormat(textGraphList, ignoredDeps) {
+	createSbomFileFromTextFormat(textGraphList, ignoredDeps, opts) {
 		let lines = textGraphList.split(EOL);
 		// get root component
 		let root = lines[0];
@@ -118,7 +118,7 @@ export default class Java_maven extends Base_java {
 		let sbom = new Sbom();
 		sbom.addRoot(rootPurl);
 		this.parseDependencyTree(root, 0, lines.slice(1), sbom);
-		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString();
+		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString(opts);
 	}
 
 	/**
@@ -174,7 +174,7 @@ export default class Java_maven extends Base_java {
 		}
 
 		// return dependencies list
-		return sbom.getAsJsonString()
+		return sbom.getAsJsonString(opts)
 	}
 
 	/**

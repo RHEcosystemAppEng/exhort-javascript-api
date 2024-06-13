@@ -332,7 +332,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		enforceRemovingIgnoredDepsInCaseOfAutomaticVersionUpdate(ignoredDeps,sbom)
 	}
 
-	return sbom.getAsJsonString()
+	return sbom.getAsJsonString(opts)
 }
 
 
