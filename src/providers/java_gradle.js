@@ -141,7 +141,7 @@ export default class Java_gradle extends Base_java {
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content)
 		}
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, "runtimeClasspath", manifest,opts)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, ["runtimeClasspath"], manifest,opts)
 		return sbom
 	}
 
@@ -193,18 +193,18 @@ export default class Java_gradle extends Base_java {
 		let content = this.#getDependencies(manifestPath)
 		let properties = this.#extractProperties(manifestPath, opts)
 		let configurationNames = new Array()
-		configurationNames.push("api", "implementation", "compile")
-		let configName
-		for (let config of configurationNames) {
-			let directDeps = this.#extractLines(content, config);
-			if (directDeps.length > 0) {
-				configName = config
-				break
+		configurationNames.push("api", "implementation", "compileOnly","runtimeOnly")
+		// let configName
+		// for (let config of configurationNames) {
+		// 	let directDeps = this.#extractLines(content, config);
+		// 	if (directDeps.length > 0) {
+		// 		configName = config
+		// 		break
+		//
+		// 	}
+		// }
 
-			}
-		}
-
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configName, manifestPath, opts)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, configurationNames, manifestPath, opts)
 		return sbom
 
 	}
@@ -248,15 +248,19 @@ export default class Java_gradle extends Base_java {
 	 *
 	 * @param content {string} - content of the dependency tree received from gradle dependencies command
 	 * @param properties {Object} - properties of the gradle project.
-	 * @param configName {string} - the configuration name of dependencies to include in sbom.
+	 * @param configNames {string[]} - the configuration name of dependencies to include in sbom.
 	 * @return {string} return sbom json string of the build.gradle manifest file
 	 */
-	#buildSbomFileFromTextFormat(content, properties, configName, manifestPath, opts = {}) {
+	#buildSbomFileFromTextFormat(content, properties, configNames, manifestPath, opts = {}) {
 		let sbom = new Sbom();
 		let root = `${properties.group}:${properties[ROOT_PROJECT_KEY_NAME].match(/Root project '(.+)'/)[1]}:jar:${properties.version}`
 		let rootPurl = this.parseDep(root)
 		sbom.addRoot(rootPurl)
-		let lines = this.#extractLines(content, configName)
+		let lines = new Array()
+		configNames.forEach(configName => {
+			let deps = this.#extractLines(content, configName)
+			lines = lines.concat(deps)
+		})
 		// transform gradle dependency tree to the form of maven dependency tree to use common sbom build algorithm in Base_java parent */
 		let arrayForSbom = lines.filter(dep => dep.trim() !== "").map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
 			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/g, ":$1:$3"))
@@ -267,7 +271,7 @@ export default class Java_gradle extends Base_java {
 		if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
 			arrayForSbom = arrayForSbom.slice(1)
 		}
-		if( ["api", "implementation", "compile"].includes(configName) ) {
+		if( ["api", "implementation", "compile"].includes(configNames) ) {
 			arrayForSbom.forEach( removeDuplicateIfExists.call(this, arrayForSbom,content))
 		}
 		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
