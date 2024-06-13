@@ -6,7 +6,7 @@ import {environmentVariableIsPopulated,getCustom, handleSpacesInPath} from "../t
 
 
 function getPipFreezeOutput() {
-	return environmentVariableIsPopulated("EXHORT_PIP_FREEZE")  ? new Buffer(process.env["EXHORT_PIP_FREEZE"],'base64').toString('ascii') : execSync(`${this.pathToPipBin} freeze --all`, err => {
+	return environmentVariableIsPopulated("EXHORT_PIP_FREEZE")  ? new Buffer(process.env["EXHORT_PIP_FREEZE"],'base64').toString('ascii') : execSync(`${handleSpacesInPath(this.pathToPipBin)} freeze --all`, err => {
 		if (err) {
 			throw new Error('fail invoking pip freeze to fetch all installed dependencies in environment --> ' + err.message)
 		}
@@ -15,7 +15,7 @@ function getPipFreezeOutput() {
 
 function getPipShowOutput(depNames) {
 
-	return environmentVariableIsPopulated("EXHORT_PIP_SHOW")  ? new Buffer(process.env["EXHORT_PIP_SHOW"],'base64').toString('ascii')  : execSync(`${this.pathToPipBin} show ${depNames}`, err => {
+	return environmentVariableIsPopulated("EXHORT_PIP_SHOW")  ? new Buffer(process.env["EXHORT_PIP_SHOW"],'base64').toString('ascii')  : execSync(`${handleSpacesInPath(this.pathToPipBin)} show ${depNames}`, err => {
 		if (err) {
 			throw new Error('fail invoking pip show to fetch all installed dependencies metadata --> ' + err.message)
 		}
@@ -55,7 +55,7 @@ export default class Python_controller {
 	{
 		if(!this.realEnvironment) {
 			this.pythonEnvDir = path.join(path.sep,"tmp","exhort_env_js")
-			execSync(`${this.pathToPythonBin} -m venv ${this.pythonEnvDir} `, err => {
+			execSync(`${handleSpacesInPath(this.pathToPythonBin)} -m venv ${this.pythonEnvDir} `, err => {
 				if (err) {
 					throw new Error('failed creating virtual python environment - ' + err.message)
 				}
@@ -70,7 +70,7 @@ export default class Python_controller {
 				this.pathToPythonBin = path.join(this.pythonEnvDir,"bin","python")
 			}
 			// upgrade pip version to latest
-			execSync(`${this.pathToPythonBin} -m pip install --upgrade pip `, err => {
+			execSync(`${handleSpacesInPath(this.pathToPythonBin)} -m pip install --upgrade pip `, err => {
 				if (err) {
 					throw new Error('failed upgrading pip version on virtual python environment - ' + err.message)
 				}
@@ -104,7 +104,7 @@ export default class Python_controller {
 			let installBestEfforts = getCustom("EXHORT_PYTHON_INSTALL_BEST_EFFORTS","false",this.options);
 			if(installBestEfforts === "false")
 			{
-				execSync(`${this.pathToPipBin} install -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
+				execSync(`${handleSpacesInPath(this.pathToPipBin)} install -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
 					if (err) {
 						throw new Error('fail installing requirements.txt manifest in created virtual python environment --> ' + err.message)
 					}
@@ -138,7 +138,7 @@ export default class Python_controller {
 		let requirementsRows = requirementsContent.toString().split(EOL);
 		requirementsRows.filter((line) => !line.trim().startsWith("#")).filter((line) => line.trim() !== "").forEach( (dependency) => {
 			let dependencyName = getDependencyName(dependency);
-			execSync(`${this.pathToPipBin} install ${dependencyName}`, err =>{
+			execSync(`${handleSpacesInPath(this.pathToPipBin)} install ${dependencyName}`, err =>{
 				if (err) {
 					throw new Error(`Best efforts process - failed installing ${dependencyName}  in created virtual python environment --> error message: ` + err.message)
 				}
@@ -152,7 +152,7 @@ export default class Python_controller {
 	{
 		if(!this.realEnvironment)
 		{
-			execSync(`${this.pathToPipBin} uninstall -y -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
+			execSync(`${handleSpacesInPath(this.pathToPipBin)} uninstall -y -r ${handleSpacesInPath(this.pathToRequirements)}`, err =>{
 				if (err) {
 					throw new Error('fail uninstalling requirements.txt in created virtual python environment --> ' + err.message)
 				}
@@ -400,7 +400,7 @@ function bringAllDependencies(dependencies, dependencyName, cachedEnvironmentDep
 function getDependencyTreeJsonFromPipDepTree(pipPath,pythonPath) {
 	let dependencyTree
 	try {
-		execSync(`${pipPath} install pipdeptree`)
+		execSync(`${handleSpacesInPath(pipPath)} install pipdeptree`)
 	} catch (e) {
 		throw new Error(`Couldn't install pipdeptree utility, reason: ${e.getMessage}`)
 	}
@@ -410,7 +410,7 @@ function getDependencyTreeJsonFromPipDepTree(pipPath,pythonPath) {
 			dependencyTree = execSync(`pipdeptree  --json`).toString()
 		}
 		else {
-			dependencyTree = execSync(`pipdeptree  --json --python  ${pythonPath} `).toString()
+			dependencyTree = execSync(`pipdeptree  --json --python  ${handleSpacesInPath(pythonPath)} `).toString()
 		}
 	} catch (e) {
 		throw new Error(`couldn't produce dependency tree using pipdeptree tool, stop analysis, message -> ${e.getMessage}`)

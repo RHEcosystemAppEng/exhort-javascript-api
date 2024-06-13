@@ -16,14 +16,14 @@ export var npmInteractions = {
 		return npmOutput;
 	},
 	version: function checkNpmVersion(npm) {
-		execSync(`${npm} --version`, err => {
+		execSync(`${handleSpacesInPath(npm)} --version`, err => {
 			if (err) {
 				throw new Error('npm is not accessible')
 			}
 		})
 	},
 	createPackageLock: function createPackageLock(npm, manifestDir) {
-		execSync(`${npm} i --package-lock-only --prefix ${handleSpacesInPath(manifestDir)}`, err => {
+		execSync(`${handleSpacesInPath(npm)} i --package-lock-only --prefix ${handleSpacesInPath(manifestDir)}`, err => {
 			if (err) {
 				throw new Error('failed to create npmOutput list')
 			}
@@ -109,7 +109,7 @@ function provideComponent(data, opts = {}, path = '') {
  * @return {string} returns a string containing the result output.
  */
 function getNpmListing(npm, allFilter, manifestDir) {
-	return `${npm} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
+	return `${handleSpacesInPath(npm)} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
 }
 
 
