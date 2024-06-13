@@ -56,14 +56,14 @@ export default class Sbom {
 	/**
 	 * @return String sbom json in a string format
 	 */
-	getAsJsonString(){
+	getAsJsonString(opts = {}){
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			this.#endTime = new Date()
 			console.log("Ending time to create sbom = " + this.#endTime)
 			let time = (this.#endTime - this.#startTime) / 1000
 			console.log("Total time in seconds to create sbom = " + time)
 		}
-		return this.sbomModel.getAsJsonString()
+		return this.sbomModel.getAsJsonString(opts)
 	}
 
 	/**
@@ -92,6 +92,7 @@ export default class Sbom {
 	{
 		return this.sbomModel.removeRootComponent()
 	}
+
 }
 
 

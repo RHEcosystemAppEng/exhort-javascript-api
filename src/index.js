@@ -119,6 +119,7 @@ async function stackAnalysis(manifest, html = false, opts = {}) {
  */
 async function componentAnalysis(manifestType, data, opts = {}, path = '') {
 	theUrl = selectExhortBackend(opts)
+	opts["manifest-type"] = manifestType
 	let provider = match(manifestType, availableProviders) // throws error if no matching provider
 	return await analysis.requestComponent(provider, data, theUrl, opts,path) // throws error request sending failed
 }

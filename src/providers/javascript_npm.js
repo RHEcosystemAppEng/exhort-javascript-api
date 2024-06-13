@@ -154,7 +154,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 		let ignoredDeps = Array.from(packageJsonObject.exhortignore);
 		sbom.filterIgnoredDeps(ignoredDeps)
 	}
-	return sbom.getAsJsonString()
+	return sbom.getAsJsonString(opts)
 }
 
 

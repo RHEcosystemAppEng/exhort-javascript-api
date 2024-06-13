@@ -58,6 +58,7 @@ export default class CycloneDxSbom {
 	rootComponent
 	components
 	dependencies
+	sourceManifestForAuditTrail
 
 	constructor() {
 		this.dependencies = new Array()
@@ -117,17 +118,20 @@ export default class CycloneDxSbom {
 		return this
 	}
 
-	/**
-	 * @return String CycloneDx Sbom json object in a string format
+	/** @param {{}} opts - various options, settings and configuration of application.
+ 	 * @return String CycloneDx Sbom json object in a string format
 	 */
-	getAsJsonString() {
+	getAsJsonString(opts) {
+		let manifestType = opts["manifest-type"]
+		this.setSourceManifest(opts["source-manifest"])
 		this.sbomObject = {
 			"bomFormat": "CycloneDX",
 			"specVersion": "1.4",
 			"version": 1,
 			"metadata": {
 				"timestamp": new Date(),
-				"component": this.rootComponent
+				"component": this.rootComponent,
+				"properties": new Array()
 			},
 			"components": this.components,
 			"dependencies": this.dependencies
@@ -136,6 +140,14 @@ export default class CycloneDxSbom {
 		{
 			delete this.sbomObject.metadata.component
 		}
+		if(this.sourceManifestForAuditTrail !== undefined  && manifestType !== undefined) {
+			this.sbomObject.metadata.properties.push({"name" : "rhda:manifest:content" , "value" : this.sourceManifestForAuditTrail})
+			this.sbomObject.metadata.properties.push({"name" : "rhda:manifest:filename" , "value" : manifestType})
+		}
+		else {
+			delete this.sbomObject.metadata.properties
+		}
+
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			console.log("SBOM Generated for manifest, to be sent to exhort service:" + EOL + JSON.stringify(this.sbomObject, null, 4))
 		}
@@ -251,5 +263,9 @@ export default class CycloneDxSbom {
 		this.components.splice(compIndex, 1)
 		this.dependencies.splice(depIndex, 1)
 		this.rootComponent = undefined
+	}
+
+	setSourceManifest(manifestData) {
+		this.sourceManifestForAuditTrail = manifestData
 	}
 }

@@ -218,8 +218,7 @@ function createSbomStackAnalysis(manifest, opts = {}) {
 	handleIgnoredDependencies(requirementTxtContent,sbom,opts)
 	// In python there is no root component, then we must remove the dummy root we added, so the sbom json will be accepted by exhort backend
 	// sbom.removeRootComponent()
-	return sbom.getAsJsonString()
-
+	return sbom.getAsJsonString(opts)
 
 
 }
@@ -248,7 +247,7 @@ function getSbomForComponentAnalysis(data, opts = {}) {
 	handleIgnoredDependencies(data,sbom,opts)
 	// In python there is no root component, then we must remove the dummy root we added, so the sbom json will be accepted by exhort backend
 	// sbom.removeRootComponent()
-	return sbom.getAsJsonString()
+	return sbom.getAsJsonString(opts)
 }
 
 
