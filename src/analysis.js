@@ -74,7 +74,13 @@ async function requestStack(provider, manifest, url, html = false, opts = {}) {
  * @returns {Promise<import('../generated/backend/AnalysisReport').AnalysisReport>}
  */
 async function requestComponent(provider, data, url, opts = {}, path = '') {
-	opts["source-manifest"]= Buffer.from(data).toString('base64')
+	if(data.trim() !== "") {
+		opts["source-manifest"]= Buffer.from(data).toString('base64')
+		// for gradle component analysis is an exception and requires only path exclusively, and not data content.
+	}else {
+		opts["source-manifest"]= Buffer.from(fs.readFileSync(path).toString()).toString('base64')
+	}
+
 	let provided = provider.provideComponent(data, opts,path) // throws error if content providing failed
 	opts["source-manifest"]= ""
 	opts[rhdaOperationTypeHeader.toUpperCase().replaceAll("-","_")] = "component-analysis"
