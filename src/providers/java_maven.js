@@ -72,14 +72,14 @@ export default class Java_maven extends Base_java {
 		// get custom maven path
 		let mvn = getCustomPath('mvn', opts)
 		// verify maven is accessible
-		this._invokeCommand(`${mvn} --version`,'mvn is not accessible')
+		this._invokeCommand(`${handleSpacesInPath(mvn)} --version`,'mvn is not accessible')
 		// clean maven target
-		this._invokeCommand(`${mvn} -q clean -f ${handleSpacesInPath(manifest)}`,'failed cleaning maven target')
+		this._invokeCommand(`${handleSpacesInPath(mvn)} -q clean -f ${handleSpacesInPath(manifest)}`,'failed cleaning maven target')
 		// create dependency graph in a temp file
 		let tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'exhort_'))
 		let tmpDepTree = path.join(tmpDir, 'mvn_deptree.txt')
 		// build initial command (dot outputType is not available for verbose mode)
-		let depTreeCmd = `${mvn} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${handleSpacesInPath(tmpDepTree)} -f ${handleSpacesInPath(manifest)}`
+		let depTreeCmd = `${handleSpacesInPath(mvn)} -q org.apache.maven.plugins:maven-dependency-plugin:3.6.0:tree -Dverbose -DoutputType=text -DoutputFile=${handleSpacesInPath(tmpDepTree)} -f ${handleSpacesInPath(manifest)}`
 		// exclude ignored dependencies, exclude format is groupId:artifactId:scope:version.
 		// version and scope are marked as '*' if not specified (we do not use scope yet)
 		let ignoredDeps = new Array()
@@ -132,7 +132,7 @@ export default class Java_maven extends Base_java {
 		// get custom maven path
 		let mvn = getCustomPath('mvn', opts)
 		// verify maven is accessible
-		this._invokeCommand(`${mvn} --version`,'mvn is not accessible')
+		this._invokeCommand(`${handleSpacesInPath(mvn)} --version`,'mvn is not accessible')
 		// create temp files for pom and effective pom
 		let tmpDir
 		let tmpEffectivePom
@@ -150,7 +150,7 @@ export default class Java_maven extends Base_java {
 		}
 
 		// create effective pom and save to temp file
-		this._invokeCommand(`${mvn} -q help:effective-pom -Doutput=${handleSpacesInPath(tmpEffectivePom)} -f ${handleSpacesInPath(targetPom)}`,'failed creating maven effective pom')
+		this._invokeCommand(`${handleSpacesInPath(mvn)} -q help:effective-pom -Doutput=${handleSpacesInPath(tmpEffectivePom)} -f ${handleSpacesInPath(targetPom)}`,'failed creating maven effective pom')
 		// iterate over all dependencies in original pom and collect all ignored ones
 		let ignored = this.#getDependencies(targetPom).filter(d => d.ignore)
 		// iterate over all dependencies and create a package for every non-ignored one

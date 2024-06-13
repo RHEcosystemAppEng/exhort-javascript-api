@@ -3,7 +3,7 @@ import { execSync } from "node:child_process"
 import fs from 'node:fs'
 import os from "node:os";
 import {EOL} from "os";
-import {getCustom, getCustomPath} from "../tools.js";
+import {getCustom, getCustomPath, handleSpacesInPath} from "../tools.js";
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {PackageURL} from 'packageurl-js'
@@ -72,7 +72,7 @@ function provideComponent(data, opts = {}) {
 
 
 function getGoGraphCommand(goBin) {
-	return `${goBin} mod graph `;
+	return `${handleSpacesInPath(goBin)} mod graph `;
 }
 
 /**
@@ -273,7 +273,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	// get custom goBin path
 	let goBin = getCustomPath('go', opts)
 	// verify goBin is accessible
-	execSync(`${goBin} version`, err => {
+	execSync(`${handleSpacesInPath(goBin)} version`, err => {
 		if (err) {
 			throw new Error('go binary is not accessible')
 		}
@@ -380,8 +380,8 @@ function toPurl(dependency, delimiter, qualifiers) {
 function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
 	let manifestDir = path.dirname(manifestPath)
 	let options = {cwd: manifestDir}
-	execSync(`${goBin} mod download`, options)
-	let finalVersionsForAllModules = execSync(`${goBin} list -m all`, options).toString()
+	execSync(`${handleSpacesInPath(goBin)} mod download`, options)
+	let finalVersionsForAllModules = execSync(`${handleSpacesInPath(goBin)} list -m all`, options).toString()
 	let finalVersionModules = new Map()
 	finalVersionsForAllModules.split(EOL).filter(string => string.trim()!== "")
 		.filter(string => string.trim().split(" ").length === 2)

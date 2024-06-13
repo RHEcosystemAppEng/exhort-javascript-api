@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import {getCustomPath} from "../tools.js";
+import {getCustomPath, handleSpacesInPath} from "../tools.js";
 import path from 'node:path'
 import Sbom from '../sbom.js'
 import {EOL} from 'os'
@@ -176,7 +176,7 @@ export default class Java_gradle extends Base_java {
 		let gradle = getCustomPath("gradle", opts);
 		let properties
 		try {
-			properties = this._invokeCommandGetOutput(`${gradle} properties`, path.dirname(manifestPath))
+			properties = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} properties`, path.dirname(manifestPath))
 		} catch (e) {
 			throw new Error(`Couldn't get properties of build.gradle file , Error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
@@ -221,7 +221,7 @@ export default class Java_gradle extends Base_java {
 		let commandResult
 		gradle = getCustomPath("gradle")
 		try {
-			commandResult = this._invokeCommandGetOutput(`${gradle} dependencies`,path.dirname(manifest))
+			commandResult = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} dependencies`,path.dirname(manifest))
 		} catch (e) {
 			throw new Error(`Couldn't run gradle dependencies command, error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
