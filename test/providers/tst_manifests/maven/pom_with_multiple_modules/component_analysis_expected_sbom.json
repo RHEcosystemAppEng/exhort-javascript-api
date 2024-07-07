@@ -169,10 +169,10 @@
 		{
 			"group": "javax.enterprise",
 			"name": "cdi-api",
-			"version": "2",
-			"purl": "pkg:maven/javax.enterprise/cdi-api@2",
+			"version": "2.0",
+			"purl": "pkg:maven/javax.enterprise/cdi-api@2.0",
 			"type": "library",
-			"bom-ref": "pkg:maven/javax.enterprise/cdi-api@2"
+			"bom-ref": "pkg:maven/javax.enterprise/cdi-api@2.0"
 		},
 		{
 			"group": "commons-configuration",
@@ -221,7 +221,7 @@
 				"pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.16.0",
 				"pkg:maven/com.google.code.findbugs/jsr305@3.0.2",
 				"pkg:maven/com.github.spotbugs/spotbugs-annotations@4.8.3",
-				"pkg:maven/javax.enterprise/cdi-api@2",
+				"pkg:maven/javax.enterprise/cdi-api@2.0",
 				"pkg:maven/commons-configuration/commons-configuration@1.1",
 				"pkg:maven/com.squareup.okhttp3/okhttp@4.12.0",
 				"pkg:maven/org.projectlombok/lombok@1.18.30"
@@ -300,7 +300,7 @@
 			"dependsOn": []
 		},
 		{
-			"ref": "pkg:maven/javax.enterprise/cdi-api@2",
+			"ref": "pkg:maven/javax.enterprise/cdi-api@2.0",
 			"dependsOn": []
 		},
 		{

@@ -228,7 +228,10 @@ export default class Java_maven extends Base_java {
 		// build xml parser with options
 		let parser = new XMLParser({
 			commentPropName: '#comment', // mark comments with #comment
-			isArray: (_, jpath) => 'project.dependencies.dependency' === jpath // load deps as array
+			isArray: (_, jpath) => 'project.dependencies.dependency' === jpath,
+			numberParseOptions: {
+				skipLike: /[0-9]+[.]0/
+			}
 		})
 		// read manifest pom.xml file into buffer
 		let buf = fs.readFileSync(manifest)
