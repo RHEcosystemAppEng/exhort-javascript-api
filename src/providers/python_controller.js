@@ -1,7 +1,7 @@
 import {execSync} from "node:child_process";
 import fs from "node:fs";
 import path from 'node:path';
-import {EOL} from "os";
+import os, {EOL} from "os";
 import {environmentVariableIsPopulated,getCustom, handleSpacesInPath} from "../tools.js";
 
 
@@ -55,19 +55,19 @@ export default class Python_controller {
 	{
 		if(!this.realEnvironment) {
 			this.pythonEnvDir = path.join(path.sep,"tmp","exhort_env_js")
-			execSync(`${handleSpacesInPath(this.pathToPythonBin)} -m venv ${this.pythonEnvDir} `, err => {
+			execSync(`${handleSpacesInPath(this.pathToPythonBin)} -m venv ${handleSpacesInPath(this.pythonEnvDir)} `, err => {
 				if (err) {
 					throw new Error('failed creating virtual python environment - ' + err.message)
 				}
 			})
 			if(this.pathToPythonBin.includes("python3"))
 			{
-				this.pathToPipBin = path.join(this.pythonEnvDir,"bin","pip3");
-				this.pathToPythonBin = path.join(this.pythonEnvDir,"bin","python3")
+				this.pathToPipBin = path.join(path.sep,this.pythonEnvDir,"bin",this.#decideIfWindowsOrLinuxPath("pip3"))
+				this.pathToPythonBin = path.join(path.sep,this.pythonEnvDir,"bin",this.#decideIfWindowsOrLinuxPath("python3"))
 			}
 			else {
-				this.pathToPipBin = path.join(this.pythonEnvDir,"bin","pip");
-				this.pathToPythonBin = path.join(this.pythonEnvDir,"bin","python")
+				this.pathToPipBin = path.join(path.sep,this.pythonEnvDir,"bin",this.#decideIfWindowsOrLinuxPath("pip"));
+				this.pathToPythonBin = path.join(path.sep,this.pythonEnvDir,"bin",this.#decideIfWindowsOrLinuxPath("python"))
 			}
 			// upgrade pip version to latest
 			execSync(`${handleSpacesInPath(this.pathToPythonBin)} -m pip install --upgrade pip `, err => {
@@ -87,6 +87,14 @@ export default class Python_controller {
 		}
 	}
 
+	#decideIfWindowsOrLinuxPath(fileName) {
+		if (os.platform() === "win32") {
+			return fileName + ".exe"
+		}
+		else {
+			return fileName
+		}
+	}
 	/**
 	 *
 	 * @param {boolean} includeTransitive - whether to return include in returned object transitive dependencies or not

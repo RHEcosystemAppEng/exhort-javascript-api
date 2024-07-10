@@ -109,7 +109,7 @@ function provideComponent(data, opts = {}, path = '') {
  * @return {string} returns a string containing the result output.
  */
 function getNpmListing(npm, allFilter, manifestDir) {
-	return `${handleSpacesInPath(npm)} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${manifestDir}`;
+	return `${handleSpacesInPath(npm)} ls${allFilter} --omit=dev --package-lock-only --json --prefix ${handleSpacesInPath(manifestDir)}`;
 }
 
 
