@@ -65,18 +65,18 @@ export default class Python_controller {
 				this.pathToPipBin = path.join(path.sep,this.pythonEnvDir,os.platform() === 'win32' ? "Scripts" : "bin",this.#decideIfWindowsOrLinuxPath("pip3"))
 				this.pathToPythonBin = path.join(path.sep,this.pythonEnvDir,os.platform() === 'win32' ? "Scripts" : "bin",this.#decideIfWindowsOrLinuxPath("python3"))
 				if(os.platform() === 'win32') {
-            		let driveLetter = path.parse(process.cwd()).root
-            		this.pathToPythonBin = `${driveLetter}${this.pathToPythonBin.substring(1)}`
-            		this.pathToPipBin = `${driveLetter}${this.pathToPipBin.substring(1)}`
+					let driveLetter = path.parse(process.cwd()).root
+					this.pathToPythonBin = `${driveLetter}${this.pathToPythonBin.substring(1)}`
+					this.pathToPipBin = `${driveLetter}${this.pathToPipBin.substring(1)}`
 				}
 			}
 			else {
 				this.pathToPipBin = path.join(path.sep,this.pythonEnvDir,os.platform() === 'win32' ? "Scripts" : "bin",this.#decideIfWindowsOrLinuxPath("pip"));
 				this.pathToPythonBin = path.join(path.sep,this.pythonEnvDir,os.platform() === 'win32' ? "Scripts" : "bin",this.#decideIfWindowsOrLinuxPath("python"))
 				if(os.platform() === 'win32') {
-            		let driveLetter = path.parse(process.cwd()).root
-            		this.pathToPythonBin = `${driveLetter}${this.pathToPythonBin.substring(1)}`
-            		this.pathToPipBin = `${driveLetter}${this.pathToPipBin.substring(1)}`
+					let driveLetter = path.parse(process.cwd()).root
+					this.pathToPythonBin = `${driveLetter}${this.pathToPythonBin.substring(1)}`
+					this.pathToPipBin = `${driveLetter}${this.pathToPipBin.substring(1)}`
 				}
 			}
 			// upgrade pip version to latest
