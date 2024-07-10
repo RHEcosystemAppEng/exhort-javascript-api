@@ -23,11 +23,20 @@ export var npmInteractions = {
 		})
 	},
 	createPackageLock: function createPackageLock(npm, manifestDir) {
+	// in windows os, --prefix flag doesn't work, it behaves really weird , instead of installing the package.json fromm the prefix folder,
+	// it's installing package.json (placed in current working directory of process) into prefix directory, so
+		let originalDir = process.cwd()
+		if(os.platform() === 'win32') {
+			process.chdir(manifestDir)
+		}
 		execSync(`${handleSpacesInPath(npm)} i --package-lock-only --prefix ${handleSpacesInPath(manifestDir)}`, err => {
 			if (err) {
 				throw new Error('failed to create npmOutput list')
 			}
 		})
+		if(os.platform() === 'win32') {
+			process.chdir(originalDir)
+		}
 	}
 }
 export default { isSupported, provideComponent, provideStack, npmInteractions }
