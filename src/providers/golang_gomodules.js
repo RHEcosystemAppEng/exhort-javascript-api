@@ -149,7 +149,7 @@ function extractPackageName(line) {
  */
 function getIgnoredDeps(manifest) {
 	let goMod = fs.readFileSync(manifest).toString().trim()
-	let lines = goMod.split(EOL);
+	let lines = goMod.split(getLineSeparatorGolang());
 	return lines.filter(line => ignoredLine(line)).map(line=> extractPackageName(line)).map(dep => toPurl(dep,/[ ]{1,3}/,undefined))
 }
 
@@ -235,7 +235,7 @@ function collectAllDepsFromManifest(lines, goMod) {
  */
 function performManifestVersionsCheck(rootElementName, goModGraphOutputRows, manifest) {
 	let goMod = fs.readFileSync(manifest).toString().trim()
-	let lines = goMod.split(EOL);
+	let lines = goMod.split(getLineSeparatorGolang());
 	let comparisonLines = goModGraphOutputRows.filter((line)=> line.startsWith(rootElementName)).map((line)=> getChildVertexFromEdge(line))
 	let manifestDeps = collectAllDepsFromManifest(lines,goMod)
 	try {
@@ -286,7 +286,7 @@ function getSBOM(manifest, opts = {}, includeTransitive) {
 	let ignoredDeps = getIgnoredDeps(manifest);
 	let allIgnoredDeps = ignoredDeps.map((dep) => dep.toString())
 	let sbom = new Sbom();
-	let rows = goGraphOutput.split(EOL);
+	let rows = goGraphOutput.split(getLineSeparatorGolang());
 	let root = getParentVertexFromEdge(rows[0])
 	let matchManifestVersions = getCustom("MATCH_MANIFEST_VERSIONS","false",opts);
 	if(matchManifestVersions === "true") {
@@ -383,7 +383,7 @@ function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
 	execSync(`${handleSpacesInPath(goBin)} mod download`, options)
 	let finalVersionsForAllModules = execSync(`${handleSpacesInPath(goBin)} list -m all`, options).toString()
 	let finalVersionModules = new Map()
-	finalVersionsForAllModules.split(EOL).filter(string => string.trim()!== "")
+	finalVersionsForAllModules.split(getLineSeparatorGolang()).filter(string => string.trim()!== "")
 		.filter(string => string.trim().split(" ").length === 2)
 		.forEach((dependency) => {
 			let dep = dependency.split(" ")
@@ -419,6 +419,11 @@ function getFinalPackagesVersionsForModule(rows,manifestPath,goBin) {
  */
 function getPackageName(fullPackage) {
 	return fullPackage.split("@")[0]
+}
+
+function getLineSeparatorGolang() {
+	let reg = /\n|\r\n/
+	return reg
 }
 
 // /**

@@ -111,7 +111,7 @@ async function requestComponent(provider, data, url, opts = {}, path = '') {
 
 		}
 	} else {
-		throw new Error(`Got error response from exhort backend - http return code : ${resp.status},  error message =>  ${await resp.text()}`)
+		throw new Error(`Got error response from exhort backend - http return code : ${resp.status}, ex-request-id: ${resp.headers.get("ex-request-id")}  error message =>  ${await resp.text()}`)
 	}
 
 	return Promise.resolve(result)
