@@ -326,7 +326,7 @@ function getDependencyName(depLine) {
 			result = depLine
 		}
 	}
-	return result
+	return result.trim()
 }
 
 /**

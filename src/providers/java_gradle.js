@@ -81,7 +81,8 @@ function removeDuplicateIfExists(arrayForSbom,theContent) {
 	};
 }
 
-const componentAnalysisConfigs = ["api", "implementation", "compileOnly","runtimeOnly"];
+const componentAnalysisConfigs = ["api", "implementation", "compileOnly","compileOnlyApi","runtimeOnly"];
+const stackAnalysisConfigs = ["runtimeClasspath","compileClasspath"];
 export default class Java_gradle extends Base_java {
 
 	/**
@@ -142,7 +143,7 @@ export default class Java_gradle extends Base_java {
 		if (process.env["EXHORT_DEBUG"] === "true") {
 			console.log("Dependency tree that will be used as input for creating the BOM =>" + EOL + EOL + content)
 		}
-		let sbom = this.#buildSbomFileFromTextFormat(content, properties, ["runtimeClasspath"], manifest,opts)
+		let sbom = this.#buildSbomFileFromTextFormat(content, properties, stackAnalysisConfigs, manifest,opts)
 		return sbom
 	}
 
@@ -258,26 +259,42 @@ export default class Java_gradle extends Base_java {
 		let rootPurl = this.parseDep(root)
 		sbom.addRoot(rootPurl)
 		let lines = new Array()
-		configNames.forEach(configName => {
-			let deps = this.#extractLines(content, configName)
-			lines = lines.concat(deps)
-		})
+		// component analysis.
+		if (configNames !== stackAnalysisConfigs ) {
+			configNames.forEach(configName => {
+				let deps = this.#extractLines(content, configName)
+				lines = lines.concat(deps)
+			})
+			let arrayForSbom = this.#prepareLinesForParsingDependencyTree(lines);
+			if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
+				arrayForSbom = arrayForSbom.slice(1)
+			}
+			arrayForSbom.forEach( removeDuplicateIfExists.call(this, arrayForSbom,content))
+			this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
+		}
+		// stack analysis , takes both runtimeClasspath and compileClasspath dependencies
+		else {
+			configNames.forEach(configName => {
+				let lines = this.#extractLines(content, configName)
+				let arrayForSbom = this.#prepareLinesForParsingDependencyTree(lines);
+				if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
+					arrayForSbom = arrayForSbom.slice(1)
+				}
+				this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
+			})
+		}
 		// transform gradle dependency tree to the form of maven dependency tree to use common sbom build algorithm in Base_java parent */
-		let arrayForSbom = lines.filter(dep => dep.trim() !== "").map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
+		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
+		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString(opts);
+	}
+
+	#prepareLinesForParsingDependencyTree(lines) {
+		return lines.filter(dep => dep.trim() !== "").map(dependency => dependency.replaceAll("---", "-").replaceAll("    ", "  "))
 			.map(dependency => dependency.replaceAll(/:(.*):(.*) -> (.*)$/g, ":$1:$3"))
 			.map(dependency => dependency.replaceAll(/:(.*)\W*->\W*(.*)$/g, ":$1:$2"))
 			.map(dependency => dependency.replaceAll(/(.*):(.*):(.*)$/g, "$1:$2:jar:$3"))
 			.map(dependency => dependency.replaceAll(/(n)$/g), "")
 			.map(dependency => `${dependency}:compile`);
-		if(arrayForSbom.length > 0 && !containsVersion(arrayForSbom[0])) {
-			arrayForSbom = arrayForSbom.slice(1)
-		}
-		if( configNames === componentAnalysisConfigs ) {
-			arrayForSbom.forEach( removeDuplicateIfExists.call(this, arrayForSbom,content))
-		}
-		this.parseDependencyTree(root + ":compile", 0, arrayForSbom, sbom)
-		let ignoredDeps = this.#getIgnoredDeps(manifestPath)
-		return sbom.filterIgnoredDepsIncludingVersion(ignoredDeps).getAsJsonString(opts);
 	}
 
 	/**
@@ -298,7 +315,7 @@ export default class Java_gradle extends Base_java {
 			}
 
 			if (startFound && dependency.trim() !== "") {
-				if(startMarker === 'runtimeClasspath' || containsVersion(dependenciesList[dependency]) ) {
+				if(startMarker === 'runtimeClasspath'  || startMarker === 'compileClasspath' || containsVersion(dependenciesList[dependency]) ) {
 					resultList.push(dependenciesList[dependency])
 				}
 			}
