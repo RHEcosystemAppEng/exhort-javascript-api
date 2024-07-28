@@ -46,8 +46,8 @@ export default class Base_Java {
 			if (targetDepth === srcDepth + 1) {
 				let from = this.parseDep(src);
 				let to = this.parseDep(target);
-				let matchedScope = target.match(/:compile|:provided|:runtime|:test|:system/g)
-				let matchedScopeSrc = src.match(/:compile|:provided|:runtime|:test|:system/g)
+				let matchedScope = target.match(/:compile|:provided|:runtime|:test|:system|:import/g)
+				let matchedScopeSrc = src.match(/:compile|:provided|:runtime|:test|:system|:import/g)
 				// only add dependency to sbom if it's not with test scope or if it's root
 				if ((matchedScope && matchedScope[0] !== ":test" && (matchedScopeSrc && matchedScopeSrc[0] !== ":test")) || (srcDepth == 0 && matchedScope && matchedScope[0] !== ":test")) {
 					sbom.addDependency(sbom.purlToComponent(from), to)
