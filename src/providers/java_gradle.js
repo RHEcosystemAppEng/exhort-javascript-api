@@ -393,7 +393,7 @@ export default class Java_gradle extends Base_java {
 		// 	Dependency line is of form String Notation
 		} else {
 			let depParts
-			if(depToBeIgnored.match(/^[a-z]+\s/)) {
+			if(depToBeIgnored.match(/^[a-zA-Z]+\s/)) {
 				depParts = depToBeIgnored.split(" ")[1].split(":");
 			}
 			else {
