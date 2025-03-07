@@ -2,7 +2,9 @@
 
 > Describe what you did and why.
 
-**Related issue (if any):** fixes #issue_number_goes_here
+**Related issues (if any):** 
+
+- fixes: #issue_number_goes_here
 
 ## Checklist
 
