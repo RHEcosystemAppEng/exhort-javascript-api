@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import fs from 'fs'
 import sinon from "sinon";
-import Java_gradle from '../../src/providers/java_gradle.js'
+import Java_gradle_kotlin from '../../src/providers/java_gradle_kotlin.js'
 
 let clock
 
@@ -24,14 +24,14 @@ function getStubbedResponse(command, dependencyTreeTextContent, gradleProperties
 	return undefined
 }
 
-suite('testing the java-gradle data provider', () => {
+suite('testing the java-gradle-kotlin data provider', () => {
 
 	[
-		{name: 'build.gradle', expected: true},
+		{name: 'build.gradle.kts', expected: true},
 		{name: 'some_other.file', expected: false}
 	].forEach(testCase => {
 		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () => {
-			let javaGradleProvider = new Java_gradle()
+			let javaGradleProvider = new Java_gradle_kotlin()
 			expect(javaGradleProvider.isSupported(testCase.name)).to.equal(testCase.expected)
 		})
 	});
@@ -53,10 +53,10 @@ suite('testing the java-gradle data provider', () => {
 			let mockedExecFunction = function(command){
 				return getStubbedResponse(command, dependencyTreeTextContent, gradleProperties);
 			}
-			let javGradleProvider = new Java_gradle()
+			let javGradleProvider = new Java_gradle_kotlin()
 			Object.getPrototypeOf(Object.getPrototypeOf(javGradleProvider))._invokeCommandGetOutput = mockedExecFunction
 			// invoke sut stack analysis for scenario manifest
-			let providedDataForStack =  javGradleProvider.provideStack(`test/providers/tst_manifests/gradle/${testCase}/build.gradle`)
+			let providedDataForStack =  javGradleProvider.provideStack(`test/providers/tst_manifests/gradle/${testCase}/build.gradle.kts`)
 			// verify returned data matches expectation
 			// expect(providedDataForStack).to.deep.equal({
 			// 	ecosystem: 'gradle',
@@ -79,10 +79,10 @@ suite('testing the java-gradle data provider', () => {
 			let mockedExecFunction = function(command){
 				return getStubbedResponse(command, dependencyTreeTextContent, gradleProperties);
 			}
-			let javaGradleProvider = new Java_gradle()
+			let javaGradleProvider = new Java_gradle_kotlin()
 			Object.getPrototypeOf(Object.getPrototypeOf(javaGradleProvider))._invokeCommandGetOutput = mockedExecFunction
 			// invoke sut component analysis for scenario manifest
-			let provdidedForComponent = javaGradleProvider.provideComponent("",{},`test/providers/tst_manifests/gradle/${testCase}/build.gradle`)
+			let provdidedForComponent = javaGradleProvider.provideComponent("",{},`test/providers/tst_manifests/gradle/${testCase}/build.gradle.kts`)
 			// verify returned data matches expectation
 			let beautifiedOutput = JSON.stringify(JSON.parse(provdidedForComponent.content),null, 4);
 			expect(beautifiedOutput).to.deep.equal(expectedSbom)

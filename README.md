@@ -156,10 +156,10 @@ $ exhort-javascript-api component pom.xml "$(</path/to/pom.xml)"
 <h3>Supported Ecosystems</h3>
 <ul>
 <li><a href="https://www.java.com/">Java</a> - <a href="https://maven.apache.org/">Maven</a></li>
-<li><a href="https://www.javascript.com//">JavaScript</a> - <a href="https://www.npmjs.com/">Npm</a></li>
-<li><a href="https://go.dev//">Golang</a> - <a href="https://go.dev/blog/using-go-modules/">Go Modules</a></li>
-<li><a href="https://go.dev//">Python</a> - <a href="https://pypi.org/project/pip/">pip Installer</a></li>
-<li><a href="https://gradle.org//">Gradle</a> - <a href="https://gradle.org/install//">Gradle Installation</a></li>
+<li><a href="https://www.javascript.com/">JavaScript</a> - <a href="https://www.npmjs.com/">Npm</a></li>
+<li><a href="https://go.dev/">Golang</a> - <a href="https://go.dev/blog/using-go-modules/">Go Modules</a></li>
+<li><a href="https://www.python.org/">Python</a> - <a href="https://pypi.org/project/pip/">pip Installer</a></li>
+<li><a href="https://gradle.org/">Gradle (Groovy and Kotlin DSL)</a> - <a href="https://gradle.org/install/">Gradle Installation</a></li>
 </ul>
 
 <h3>Excluding Packages</h3>
