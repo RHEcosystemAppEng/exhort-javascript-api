@@ -14,7 +14,8 @@ const packageManagersDict =
 		"npm" : "package.json",
 		"go" : "go.mod",
 		"pip" : "requirements.txt",
-		"gradle" : "build.gradle"
+		"gradle-groovy" : "build.gradle",
+		"gradle-kotlin" : "build.gradle.kts"
 	}
 
 function getParsedKeyFromHtml(html, key,keyLength) {
@@ -38,7 +39,8 @@ suite('Integration Tests', () => {
 	//
 	// }
 	[
-		"gradle",
+		"gradle-groovy",
+		"gradle-kotlin",
 		"maven",
 		"npm",
 		"go",
@@ -119,7 +121,7 @@ suite('Integration Tests', () => {
 			let manifestPath = `test/it/test_manifests/${packageManager}/${manifestName}`
 			let analysisReport;
 			// gradle is the only package manager the supports only path for component analysis.
-			if(packageManager === 'gradle') {
+			if(packageManager.startsWith('gradle')) {
 				analysisReport = await index.componentAnalysis(manifestName,"",{},manifestPath)
 			}
 			else {

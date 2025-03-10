@@ -7,9 +7,9 @@ import Base_java, {ecosystem_gradle} from "./base_java.js";
 import TOML from 'fast-toml'
 
 
-/** @typedef {import('../provider').Provider} */
+/** @typedef {import('../provider.js').Provider} */
 
-/** @typedef {import('../provider').Provided} Provided */
+/** @typedef {import('../provider.js').Provided} Provided */
 
 const ROOT_PROJECT_KEY_NAME = "root-project";
 
@@ -83,19 +83,35 @@ function removeDuplicateIfExists(arrayForSbom,theContent) {
 
 const componentAnalysisConfigs = ["api", "implementation", "compileOnly","compileOnlyApi","runtimeOnly"];
 const stackAnalysisConfigs = ["runtimeClasspath","compileClasspath"];
+
+/**
+ * This class provides common functionality for Groovy and Kotlin DSL files.
+ */
 export default class Java_gradle extends Base_java {
 
-	/**
-	 * @param {string} manifestName - the subject manifest name-type
-	 * @returns {boolean} - return true if `pom.xml` is the manifest name-type
-	 */
+	_getManifestName() {
+		throw new Error('implement getManifestName method')
+	}
 
-	isSupported(manifestName) {
-		return 'build.gradle' === manifestName
+	_parseAliasForLibsNotation() {
+		throw new Error('implement parseAliasForLibsNotation method')
+	}
+
+	_extractDepToBeIgnored() {
+		throw new Error('implement extractDepToBeIgnored method')
 	}
 
 	/**
-	 * Provide content and content type for maven-maven stack analysis.
+	 * @param {string} manifestName - the subject manifest name-type
+	 * @returns {boolean} - return true if the manifest name-type is the supported type (example build.gradle)
+	 */
+
+	isSupported(manifestName) {
+		return this._getManifestName() === manifestName
+	}
+
+	/**
+	 * Provide content and content type for stack analysis.
 	 * @param {string} manifest - the manifest path or name
 	 * @param {{}} [opts={}] - optional various options to pass along the application
 	 * @returns {Provided}
@@ -180,7 +196,7 @@ export default class Java_gradle extends Base_java {
 		try {
 			properties = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} properties`, path.dirname(manifestPath))
 		} catch (e) {
-			throw new Error(`Couldn't get properties of build.gradle file , Error message returned from gradle binary => ${EOL} ${e.getMessage}`)
+			throw new Error(`Couldn't get properties of ${this._getManifestName()} file , Error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
 		return properties.toString()
 	}
@@ -223,7 +239,7 @@ export default class Java_gradle extends Base_java {
 		let commandResult
 		gradle = getCustomPath("gradle")
 		try {
-			commandResult = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} dependencies`,path.dirname(manifest))
+			commandResult = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} dependencies`, path.dirname(manifest))
 		} catch (e) {
 			throw new Error(`Couldn't run gradle dependencies command, error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
@@ -359,7 +375,7 @@ export default class Java_gradle extends Base_java {
 	#getDepFromLibsNotation(depToBeIgnored, manifestPath) {
 		// Extract everything after "libs."
 		let alias = depToBeIgnored.substring(depToBeIgnored.indexOf("libs.") + "libs.".length).trim()
-		alias = alias.replace(".", "-")
+		alias = this._parseAliasForLibsNotation(alias)
 		// Read and parse the TOML file
 		let pathOfToml = path.join(path.dirname(manifestPath),"gradle","libs.versions.toml");
 		const tomlString = fs.readFileSync(pathOfToml).toString()
@@ -393,10 +409,10 @@ export default class Java_gradle extends Base_java {
 		// 	Dependency line is of form String Notation
 		} else {
 			let depParts
-			if(depToBeIgnored.match(/^[a-zA-Z]+\s/)) {
-				depParts = depToBeIgnored.split(" ")[1].split(":");
-			}
-			else {
+			const depToBeIgnoredMatch = this._extractDepToBeIgnored(depToBeIgnored)
+			if(depToBeIgnoredMatch) {
+				depParts = depToBeIgnoredMatch.split(":");
+			} else {
 				depParts = depToBeIgnored.split(":");
 			}
 			if(depParts.length === 3) {
