@@ -11,22 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  task-check:
-    name: Check task completion
-    permissions:
-      pull-requests: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: kentaro-m/task-completed-checker-action@v0.1.2
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-  conventional-commits:
-    name: Validate PR title
-    runs-on: ubuntu-latest
-    steps:
-      - uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test:
     runs-on: ubuntu-latest
     name: Lint and test project
