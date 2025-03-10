@@ -239,7 +239,7 @@ export default class Java_gradle extends Base_java {
 		let commandResult
 		gradle = getCustomPath("gradle")
 		try {
-			commandResult = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} dependencies`,path.dirname(manifest))
+			commandResult = this._invokeCommandGetOutput(`${handleSpacesInPath(gradle)} dependencies`, path.dirname(manifest))
 		} catch (e) {
 			throw new Error(`Couldn't run gradle dependencies command, error message returned from gradle binary => ${EOL} ${e.getMessage}`)
 		}
