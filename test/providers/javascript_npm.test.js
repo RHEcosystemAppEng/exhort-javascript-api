@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import fs from 'fs'
+import path from "node:path";
 import sinon from "sinon";
 // import babelCore from 'babel-core'
 import javascriptNpmProvider from "../../src/providers/javascript_npm.js"
@@ -20,13 +21,16 @@ let clock
 
 suite('testing the javascript-npm data provider', async() => {
 	[
-
-		{name: 'package.json', expected: true},
-		{name: 'some_other.file', expected: false}
+		{name: 'npm/with_lock_file', expected: true},
+		{name: 'npm/without_lock_file', expected: true},
+		// Once Yarn is supported the expected values can change
+		{name: 'yarn/with_lock_file', expected: false},
+		{name: 'yarn/without_lock_file', expected: true}
 	].forEach(testCase => {
-		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () =>
-			expect(javascriptNpmProvider.isSupported(testCase.name)).to.equal(testCase.expected)
-		)
+		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () => {
+			let manifestPath = path.parse(`test/providers/provider_manifests/${testCase.name}/package.json`)
+			expect(javascriptNpmProvider.isSupported(manifestPath.base, manifestPath.dir)).to.equal(testCase.expected)
+		})
 	});
 	[
 		"package_json_deps_without_exhortignore_object",

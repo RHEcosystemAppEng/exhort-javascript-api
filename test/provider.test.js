@@ -16,6 +16,6 @@ suite('testing the provider utility function', () => {
 
 	test('when no provider matched should throw error', () => {
 		expect(() => match('/path/to/unknown.manifest', [dummyProvider]))
-			.to.throw('unknown.manifest is not supported')
+			.to.throw('unknown.manifest or lockfile is not supported')
 	})
 });

@@ -27,9 +27,9 @@ export const availableProviders = [new Java_maven(), new Java_gradle_groovy(), n
  */
 export function match(manifest, providers) {
 	let manifestPath = path.parse(manifest)
-	let provider = providers.find(prov => prov.isSupported(manifestPath.base))
+	let provider = providers.find(prov => prov.isSupported(manifestPath.base, manifestPath.dir))
 	if (provider) {
 		return provider
 	}
-	throw new Error(`${manifestPath.base} is not supported`)
+	throw new Error(`${manifestPath.base} or lockfile is not supported`)
 }
