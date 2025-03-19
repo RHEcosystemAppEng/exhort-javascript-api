@@ -57,24 +57,13 @@ const ecosystem = 'npm'
 const defaultVersion = 'v0.0.0'
 
 /**
-	 * @param {string} manifestDir - The directory of the manifest
-	 * @returns {boolean} - return true if `pom.xml` is the manifest name-type
-	 */
-function lockFileExists(manifestDir) {
-	const lock = path.join(manifestDir, "package-lock.json");
-	return fs.existsSync(lock);
-}
-
-/**
  * @param {string} manifestName - the subject manifest name-type
  * @param manifestDir - The directory of the manifest
  * @returns {boolean} - return true if `pom.xml` is the manifest name-type
  */
 function isSupported(manifestName, manifestDir) {
-	return 'package.json' === manifestName && (lockFileExists(manifestDir) || ["yarn.lock", "pnpm-lock.yaml"].every(item => {
-		const conflictingLock = path.join(manifestDir, item);
-		return !fs.existsSync(conflictingLock);
-	}));
+	const lock = path.join(manifestDir, "package-lock.json");
+	return 'package.json' === manifestName && fs.existsSync(lock);
 }
 
 /**
