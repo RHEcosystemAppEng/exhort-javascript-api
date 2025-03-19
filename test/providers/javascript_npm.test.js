@@ -22,10 +22,10 @@ let clock
 suite('testing the javascript-npm data provider', async() => {
 	[
 		{name: 'npm/with_lock_file', expected: true},
-		{name: 'npm/without_lock_file', expected: true},
+		{name: 'npm/without_lock_file', expected: false},
 		// Once Yarn is supported the expected values can change
 		{name: 'yarn/with_lock_file', expected: false},
-		{name: 'yarn/without_lock_file', expected: true}
+		{name: 'yarn/without_lock_file', expected: false}
 	].forEach(testCase => {
 		test(`verify isSupported returns ${testCase.expected} for ${testCase.name}`, () => {
 			let manifestPath = path.parse(`test/providers/provider_manifests/${testCase.name}/package.json`)
