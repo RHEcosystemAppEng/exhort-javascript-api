@@ -58,10 +58,12 @@ const defaultVersion = 'v0.0.0'
 
 /**
  * @param {string} manifestName - the subject manifest name-type
+ * @param manifestDir - The directory of the manifest
  * @returns {boolean} - return true if `pom.xml` is the manifest name-type
  */
-function isSupported(manifestName) {
-	return 'package.json' === manifestName
+function isSupported(manifestName, manifestDir) {
+	const lock = path.join(manifestDir, "package-lock.json");
+	return 'package.json' === manifestName && fs.existsSync(lock);
 }
 
 /**
