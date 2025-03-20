@@ -31,5 +31,5 @@ export function match(manifest, providers) {
 	if (provider) {
 		return provider
 	}
-	throw new Error(`${manifestPath.base} is not supported or lock file does not exists`)
+	throw new Error(`${manifestPath.base} is not supported or lock file does not exists. Initialize your lock file with '<pkg manager> install'`)
 }

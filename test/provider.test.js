@@ -16,6 +16,6 @@ suite('testing the provider utility function', () => {
 
 	test('when no provider matched should throw error', () => {
 		expect(() => match('/path/to/unknown.manifest', [dummyProvider]))
-			.to.throw('unknown.manifest is not supported or lock file does not exists')
+			.to.throw('unknown.manifest is not supported or lock file does not exists. Initialize your lock file with \'<pkg manager> install\'')
 	})
 });
